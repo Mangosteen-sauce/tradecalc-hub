@@ -1,16 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <!-- Wheelbarrow with mulch -->
-  <path d="M16 28c0 0 2-10 16-10s16 10 16 10" fill="#1a56db" opacity="0.15"/>
-  <path d="M12 30h40l-6 16H18L12 30z" fill="#1a56db" opacity="0.2" stroke="#1a56db" stroke-width="2" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="#1a1a1a">
+  <!-- Wheelbarrow with mulch - bold solid style -->
   <!-- Mulch mound -->
-  <path d="M16 30c0 0 4-8 16-8s16 8 16 8" fill="#1a56db" opacity="0.3" stroke="#1a56db" stroke-width="2"/>
-  <!-- Mulch chips on top -->
-  <rect x="22" y="24" width="4" height="2" rx="1" fill="#1a56db" opacity="0.5" transform="rotate(-15 24 25)"/>
-  <rect x="30" y="23" width="5" height="2" rx="1" fill="#1a56db" opacity="0.5" transform="rotate(10 32 24)"/>
-  <rect x="37" y="25" width="4" height="2" rx="1" fill="#1a56db" opacity="0.5" transform="rotate(-5 39 26)"/>
+  <path d="M12 26c0 0 6-10 20-10s20 10 20 10H12z"/>
+  <!-- Wheelbarrow body -->
+  <path d="M8 26h48l-8 18H16L8 26z"/>
   <!-- Wheel -->
-  <circle cx="32" cy="50" r="5" fill="#fff" stroke="#1a56db" stroke-width="2.5"/>
-  <circle cx="32" cy="50" r="1.5" fill="#1a56db"/>
+  <circle cx="32" cy="52" r="7" fill="#fff" stroke="#1a1a1a" stroke-width="4"/>
+  <circle cx="32" cy="52" r="2" fill="#1a1a1a"/>
   <!-- Handles -->
-  <path d="M12 30L6 20M52 30l6-10" stroke="#1a56db" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M8 26L2 16" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
+  <path d="M56 26l6-10" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
+  <!-- Mulch texture bumps on top -->
+  <circle cx="22" cy="22" r="2.5"/>
+  <circle cx="32" cy="19" r="3"/>
+  <circle cx="40" cy="21" r="2.5"/>
 </svg>

@@ -1,16 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <!-- Paint can -->
-  <rect x="14" y="24" width="24" height="28" rx="2" fill="#1a56db" opacity="0.15" stroke="#1a56db" stroke-width="2"/>
-  <path d="M14 32h24" stroke="#1a56db" stroke-width="1.5"/>
-  <!-- Can handle -->
-  <path d="M18 24v-4h16v4" stroke="#1a56db" stroke-width="2" stroke-linecap="round"/>
-  <!-- Paint drip on can -->
-  <path d="M38 30c0 0 0 4-2 6" stroke="#1a56db" stroke-width="2" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="#1a1a1a">
+  <!-- Paint can - bold outline style -->
+  <rect x="6" y="20" width="30" height="34" rx="2" stroke-width="4" fill="#1a1a1a"/>
+  <!-- Can opening -->
+  <rect x="6" y="20" width="30" height="8" rx="2" fill="#1a1a1a" stroke-width="4"/>
+  <!-- Can label area -->
+  <rect x="10" y="32" width="22" height="14" rx="1" fill="#fff" stroke="none"/>
+  <!-- Handle -->
+  <path d="M14 20v-6h14v6" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+  <!-- Paint drips -->
+  <path d="M36 28c0 4-1 8-2 10" stroke-width="3" stroke-linecap="round"/>
+  <path d="M33 26c0 3-1 5-1 6" stroke-width="2.5" stroke-linecap="round"/>
   <!-- Paint roller -->
-  <rect x="42" y="14" width="10" height="20" rx="4" fill="#1a56db" opacity="0.3" stroke="#1a56db" stroke-width="2"/>
+  <rect x="44" y="8" width="12" height="24" rx="5" fill="#1a1a1a" stroke-width="3"/>
   <!-- Roller handle -->
-  <path d="M47 34v16" stroke="#1a56db" stroke-width="2.5" stroke-linecap="round"/>
-  <path d="M44 50h6" stroke="#1a56db" stroke-width="2.5" stroke-linecap="round"/>
-  <!-- Roller texture lines -->
-  <path d="M44 18h6M44 22h6M44 26h6M44 30h6" stroke="#1a56db" stroke-width="1" opacity="0.4"/>
+  <path d="M50 32v20" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M46 52h8" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Roller arm -->
+  <path d="M44 20h-4" stroke-width="3" stroke-linecap="round"/>
 </svg>
