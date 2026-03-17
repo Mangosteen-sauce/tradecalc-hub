@@ -7,7 +7,7 @@ import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'drywall')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
 const affiliateLinks = getAffiliateLinksForCalculator('drywall');
-const title = 'Drywall Calculator — Sheets, Tape, Mud & Screws';
+const title = 'Drywall Calculator | Sheets, Tape, Mud & Screws';
 const description = 'Free drywall calculator. Estimate sheets (4x8, 4x10, 4x12), joint compound, tape, and screws for walls and ceilings.';
 ---
 
@@ -53,8 +53,8 @@ const description = 'Free drywall calculator. Estimate sheets (4x8, 4x10, 4x12),
       <div class="form-group">
         <label>Include Ceiling?</label>
         <select id="ceiling">
-          <option value="no">No — walls only</option>
-          <option value="yes">Yes — walls + ceiling</option>
+          <option value="no">No - walls only</option>
+          <option value="yes">Yes - walls + ceiling</option>
         </select>
       </div>
     </div>
@@ -116,7 +116,7 @@ const description = 'Free drywall calculator. Estimate sheets (4x8, 4x10, 4x12),
     <ul>
       <li><strong>4' × 8':</strong> Standard size, easiest to handle. Best for 8' ceilings.</li>
       <li><strong>4' × 10':</strong> Fewer seams on taller walls. Best for 9-10' ceilings.</li>
-      <li><strong>4' × 12':</strong> Best for large areas — reduces seams by 33% vs 4×8. Requires two people.</li>
+      <li><strong>4' × 12':</strong> Best for large areas, reducing seams by 33% vs 4×8. Requires two people.</li>
     </ul>
 
     <h3>Drywall Thickness Guide</h3>
@@ -142,7 +142,7 @@ const description = 'Free drywall calculator. Estimate sheets (4x8, 4x10, 4x12),
     <div class="calc-grid" style="max-width:100%;">
       {relatedCalcs.map(rc => (
         <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
-          <div class="icon">{rc.icon}</div>
+          <div class="icon"><img src={rc.icon} alt={rc.name} width="48" height="48" /></div>
           <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
           <p>{rc.description}</p>
         </a>

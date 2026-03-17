@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Drywall sheet -->
+  <rect x="10" y="10" width="32" height="44" rx="1" fill="#1a56db" opacity="0.1" stroke="#1a56db" stroke-width="2"/>
+  <!-- Second sheet behind -->
+  <rect x="14" y="8" width="32" height="44" rx="1" fill="#1a56db" opacity="0.05" stroke="#1a56db" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <!-- T-square / measuring tool -->
+  <path d="M46 16v36" stroke="#1a56db" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M40 16h12" stroke="#1a56db" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Measurement marks -->
+  <path d="M44 24h4M44 32h4M44 40h4M44 48h4" stroke="#1a56db" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Screw marks on sheet -->
+  <circle cx="18" cy="20" r="1.5" fill="#1a56db" opacity="0.3"/>
+  <circle cx="34" cy="20" r="1.5" fill="#1a56db" opacity="0.3"/>
+  <circle cx="18" cy="34" r="1.5" fill="#1a56db" opacity="0.3"/>
+  <circle cx="34" cy="34" r="1.5" fill="#1a56db" opacity="0.3"/>
+  <circle cx="18" cy="46" r="1.5" fill="#1a56db" opacity="0.3"/>
+  <circle cx="34" cy="46" r="1.5" fill="#1a56db" opacity="0.3"/>
+</svg>

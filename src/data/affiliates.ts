@@ -7,14 +7,13 @@ export interface AffiliateLink {
 }
 
 // Centralized affiliate/product link registry
-// PAYPAL-ONLY MONETIZATION STRATEGY:
-// - Home Depot / Lowe's: Impact.com affiliate links (pays via PayPal, $10 min)
-// - All other product links: plain URLs auto-monetized by Skimlinks (pays via PayPal, $65 min)
-//   and/or Sovrn Commerce (pays via PayPal, $10 min, no fees)
-// - Skimlinks auto-converts outbound product links across 48,500+ merchants
-// - No Amazon Associates needed — Skimlinks covers Amazon automatically
+// MONETIZATION STRATEGY (PayPal-only):
+// - All product links: plain URLs auto-monetized by Skimlinks (pays via PayPal, $65 min)
+// - Skimlinks auto-converts outbound product links across 48,500+ merchants (including Amazon, HD, Lowe's)
+// - No Amazon Associates or Impact.com needed - Skimlinks handles affiliate conversion automatically
+// - Ko-fi donations: ko-fi.com/tradecalchub
 export const affiliateLinks: Record<string, AffiliateLink> = {
-  // Plain product links — Skimlinks auto-converts these
+  // Plain product links - Skimlinks auto-converts these
   'concrete-mixer': {
     id: 'concrete-mixer',
     text: 'concrete mixer',
@@ -107,7 +106,7 @@ export const affiliateLinks: Record<string, AffiliateLink> = {
     category: 'tools',
   },
 
-  // Home Depot (Impact.com affiliate links — pays via PayPal)
+  // Home Depot (plain links - Skimlinks auto-monetizes)
   'homedepot-concrete': {
     id: 'homedepot-concrete',
     text: 'concrete mix at Home Depot',
@@ -130,7 +129,7 @@ export const affiliateLinks: Record<string, AffiliateLink> = {
     category: 'materials',
   },
 
-  // Lowe's (Impact.com affiliate links — pays via PayPal)
+  // Lowe's (plain links - Skimlinks auto-monetizes)
   'lowes-drywall': {
     id: 'lowes-drywall',
     text: 'drywall sheets at Lowe\'s',

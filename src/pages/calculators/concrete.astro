@@ -7,7 +7,7 @@ import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'concrete')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
 const affiliateLinks = getAffiliateLinksForCalculator('concrete');
-const title = 'Concrete Calculator — Cubic Yards, Bags & Cost Estimate';
+const title = 'Concrete Calculator | Cubic Yards, Bags & Cost Estimate';
 const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60/80 lb), and cost for slabs, footings, columns, and post holes. Imperial & metric support.';
 ---
 
@@ -144,7 +144,7 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
       <li><strong>60 lb bag:</strong> 0.017 cubic yards (0.45 cu ft)</li>
       <li><strong>80 lb bag:</strong> 0.022 cubic yards (0.60 cu ft)</li>
     </ul>
-    <p>For projects over 1 cubic yard, consider ordering ready-mix concrete from a local supplier — it's typically cheaper and faster than mixing bags by hand.</p>
+    <p>For projects over 1 cubic yard, consider ordering ready-mix concrete from a local supplier. It's typically cheaper and faster than mixing bags by hand.</p>
 
     <h3>Common Concrete Thicknesses</h3>
     <ul>
@@ -169,7 +169,7 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
     <div class="calc-grid" style="max-width:100%;">
       {relatedCalcs.map(rc => (
         <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
-          <div class="icon">{rc.icon}</div>
+          <div class="icon"><img src={rc.icon} alt={rc.name} width="48" height="48" /></div>
           <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
           <p>{rc.description}</p>
         </a>

@@ -7,7 +7,7 @@ import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'brick')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
 const affiliateLinks = getAffiliateLinksForCalculator('brick');
-const title = 'Brick & Block Calculator — Count, Mortar & Cost';
+const title = 'Brick & Block Calculator | Count, Mortar & Cost';
 const description = 'Free brick and block calculator. Estimate bricks, concrete blocks (CMU), and mortar bags for walls, patios, and walkways.';
 ---
 
@@ -59,9 +59,9 @@ const description = 'Free brick and block calculator. Estimate bricks, concrete 
     <div class="form-group">
       <label>Waste Factor</label>
       <select id="waste">
-        <option value="5">5% — straight walls, experienced mason</option>
-        <option value="10" selected>10% — standard (recommended)</option>
-        <option value="15">15% — curves or complex patterns</option>
+        <option value="5">5% - straight walls, experienced mason</option>
+        <option value="10" selected>10% - standard (recommended)</option>
+        <option value="15">15% - curves or complex patterns</option>
       </select>
     </div>
 
@@ -122,7 +122,7 @@ const description = 'Free brick and block calculator. Estimate bricks, concrete 
     <h3>Bond Patterns</h3>
     <ul>
       <li><strong>Running bond:</strong> Most common, strongest. Bricks offset by half.</li>
-      <li><strong>Stack bond:</strong> Aligned vertically. Decorative only — not structural.</li>
+      <li><strong>Stack bond:</strong> Aligned vertically. Decorative only, not structural.</li>
       <li><strong>Herringbone:</strong> 45-degree zigzag. Popular for patios. Uses 5-10% more material.</li>
       <li><strong>Basket weave:</strong> Pairs of bricks alternating direction. Popular for walkways.</li>
     </ul>
@@ -134,7 +134,7 @@ const description = 'Free brick and block calculator. Estimate bricks, concrete 
     <div class="calc-grid" style="max-width:100%;">
       {relatedCalcs.map(rc => (
         <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
-          <div class="icon">{rc.icon}</div>
+          <div class="icon"><img src={rc.icon} alt={rc.name} width="48" height="48" /></div>
           <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
           <p>{rc.description}</p>
         </a>

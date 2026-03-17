@@ -4,7 +4,7 @@ import { calculators } from '../data/calculators';
 ---
 
 <BaseLayout
-  title="Page Not Found — TradeCalc Hub"
+  title="Page Not Found | TradeCalc Hub"
   description="The page you're looking for doesn't exist. Browse our free construction calculators."
 >
   <div style="text-align:center;padding:3rem 1rem;">
@@ -19,7 +19,7 @@ import { calculators } from '../data/calculators';
     <div class="calc-grid">
       {calculators.slice(0, 6).map((calc) => (
         <a href={`/calculators/${calc.slug}`} class="calc-grid-item">
-          <div class="icon">{calc.icon}</div>
+          <div class="icon"><img src={calc.icon} alt={calc.name} width="48" height="48" /></div>
           <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{calc.name}</h3>
           <p>{calc.description}</p>
         </a>

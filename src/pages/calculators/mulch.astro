@@ -7,7 +7,7 @@ import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'mulch')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
 const affiliateLinks = getAffiliateLinksForCalculator('mulch');
-const title = 'Mulch Calculator — Cubic Yards & Bags for Landscaping';
+const title = 'Mulch Calculator | Cubic Yards & Bags for Landscaping';
 const description = 'Free mulch calculator. Estimate cubic yards and bags of mulch for garden beds and landscaping projects. Choose depth and get instant results.';
 ---
 
@@ -102,16 +102,16 @@ const description = 'Free mulch calculator. Estimate cubic yards and bags of mul
       <li><strong>4 inches:</strong> Weed suppression in new beds, around trees and shrubs</li>
       <li><strong>6 inches:</strong> Playground areas (safety requirement for wood chips)</li>
     </ul>
-    <p>Avoid piling mulch deeper than 4 inches around plants — it can suffocate roots and trap moisture against stems. Laying down <a href={affiliateLinks[0]?.url} target="_blank">{affiliateLinks[0]?.text}</a> before mulching helps prevent weeds and extends the life of your mulch bed.</p>
+    <p>Avoid piling mulch deeper than 4 inches around plants. It can suffocate roots and trap moisture against stems. Laying down <a href={affiliateLinks[0]?.url} target="_blank">{affiliateLinks[0]?.text}</a> before mulching helps prevent weeds and extends the life of your mulch bed.</p>
 
     <h3>Mulch Types & Coverage</h3>
     <p>All mulch types use the same volume calculation. Common options include:</p>
     <ul>
-      <li><strong>Hardwood mulch:</strong> $30-45/cu yd — the most popular choice for landscaping</li>
-      <li><strong>Pine bark:</strong> $30-40/cu yd — lightweight, good for slopes</li>
-      <li><strong>Cedar mulch:</strong> $35-50/cu yd — natural insect resistance</li>
-      <li><strong>Rubber mulch:</strong> $80-160/cu yd — long-lasting for playgrounds</li>
-      <li><strong>River rock:</strong> $100-200/ton — permanent, no replacement needed</li>
+      <li><strong>Hardwood mulch:</strong> $30-45/cu yd. The most popular choice for landscaping</li>
+      <li><strong>Pine bark:</strong> $30-40/cu yd. Lightweight, good for slopes</li>
+      <li><strong>Cedar mulch:</strong> $35-50/cu yd. Natural insect resistance</li>
+      <li><strong>Rubber mulch:</strong> $80-160/cu yd. Long-lasting for playgrounds</li>
+      <li><strong>River rock:</strong> $100-200/ton. Permanent, no replacement needed</li>
     </ul>
 
     <h3>Bags vs. Bulk</h3>
@@ -123,7 +123,7 @@ const description = 'Free mulch calculator. Estimate cubic yards and bags of mul
     <div class="calc-grid" style="max-width:100%;">
       {relatedCalcs.map(rc => (
         <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
-          <div class="icon">{rc.icon}</div>
+          <div class="icon"><img src={rc.icon} alt={rc.name} width="48" height="48" /></div>
           <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
           <p>{rc.description}</p>
         </a>

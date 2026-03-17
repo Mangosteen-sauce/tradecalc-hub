@@ -7,7 +7,7 @@ import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'paint')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
 const affiliateLinks = getAffiliateLinksForCalculator('paint');
-const title = 'Paint Calculator — Gallons Needed for Walls & Ceilings';
+const title = 'Paint Calculator | Gallons Needed for Walls & Ceilings';
 const description = 'Free paint calculator. Estimate gallons of paint needed for walls and ceilings. Account for doors, windows, and number of coats.';
 ---
 
@@ -64,8 +64,8 @@ const description = 'Free paint calculator. Estimate gallons of paint needed for
       <div class="form-group">
         <label>Include Ceiling?</label>
         <select id="ceiling">
-          <option value="no">No — walls only</option>
-          <option value="yes">Yes — walls + ceiling</option>
+          <option value="no">No - walls only</option>
+          <option value="yes">Yes - walls + ceiling</option>
         </select>
       </div>
     </div>
@@ -126,7 +126,7 @@ const description = 'Free paint calculator. Estimate gallons of paint needed for
 
     <h3>Tips for Buying Paint</h3>
     <ul>
-      <li>Always round up to the nearest gallon — leftover paint is good for touch-ups</li>
+      <li>Always round up to the nearest gallon. Leftover paint is good for touch-ups</li>
       <li>Buy all paint at once to ensure consistent color (same batch/lot)</li>
       <li>Textured walls use 20-30% more paint than smooth walls</li>
       <li>Standard door size is 3' × 7' (21 sq ft); standard window is 3' × 5' (15 sq ft)</li>
@@ -140,7 +140,7 @@ const description = 'Free paint calculator. Estimate gallons of paint needed for
     <div class="calc-grid" style="max-width:100%;">
       {relatedCalcs.map(rc => (
         <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
-          <div class="icon">{rc.icon}</div>
+          <div class="icon"><img src={rc.icon} alt={rc.name} width="48" height="48" /></div>
           <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
           <p>{rc.description}</p>
         </a>

@@ -7,7 +7,7 @@ import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'sod')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
 const affiliateLinks = getAffiliateLinksForCalculator('sod');
-const title = 'Sod & Grass Seed Calculator — Coverage by Area';
+const title = 'Sod & Grass Seed Calculator | Coverage by Area';
 const description = 'Free sod and grass seed calculator. Estimate rolls of sod or pounds of seed for new lawns and overseeding. Imperial & metric support.';
 ---
 
@@ -89,7 +89,7 @@ const description = 'Free sod and grass seed calculator. Estimate rolls of sod o
         <span class="result-label">Estimated Cost</span>
         <span class="result-value" id="resCost">—</span>
       </div>
-      <p class="result-note">Order 5% extra sod for trimming waste. Sod roll sizes vary by supplier — most common is 2' × 5' (10 sq ft).</p>
+      <p class="result-note">Order 5% extra sod for trimming waste. Sod roll sizes vary by supplier. Most common is 2' × 5' (10 sq ft).</p>
       <button class="btn-share" id="shareBtn">Copy Link to Results</button>
     </div>
   </div>
@@ -127,9 +127,9 @@ const description = 'Free sod and grass seed calculator. Estimate rolls of sod o
 
     <h3>Installation Tips</h3>
     <ul>
-      <li>Install sod within 24 hours of delivery — it starts dying quickly in summer heat</li>
+      <li>Install sod within 24 hours of delivery. It starts dying quickly in summer heat</li>
       <li>Prepare soil first: grade, rake, and add topsoil/compost as needed</li>
-      <li>Stagger sod seams like bricks — don't line them up</li>
+      <li>Stagger sod seams like bricks. Don't line them up</li>
       <li>Water heavily for the first 2 weeks (1" per day) to establish roots</li>
     </ul>
     <p>After laying sod, use a <a href={affiliateLinks[0]?.url} target="_blank">{affiliateLinks[0]?.text}</a> to press rolls firmly into the soil for better root contact. Consider laying <a href={affiliateLinks[1]?.url} target="_blank">{affiliateLinks[1]?.text}</a> around garden beds to suppress weeds near the new lawn.</p>
@@ -140,7 +140,7 @@ const description = 'Free sod and grass seed calculator. Estimate rolls of sod o
     <div class="calc-grid" style="max-width:100%;">
       {relatedCalcs.map(rc => (
         <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
-          <div class="icon">{rc.icon}</div>
+          <div class="icon"><img src={rc.icon} alt={rc.name} width="48" height="48" /></div>
           <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
           <p>{rc.description}</p>
         </a>

@@ -62,7 +62,7 @@ const breadcrumbSchema = {
     </div>
 
     <div class="calculator-cta" style="margin:1.5rem 0;padding:1rem 1.25rem;background:var(--color-primary-light);border-radius:var(--radius-lg);border:1px solid var(--color-primary);">
-      <p style="margin:0 0 0.5rem;font-weight:600;color:var(--color-primary);">{calc.icon} Calculate Your Exact Amount</p>
+      <p style="margin:0 0 0.5rem;font-weight:600;color:var(--color-primary);display:flex;align-items:center;gap:0.5rem;"><img src={calc.icon} alt="" width="24" height="24" /> Calculate Your Exact Amount</p>
       <p style="margin:0 0 0.75rem;font-size:0.9rem;color:var(--color-text);">{page.prefilledNote}</p>
       <a href={`/calculators/${calc.slug}`} style="display:inline-block;padding:0.6rem 1.25rem;background:var(--color-primary);color:#fff;border-radius:var(--radius);font-weight:600;text-decoration:none;font-size:0.9rem;">Open {calc.shortName} Calculator</a>
     </div>
@@ -78,7 +78,7 @@ const breadcrumbSchema = {
 
     <h2>Use Our Free {calc.shortName} Calculator</h2>
     <p>Our <a href={`/calculators/${calc.slug}`}>{calc.name.toLowerCase()}</a> handles all the math for you. Enter your dimensions, choose your options, and get instant results with bag counts, cost estimates, and waste factors included.</p>
-    <p>All calculations run in your browser — no signup, no data collection. <a href={`/calculators/${calc.slug}`}>Try it now</a>.</p>
+    <p>All calculations run in your browser. No signup, no data collection. <a href={`/calculators/${calc.slug}`}>Try it now</a>.</p>
   </div>
 
   <FeedbackWidget calculatorName={page.h1} />

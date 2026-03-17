@@ -7,7 +7,7 @@ import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'fencing')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
 const affiliateLinks = getAffiliateLinksForCalculator('fencing');
-const title = 'Fence Calculator — Posts, Rails, Pickets & Materials';
+const title = 'Fence Calculator | Posts, Rails, Pickets & Materials';
 const description = 'Free fence calculator. Estimate posts, rails, pickets, concrete, and cost for wood, vinyl, or chain-link fences by linear feet.';
 ---
 
@@ -128,7 +128,7 @@ const description = 'Free fence calculator. Estimate posts, rails, pickets, conc
 
     <h3>Material Tips</h3>
     <ul>
-      <li>Use pressure-treated posts (rated for ground contact) — they last 15-20 years</li>
+      <li>Use pressure-treated posts (rated for ground contact). They last 15-20 years</li>
       <li>Cedar and redwood resist rot naturally but cost 2-3x more than pine</li>
       <li>Add 10% extra pickets/boards for waste and future repairs</li>
       <li>Gate posts should be set deeper and in more concrete than line posts</li>
@@ -141,7 +141,7 @@ const description = 'Free fence calculator. Estimate posts, rails, pickets, conc
     <div class="calc-grid" style="max-width:100%;">
       {relatedCalcs.map(rc => (
         <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
-          <div class="icon">{rc.icon}</div>
+          <div class="icon"><img src={rc.icon} alt={rc.name} width="48" height="48" /></div>
           <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
           <p>{rc.description}</p>
         </a>
@@ -223,7 +223,7 @@ const description = 'Free fence calculator. Estimate posts, rails, pickets, conc
 
     $('#resPosts').textContent = `${posts} posts`;
     $('#resRails').textContent = isChainLink ? `${sections} top rails` : `${totalRails} rails`;
-    $('#resPickets').textContent = isChainLink ? 'N/A — fabric roll' : picketLabel;
+    $('#resPickets').textContent = isChainLink ? 'N/A - fabric roll' : picketLabel;
     $('#resConcrete').textContent = `${concreteBags} bags`;
 
     if (isChainLink) {

@@ -7,7 +7,7 @@ import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'gravel')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
 const affiliateLinks = getAffiliateLinksForCalculator('gravel');
-const title = 'Gravel & Stone Calculator — Tons & Cubic Yards';
+const title = 'Gravel & Stone Calculator | Tons & Cubic Yards';
 const description = 'Free gravel calculator. Estimate tons and cubic yards of gravel, crushed stone, or road base for driveways, patios, and landscaping.';
 ---
 
@@ -44,13 +44,13 @@ const description = 'Free gravel calculator. Estimate tons and cubic yards of gr
     <div class="form-group">
       <label>Material Type</label>
       <select id="material">
-        <option value="1.4">Gravel (pea gravel, river rock) — 1.4 tons/cu yd</option>
-        <option value="1.35">Crushed stone — 1.35 tons/cu yd</option>
-        <option value="1.5">Crushed limestone — 1.5 tons/cu yd</option>
-        <option value="1.3">Road base (Class 5) — 1.3 tons/cu yd</option>
-        <option value="1.1">Lava rock — 1.1 tons/cu yd</option>
-        <option value="1.25">Sand — 1.25 tons/cu yd</option>
-        <option value="2.0">Decomposed granite — 2.0 tons/cu yd</option>
+        <option value="1.4">Gravel (pea gravel, river rock) - 1.4 tons/cu yd</option>
+        <option value="1.35">Crushed stone - 1.35 tons/cu yd</option>
+        <option value="1.5">Crushed limestone - 1.5 tons/cu yd</option>
+        <option value="1.3">Road base (Class 5) - 1.3 tons/cu yd</option>
+        <option value="1.1">Lava rock - 1.1 tons/cu yd</option>
+        <option value="1.25">Sand - 1.25 tons/cu yd</option>
+        <option value="2.0">Decomposed granite - 2.0 tons/cu yd</option>
       </select>
     </div>
 
@@ -127,7 +127,7 @@ const description = 'Free gravel calculator. Estimate tons and cubic yards of gr
     <div class="calc-grid" style="max-width:100%;">
       {relatedCalcs.map(rc => (
         <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
-          <div class="icon">{rc.icon}</div>
+          <div class="icon"><img src={rc.icon} alt={rc.name} width="48" height="48" /></div>
           <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
           <p>{rc.description}</p>
         </a>

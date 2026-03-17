@@ -4,7 +4,7 @@ import { calculators } from '../data/calculators';
 ---
 
 <BaseLayout
-  title="TradeCalc Hub — Free Construction & Material Calculators"
+  title="TradeCalc Hub | Free Construction & Material Calculators"
   description="50+ free construction calculators for contractors and DIYers. Concrete, mulch, gravel, paint, drywall, tile, fencing, sod, brick, insulation and more. Mobile-friendly, no signup required."
   canonical="/"
 >
@@ -19,7 +19,7 @@ import { calculators } from '../data/calculators';
     <div class="calc-grid">
       {calculators.map((calc) => (
         <a href={`/calculators/${calc.slug}`} class="calc-grid-item">
-          <div class="icon">{calc.icon}</div>
+          <div class="icon"><img src={calc.icon} alt={calc.name} width="48" height="48" /></div>
           <h2>{calc.name}</h2>
           <p>{calc.description}</p>
         </a>
@@ -32,11 +32,11 @@ import { calculators } from '../data/calculators';
 
       <h3>Built for the Job Site</h3>
       <ul>
-        <li><strong>Mobile-first design</strong> — works perfectly on your phone at the job site</li>
-        <li><strong>Imperial &amp; metric</strong> — switch units with one tap</li>
-        <li><strong>No signup required</strong> — get your answer in seconds</li>
-        <li><strong>Share results</strong> — send calculations to clients or colleagues</li>
-        <li><strong>Print-friendly</strong> — clean printouts for material orders</li>
+        <li><strong>Mobile-first design.</strong> Works perfectly on your phone at the job site</li>
+        <li><strong>Imperial &amp; metric.</strong> Switch units with one tap</li>
+        <li><strong>No signup required.</strong> Get your answer in seconds</li>
+        <li><strong>Share results.</strong> Send calculations to clients or colleagues</li>
+        <li><strong>Print-friendly.</strong> Clean printouts for material orders</li>
       </ul>
 
       <h3>Trusted Formulas</h3>

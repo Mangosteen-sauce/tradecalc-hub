@@ -14,7 +14,7 @@ const sortedCategories = categoryOrder.filter(c => categories[c]);
 ---
 
 <BaseLayout
-  title="All Construction Calculators — Organized by Trade | TradeCalc Hub"
+  title="All Construction Calculators | Organized by Trade | TradeCalc Hub"
   description="Browse all free construction and material calculators organized by category: masonry, landscaping, interior, flooring, and outdoor. Find the right calculator for your project."
   canonical="/calculators"
 >
@@ -36,7 +36,7 @@ const sortedCategories = categoryOrder.filter(c => categories[c]);
         <div class="calc-grid">
           {categories[category].map(calc => (
             <a href={`/calculators/${calc.slug}`} class="calc-grid-item">
-              <div class="icon">{calc.icon}</div>
+              <div class="icon"><img src={calc.icon} alt={calc.name} width="48" height="48" /></div>
               <h3 style="font-size:1.05rem;margin-bottom:0.25rem;color:var(--color-text);">{calc.name}</h3>
               <p>{calc.description}</p>
             </a>
@@ -47,7 +47,7 @@ const sortedCategories = categoryOrder.filter(c => categories[c]);
 
     <div class="content-section" style="max-width:var(--max-width);margin:2rem auto 0;">
       <h2>Can't Find What You Need?</h2>
-      <p>We're constantly adding new calculators. If you need a specific construction calculator, <a href="/contact">let us know</a> — popular requests get built first.</p>
+      <p>We're constantly adding new calculators. If you need a specific construction calculator, <a href="/contact">let us know</a>. Popular requests get built first.</p>
       <p>Coming soon: roofing, decking, stucco, rebar, and retaining wall calculators.</p>
     </div>
   </div>

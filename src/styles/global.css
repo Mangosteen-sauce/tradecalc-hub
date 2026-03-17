@@ -326,8 +326,14 @@ select {
 }
 
 .calc-grid-item .icon {
-  font-size: 2rem;
+  width: 48px;
+  height: 48px;
   margin-bottom: 0.5rem;
+}
+
+.calc-grid-item .icon img {
+  width: 100%;
+  height: 100%;
 }
 
 .calc-grid-item h2 {
