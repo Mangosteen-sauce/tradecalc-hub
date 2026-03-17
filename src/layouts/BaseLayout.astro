@@ -30,8 +30,9 @@ import '../styles/global.css';
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <!-- Google AdSense — uncomment after approval
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <!-- Ezoic — uncomment after approval and replace with your Ezoic script tag
+  <script src="https://the.gatekeeperconsent.com/cmp.min.js" data-cfasync="false"></script>
+  <script>var ezstandalone = ezstandalone || {}; ezstandalone.cmd = ezstandalone.cmd || [];</script>
   -->
   <slot name="head" />
 </head>
@@ -66,9 +67,27 @@ import '../styles/global.css';
       <a href="/contact">Contact</a>
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
+      <a href="https://ko-fi.com/tradecalchub" target="_blank" rel="noopener">Support Us</a>
     </div>
     <p>&copy; {new Date().getFullYear()} TradeCalc Hub. Free construction calculators for professionals and DIYers.</p>
   </footer>
+
+  <!-- Skimlinks — uncomment after approval and replace YOUR_PUBLISHER_ID
+  <script type="text/javascript">
+    (function() {
+      var s = document.createElement('script');
+      s.type = 'text/javascript';
+      s.async = true;
+      s.src = 'https://s.skimresources.com/js/YOUR_PUBLISHER_ID.skimlinks.js';
+      var x = document.getElementsByTagName('script')[0];
+      x.parentNode.insertBefore(s, x);
+    })();
+  </script>
+  -->
+
+  <!-- Sovrn Commerce (backup auto-affiliate) — uncomment after approval
+  <script type="text/javascript" src="//www.yoursovrn.com/affiliate/scripts/YOUR_SOVRN_ID.js"></script>
+  -->
 
   <!-- Cloudflare Web Analytics — replace token after setup -->
   <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "YOUR_CF_ANALYTICS_TOKEN"}'></script>

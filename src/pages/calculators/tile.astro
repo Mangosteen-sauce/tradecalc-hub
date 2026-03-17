@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { calculators } from '../../data/calculators';
 import FeedbackWidget from '../../components/FeedbackWidget.astro';
+import KofiButton from '../../components/KofiButton.astro';
 import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'tile')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
@@ -134,7 +135,7 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
       <li><strong>Backer board:</strong> Required for wet areas (shower, tub surround)</li>
       <li><strong>Spacers:</strong> 1 bag per 100 sq ft (1/8" or 1/16" size)</li>
     </ul>
-    <p>A quality <a href={affiliateLinks[0]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[0]?.text}</a> makes cuts faster and cleaner, especially for large-format tiles. You'll also want a set of <a href={affiliateLinks[1]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[1]?.text}</a> for consistent grout lines.</p>
+    <p>A quality <a href={affiliateLinks[0]?.url} target="_blank">{affiliateLinks[0]?.text}</a> makes cuts faster and cleaner, especially for large-format tiles. You'll also want a set of <a href={affiliateLinks[1]?.url} target="_blank">{affiliateLinks[1]?.text}</a> for consistent grout lines.</p>
   </div>
 
   <div class="related-calcs" style="margin-top:2rem;">
@@ -150,6 +151,7 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
     </div>
   </div>
 
+  <KofiButton />
   <FeedbackWidget calculatorName={calc.name} />
 
   <Fragment slot="head">

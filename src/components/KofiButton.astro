@@ -1,0 +1,44 @@
+---
+// Ko-fi support button — displays a small, non-intrusive donation CTA
+// Replace YOUR_KOFI_PAGE with your actual Ko-fi username after signup
+---
+
+<div class="kofi-support">
+  <a href="https://ko-fi.com/tradecalchub" target="_blank" rel="noopener" class="kofi-btn">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="kofi-icon">
+      <path d="M17.5 9h1.5a3 3 0 0 1 0 6h-1.5m-11-6v6a4 4 0 0 0 4 4h3a4 4 0 0 0 4-4V9H6.5z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M10 12.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0z" fill="currentColor"/>
+    </svg>
+    Support this free tool
+  </a>
+</div>
+
+<style>
+  .kofi-support {
+    margin-top: 1rem;
+    text-align: center;
+  }
+  .kofi-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    background: var(--color-primary-light);
+    border: 1.5px solid var(--color-primary);
+    border-radius: var(--radius);
+    color: var(--color-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+  .kofi-btn:hover {
+    background: var(--color-primary);
+    color: #fff;
+    text-decoration: none;
+  }
+  .kofi-icon {
+    width: 18px;
+    height: 18px;
+  }
+</style>

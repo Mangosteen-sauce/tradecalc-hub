@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { calculators } from '../../data/calculators';
 import FeedbackWidget from '../../components/FeedbackWidget.astro';
+import KofiButton from '../../components/KofiButton.astro';
 import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'concrete')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
@@ -158,8 +159,8 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
       <li>For colored or stamped concrete, order all material at once for color consistency</li>
       <li>Ready-mix concrete starts at about $100-150 per cubic yard depending on your location</li>
       <li>Standard concrete strength for residential is 3,000-4,000 PSI</li>
-      <li>For DIY slab projects, consider getting a <a href={affiliateLinks[0]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[0]?.text}</a> to save time and effort</li>
-      <li>A sturdy <a href={affiliateLinks[1]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[1]?.text}</a> makes transporting bags and mixed concrete much easier</li>
+      <li>For DIY slab projects, consider getting a <a href={affiliateLinks[0]?.url} target="_blank">{affiliateLinks[0]?.text}</a> to save time and effort</li>
+      <li>A sturdy <a href={affiliateLinks[1]?.url} target="_blank">{affiliateLinks[1]?.text}</a> makes transporting bags and mixed concrete much easier</li>
     </ul>
   </div>
 
@@ -176,6 +177,7 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
     </div>
   </div>
 
+  <KofiButton />
   <FeedbackWidget calculatorName={calc.name} />
 
   <Fragment slot="head">

@@ -383,8 +383,8 @@ select {
   justify-content: center;
 }
 
-/* When real ads load, remove placeholder styling */
-.ad-slot:has(ins) {
+/* When real ads load (Ezoic uses div containers), remove placeholder styling */
+.ad-slot:has(div) {
   border: none;
   background: none;
   padding: 0;

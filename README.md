@@ -25,7 +25,7 @@ Free construction and material calculators for contractors, builders, and DIYers
 - **Hosting:** Cloudflare Pages (free tier)
 - **Analytics:** Cloudflare Web Analytics (free, cookie-free)
 - **Contact:** Web3Forms (free tier)
-- **Monetization:** Google AdSense + affiliate links (Amazon, Home Depot, Lowe's)
+- **Monetization:** Ezoic + affiliate links (Skimlinks, Home Depot, Lowe's) + Ko-fi
 
 ## Development
 
@@ -84,9 +84,14 @@ Output directory: `dist`
 After deployment, update these placeholder values:
 
 1. **Cloudflare Analytics token** — `src/layouts/BaseLayout.astro` -> replace `YOUR_CF_ANALYTICS_TOKEN`
-2. **Google AdSense** — `src/layouts/BaseLayout.astro` -> uncomment and add publisher ID
-3. **Web3Forms key** — `src/pages/contact.astro` + `src/components/FeedbackWidget.astro` -> replace `YOUR_WEB3FORMS_ACCESS_KEY`
-4. **Affiliate links** — `src/data/affiliates.ts` -> replace placeholder URLs with actual affiliate links
+2. **Ezoic** — `src/layouts/BaseLayout.astro` -> uncomment and add Ezoic script after approval
+3. **Skimlinks** — `src/layouts/BaseLayout.astro` -> uncomment and add publisher ID after approval
+4. **Sovrn Commerce** — `src/layouts/BaseLayout.astro` -> uncomment and add script after approval
+5. **Ko-fi** — `src/components/KofiButton.astro` + `src/layouts/BaseLayout.astro` -> replace `YOUR_KOFI_PAGE` with Ko-fi username
+6. **Web3Forms key** — `src/pages/contact.astro` + `src/components/FeedbackWidget.astro` -> replace `YOUR_WEB3FORMS_ACCESS_KEY`
+7. **Affiliate links** — `src/data/affiliates.ts` -> replace Home Depot/Lowe's placeholder URLs with Impact.com affiliate links
+
+All revenue services pay via PayPal. No bank account required.
 
 ## License
 

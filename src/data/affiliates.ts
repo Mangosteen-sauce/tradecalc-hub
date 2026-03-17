@@ -6,103 +6,108 @@ export interface AffiliateLink {
   category: string;
 }
 
-// Centralized affiliate link registry
-// Replace placeholder URLs with actual affiliate links after joining programs
+// Centralized affiliate/product link registry
+// PAYPAL-ONLY MONETIZATION STRATEGY:
+// - Home Depot / Lowe's: Impact.com affiliate links (pays via PayPal, $10 min)
+// - All other product links: plain URLs auto-monetized by Skimlinks (pays via PayPal, $65 min)
+//   and/or Sovrn Commerce (pays via PayPal, $10 min, no fees)
+// - Skimlinks auto-converts outbound product links across 48,500+ merchants
+// - No Amazon Associates needed — Skimlinks covers Amazon automatically
 export const affiliateLinks: Record<string, AffiliateLink> = {
-  // Amazon Associates
+  // Plain product links — Skimlinks auto-converts these
   'concrete-mixer': {
     id: 'concrete-mixer',
-    text: 'concrete mixer on Amazon',
-    url: 'https://www.amazon.com/s?k=concrete+mixer&tag=YOURTAG-20',
-    retailer: 'Amazon',
+    text: 'concrete mixer',
+    url: 'https://www.amazon.com/s?k=concrete+mixer',
+    retailer: 'Product Link',
     category: 'tools',
   },
   'wheelbarrow': {
     id: 'wheelbarrow',
-    text: 'wheelbarrow on Amazon',
-    url: 'https://www.amazon.com/s?k=wheelbarrow&tag=YOURTAG-20',
-    retailer: 'Amazon',
+    text: 'wheelbarrow',
+    url: 'https://www.amazon.com/s?k=wheelbarrow',
+    retailer: 'Product Link',
     category: 'tools',
   },
   'paint-sprayer': {
     id: 'paint-sprayer',
-    text: 'paint sprayer on Amazon',
-    url: 'https://www.amazon.com/s?k=paint+sprayer&tag=YOURTAG-20',
-    retailer: 'Amazon',
+    text: 'paint sprayer',
+    url: 'https://www.amazon.com/s?k=paint+sprayer',
+    retailer: 'Product Link',
     category: 'tools',
   },
   'paint-roller-kit': {
     id: 'paint-roller-kit',
-    text: 'paint roller kit on Amazon',
-    url: 'https://www.amazon.com/s?k=paint+roller+kit&tag=YOURTAG-20',
-    retailer: 'Amazon',
+    text: 'paint roller kit',
+    url: 'https://www.amazon.com/s?k=paint+roller+kit',
+    retailer: 'Product Link',
     category: 'tools',
   },
   'tile-saw': {
     id: 'tile-saw',
-    text: 'tile saw on Amazon',
-    url: 'https://www.amazon.com/s?k=tile+saw&tag=YOURTAG-20',
-    retailer: 'Amazon',
+    text: 'tile saw',
+    url: 'https://www.amazon.com/s?k=tile+saw',
+    retailer: 'Product Link',
     category: 'tools',
   },
   'tile-spacers': {
     id: 'tile-spacers',
-    text: 'tile spacers on Amazon',
-    url: 'https://www.amazon.com/s?k=tile+spacers&tag=YOURTAG-20',
-    retailer: 'Amazon',
+    text: 'tile spacers',
+    url: 'https://www.amazon.com/s?k=tile+spacers',
+    retailer: 'Product Link',
     category: 'supplies',
   },
   'drywall-tools': {
     id: 'drywall-tools',
-    text: 'drywall tool kit on Amazon',
-    url: 'https://www.amazon.com/s?k=drywall+tool+kit&tag=YOURTAG-20',
-    retailer: 'Amazon',
+    text: 'drywall tool kit',
+    url: 'https://www.amazon.com/s?k=drywall+tool+kit',
+    retailer: 'Product Link',
     category: 'tools',
   },
   'insulation-stapler': {
     id: 'insulation-stapler',
-    text: 'insulation stapler on Amazon',
-    url: 'https://www.amazon.com/s?k=insulation+stapler&tag=YOURTAG-20',
-    retailer: 'Amazon',
+    text: 'insulation stapler',
+    url: 'https://www.amazon.com/s?k=insulation+stapler',
+    retailer: 'Product Link',
     category: 'tools',
   },
   'fence-post-driver': {
     id: 'fence-post-driver',
-    text: 'fence post driver on Amazon',
-    url: 'https://www.amazon.com/s?k=fence+post+driver&tag=YOURTAG-20',
-    retailer: 'Amazon',
+    text: 'fence post driver',
+    url: 'https://www.amazon.com/s?k=fence+post+driver',
+    retailer: 'Product Link',
     category: 'tools',
   },
   'sod-roller': {
     id: 'sod-roller',
-    text: 'lawn roller on Amazon',
-    url: 'https://www.amazon.com/s?k=lawn+roller&tag=YOURTAG-20',
-    retailer: 'Amazon',
+    text: 'lawn roller',
+    url: 'https://www.amazon.com/s?k=lawn+roller',
+    retailer: 'Product Link',
     category: 'tools',
   },
   'masonry-trowel': {
     id: 'masonry-trowel',
-    text: 'masonry trowel set on Amazon',
-    url: 'https://www.amazon.com/s?k=masonry+trowel+set&tag=YOURTAG-20',
-    retailer: 'Amazon',
+    text: 'masonry trowel set',
+    url: 'https://www.amazon.com/s?k=masonry+trowel+set',
+    retailer: 'Product Link',
     category: 'tools',
   },
   'landscape-fabric': {
     id: 'landscape-fabric',
-    text: 'landscape fabric on Amazon',
-    url: 'https://www.amazon.com/s?k=landscape+fabric&tag=YOURTAG-20',
-    retailer: 'Amazon',
+    text: 'landscape fabric',
+    url: 'https://www.amazon.com/s?k=landscape+fabric',
+    retailer: 'Product Link',
     category: 'supplies',
   },
   'gravel-rake': {
     id: 'gravel-rake',
-    text: 'landscape rake on Amazon',
-    url: 'https://www.amazon.com/s?k=landscape+rake&tag=YOURTAG-20',
-    retailer: 'Amazon',
+    text: 'landscape rake',
+    url: 'https://www.amazon.com/s?k=landscape+rake',
+    retailer: 'Product Link',
     category: 'tools',
   },
 
-  // Home Depot (replace with Impact Radius links)
+  // Home Depot (Impact.com affiliate links — pays via PayPal)
   'homedepot-concrete': {
     id: 'homedepot-concrete',
     text: 'concrete mix at Home Depot',
@@ -125,7 +130,7 @@ export const affiliateLinks: Record<string, AffiliateLink> = {
     category: 'materials',
   },
 
-  // Lowe's (replace with Impact Radius links)
+  // Lowe's (Impact.com affiliate links — pays via PayPal)
   'lowes-drywall': {
     id: 'lowes-drywall',
     text: 'drywall sheets at Lowe\'s',
