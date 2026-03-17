@@ -1,11 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="#1a1a1a">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="#1a56db">
   <!-- Concrete pouring from mixer into form -->
   <!-- Mixer/bucket -->
   <path d="M6 8h16l-2 16H8L6 8z"/>
   <rect x="4" y="5" width="20" height="4" rx="1"/>
   <!-- Pour stream with aggregate dots -->
-  <path d="M16 24c2 4 4 8 6 12s4 6 8 8" stroke="#1a1a1a" stroke-width="4" fill="none" stroke-linecap="round"/>
-  <path d="M20 24c1 4 2 8 3 12s3 6 6 8" stroke="#1a1a1a" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M16 24c2 4 4 8 6 12s4 6 8 8" stroke="#1a56db" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M20 24c1 4 2 8 3 12s3 6 6 8" stroke="#1a56db" stroke-width="3" fill="none" stroke-linecap="round"/>
   <circle cx="18" cy="28" r="1.2"/>
   <circle cx="21" cy="33" r="1.2"/>
   <circle cx="23" cy="38" r="1.2"/>
@@ -13,5 +13,5 @@
   <path d="M26 44h32v6H22v-6l4 0z"/>
   <path d="M22 50h36v8H22z" fill-opacity="0.85"/>
   <!-- Form edges -->
-  <path d="M58 44v14M22 44v14" stroke="#1a1a1a" stroke-width="2.5"/>
+  <path d="M58 44v14M22 44v14" stroke="#1a56db" stroke-width="2.5"/>
 </svg>

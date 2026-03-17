@@ -1,18 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="#1a1a1a">
-  <!-- Insulation between wall studs - bold solid style -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="#1a56db">
+  <!-- Wall studs with zigzag insulation -->
   <!-- Left stud -->
   <rect x="2" y="2" width="7" height="60"/>
-  <!-- Right stud -->
-  <rect x="55" y="2" width="7" height="60"/>
   <!-- Center stud -->
   <rect x="29" y="2" width="6" height="60"/>
-  <!-- Insulation batt left (wavy pattern) -->
-  <path d="M9 2c3 4 5 8 3 12s-4 6-2 10 5 6 3 10-4 6-2 10 5 6 3 10-4 6-2 10v-60z" fill="#1a1a1a" opacity="0.85"/>
-  <path d="M29 2c-3 4-5 8-3 12s4 6 2 10-5 6-3 10 4 6 2 10-5 6-3 10 4 6 2 10v-60z" fill="#1a1a1a" opacity="0.85"/>
-  <!-- Insulation batt right -->
-  <path d="M35 2c3 4 5 8 3 12s-4 6-2 10 5 6 3 10-4 6-2 10 5 6 3 10-4 6-2 10v-60z" fill="#1a1a1a" opacity="0.85"/>
-  <path d="M55 2c-3 4-5 8-3 12s4 6 2 10-5 6-3 10 4 6 2 10-5 6-3 10 4 6 2 10v-60z" fill="#1a1a1a" opacity="0.85"/>
-  <!-- White texture lines to show fibers -->
-  <path d="M12 8h14M12 20h14M12 32h14M12 44h14M12 56h14" stroke="#fff" stroke-width="1.2"/>
-  <path d="M38 8h14M38 20h14M38 32h14M38 44h14M38 56h14" stroke="#fff" stroke-width="1.2"/>
+  <!-- Right stud -->
+  <rect x="55" y="2" width="7" height="60"/>
+  <!-- Left zigzag insulation -->
+  <path d="M9 6l10 8-10 8 10 8-10 8 10 8-10 8 10 8" stroke="#1a56db" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Right zigzag insulation -->
+  <path d="M35 6l10 8-10 8 10 8-10 8 10 8-10 8 10 8" stroke="#1a56db" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

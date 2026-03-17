@@ -1,15 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="#1a1a1a">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="#1a56db">
   <!-- Wheelbarrow with mulch - bold solid style -->
   <!-- Mulch mound -->
   <path d="M12 26c0 0 6-10 20-10s20 10 20 10H12z"/>
   <!-- Wheelbarrow body -->
   <path d="M8 26h48l-8 18H16L8 26z"/>
   <!-- Wheel -->
-  <circle cx="32" cy="52" r="7" fill="#fff" stroke="#1a1a1a" stroke-width="4"/>
-  <circle cx="32" cy="52" r="2" fill="#1a1a1a"/>
+  <circle cx="32" cy="52" r="7" fill="#fff" stroke="#1a56db" stroke-width="4"/>
+  <circle cx="32" cy="52" r="2" fill="#1a56db"/>
   <!-- Handles -->
-  <path d="M8 26L2 16" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
-  <path d="M56 26l6-10" stroke="#1a1a1a" stroke-width="4" stroke-linecap="round"/>
+  <path d="M8 26L2 16" stroke="#1a56db" stroke-width="4" stroke-linecap="round"/>
+  <path d="M56 26l6-10" stroke="#1a56db" stroke-width="4" stroke-linecap="round"/>
   <!-- Mulch texture bumps on top -->
   <circle cx="22" cy="22" r="2.5"/>
   <circle cx="32" cy="19" r="3"/>
