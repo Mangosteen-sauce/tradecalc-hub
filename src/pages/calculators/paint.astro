@@ -1,0 +1,236 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { calculators } from '../../data/calculators';
+import FeedbackWidget from '../../components/FeedbackWidget.astro';
+import { getAffiliateLinksForCalculator } from '../../data/affiliates';
+const calc = calculators.find(c => c.slug === 'paint')!;
+const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
+const affiliateLinks = getAffiliateLinksForCalculator('paint');
+const title = 'Paint Calculator — Gallons Needed for Walls & Ceilings';
+const description = 'Free paint calculator. Estimate gallons of paint needed for walls and ceilings. Account for doors, windows, and number of coats.';
+---
+
+<BaseLayout title={title} description={description} canonical="/calculators/paint">
+  <nav class="breadcrumbs">
+    <a href="/">Home</a><span>/</span><a href="/calculators">Calculators</a><span>/</span>Paint
+  </nav>
+
+  <div class="calc-card">
+    <h1>Paint Calculator</h1>
+    <p class="subtitle">Calculate gallons of paint for walls and ceilings by room dimensions.</p>
+
+    <div class="unit-toggle" id="unitToggle">
+      <button class="active" data-unit="imperial">Imperial (ft)</button>
+      <button data-unit="metric">Metric (m)</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Room Length <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="roomLength" placeholder="15" min="0" step="any" />
+      </div>
+      <div class="form-group">
+        <label>Room Width <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="roomWidth" placeholder="12" min="0" step="any" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Wall Height <span class="hint unit-label">(feet)</span></label>
+      <input type="number" id="wallHeight" placeholder="8" min="0" step="any" />
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Number of Doors</label>
+        <input type="number" id="doors" placeholder="2" min="0" step="1" value="2" />
+      </div>
+      <div class="form-group">
+        <label>Number of Windows</label>
+        <input type="number" id="windows" placeholder="2" min="0" step="1" value="2" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Number of Coats</label>
+        <select id="coats">
+          <option value="1">1 coat</option>
+          <option value="2" selected>2 coats (recommended)</option>
+          <option value="3">3 coats</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Include Ceiling?</label>
+        <select id="ceiling">
+          <option value="no">No — walls only</option>
+          <option value="yes">Yes — walls + ceiling</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Cost per Gallon <span class="hint">(optional, $)</span></label>
+      <input type="number" id="costPerGallon" placeholder="35" min="0" step="any" />
+    </div>
+
+    <button class="btn-calculate" id="calcBtn">Calculate Paint</button>
+
+    <div class="results-panel" id="results">
+      <h2>Results</h2>
+      <div class="result-row">
+        <span class="result-label">Paintable Area</span>
+        <span class="result-value" id="resArea">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Gallons Needed</span>
+        <span class="result-value" id="resGallons">—</span>
+      </div>
+      <div class="result-row" id="costRow" style="display:none;">
+        <span class="result-label">Estimated Cost</span>
+        <span class="result-value" id="resCost">—</span>
+      </div>
+      <p class="result-note">Based on 350 sq ft coverage per gallon. Textured walls or porous surfaces may require more paint.</p>
+      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+    </div>
+  </div>
+
+  <div class="ad-slot">Advertisement</div>
+
+  <div class="content-section">
+    <h2>How to Calculate Paint</h2>
+    <p>One gallon of paint covers approximately 350-400 square feet of smooth wall surface. To calculate how many gallons you need, find the total wall area and subtract openings.</p>
+
+    <h3>Paint Formula</h3>
+    <div class="formula-box">
+      Wall Area = Perimeter × Height<br>
+      Subtract: Doors (21 sq ft each) + Windows (15 sq ft each)<br>
+      Gallons = (Paintable Area × Coats) / 350
+    </div>
+
+    <h3>Coverage Rates</h3>
+    <ul>
+      <li><strong>Flat/matte paint:</strong> 350-400 sq ft per gallon</li>
+      <li><strong>Eggshell/satin:</strong> 350 sq ft per gallon</li>
+      <li><strong>Semi-gloss:</strong> 350 sq ft per gallon</li>
+      <li><strong>Primer:</strong> 200-300 sq ft per gallon (more porous)</li>
+    </ul>
+
+    <h3>When to Use Extra Coats</h3>
+    <ul>
+      <li><strong>1 coat:</strong> Touching up the same color, or using paint + primer over existing light color</li>
+      <li><strong>2 coats:</strong> Standard for most repaints and color changes</li>
+      <li><strong>3 coats:</strong> Going from dark to light, painting over stains, deep reds or yellows</li>
+    </ul>
+
+    <h3>Tips for Buying Paint</h3>
+    <ul>
+      <li>Always round up to the nearest gallon — leftover paint is good for touch-ups</li>
+      <li>Buy all paint at once to ensure consistent color (same batch/lot)</li>
+      <li>Textured walls use 20-30% more paint than smooth walls</li>
+      <li>Standard door size is 3' × 7' (21 sq ft); standard window is 3' × 5' (15 sq ft)</li>
+      <li>For large rooms, a <a href={affiliateLinks[0]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[0]?.text}</a> can cut application time in half compared to brushing</li>
+      <li>A quality <a href={affiliateLinks[1]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[1]?.text}</a> gives a smooth, even finish on walls and ceilings</li>
+    </ul>
+  </div>
+
+  <div class="related-calcs" style="margin-top:2rem;">
+    <h2 style="font-size:1.25rem;margin-bottom:1rem;">Related Calculators</h2>
+    <div class="calc-grid" style="max-width:100%;">
+      {relatedCalcs.map(rc => (
+        <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
+          <div class="icon">{rc.icon}</div>
+          <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
+          <p>{rc.description}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <FeedbackWidget calculatorName={calc.name} />
+
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Paint Calculator",
+      "url": "https://tradecalchub.com/calculators/paint",
+      "description": description,
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tradecalchub.com" },
+        { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://tradecalchub.com/calculators" },
+        { "@type": "ListItem", "position": 3, "name": calc.shortName }
+      ]
+    })} />
+  </Fragment>
+</BaseLayout>
+
+<script>
+  const $ = (s: string) => document.querySelector(s) as HTMLElement;
+  const $$ = (s: string) => document.querySelectorAll(s);
+  const val = (s: string) => parseFloat(($(s) as HTMLInputElement).value) || 0;
+
+  let unit: 'imperial' | 'metric' = 'imperial';
+
+  $$('#unitToggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('#unitToggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      unit = (btn as HTMLElement).dataset.unit as 'imperial' | 'metric';
+      $$('.unit-label').forEach(el => el.textContent = `(${unit === 'imperial' ? 'feet' : 'meters'})`);
+    });
+  });
+
+  const DOOR_SQFT = 21;
+  const WINDOW_SQFT = 15;
+  const COVERAGE_PER_GALLON = 350;
+
+  $('#calcBtn').addEventListener('click', () => {
+    let l = val('#roomLength'), w = val('#roomWidth'), h = val('#wallHeight');
+    if (unit === 'metric') { l *= 3.28084; w *= 3.28084; h *= 3.28084; }
+
+    const perimeter = 2 * (l + w);
+    const wallArea = perimeter * h;
+    const doorArea = val('#doors') * DOOR_SQFT;
+    const windowArea = val('#windows') * WINDOW_SQFT;
+    const coats = parseInt((document.querySelector('#coats') as HTMLSelectElement).value);
+    const includeCeiling = (document.querySelector('#ceiling') as HTMLSelectElement).value === 'yes';
+
+    let paintableArea = wallArea - doorArea - windowArea;
+    if (includeCeiling) paintableArea += l * w;
+    if (paintableArea <= 0) return;
+
+    const gallons = Math.ceil((paintableArea * coats) / COVERAGE_PER_GALLON);
+
+    const areaLabel = unit === 'metric'
+      ? `${(paintableArea * 0.092903).toFixed(0)} m²`
+      : `${paintableArea.toFixed(0)} sq ft`;
+
+    $('#resArea').textContent = areaLabel;
+    $('#resGallons').textContent = `${gallons} gallon${gallons > 1 ? 's' : ''}`;
+
+    const cost = val('#costPerGallon');
+    if (cost > 0) {
+      $('#resCost').textContent = `$${(gallons * cost).toFixed(2)}`;
+      $('#costRow').style.display = '';
+    } else {
+      $('#costRow').style.display = 'none';
+    }
+
+    $('#results').classList.add('visible');
+  });
+
+  $('#shareBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      $('#shareBtn').textContent = 'Copied!';
+      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
+    });
+  });
+</script>

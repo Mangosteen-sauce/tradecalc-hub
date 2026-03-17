@@ -1,0 +1,310 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { calculators } from '../../data/calculators';
+import FeedbackWidget from '../../components/FeedbackWidget.astro';
+import { getAffiliateLinksForCalculator } from '../../data/affiliates';
+const calc = calculators.find(c => c.slug === 'concrete')!;
+const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
+const affiliateLinks = getAffiliateLinksForCalculator('concrete');
+const title = 'Concrete Calculator — Cubic Yards, Bags & Cost Estimate';
+const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60/80 lb), and cost for slabs, footings, columns, and post holes. Imperial & metric support.';
+---
+
+<BaseLayout title={title} description={description} canonical="/calculators/concrete">
+  <nav class="breadcrumbs">
+    <a href="/">Home</a><span>/</span><a href="/calculators">Calculators</a><span>/</span>Concrete
+  </nav>
+
+  <div class="calc-card">
+    <h1>Concrete Calculator</h1>
+    <p class="subtitle">Calculate cubic yards, bags, and estimated cost for your concrete project.</p>
+
+    <div class="unit-toggle" id="unitToggle">
+      <button class="active" data-unit="imperial">Imperial (ft)</button>
+      <button data-unit="metric">Metric (m)</button>
+    </div>
+
+    <div>
+      <label style="font-weight:600;font-size:0.875rem;margin-bottom:0.5rem;display:block;">Project Type</label>
+      <div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+        <button class="shape-btn active" data-shape="slab">Slab / Patio</button>
+        <button class="shape-btn" data-shape="footing">Footing / Wall</button>
+        <button class="shape-btn" data-shape="column">Column / Post Hole</button>
+      </div>
+    </div>
+
+    <div id="slabInputs">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Length <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="slabLength" placeholder="10" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Width <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="slabWidth" placeholder="10" min="0" step="any" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Thickness <span class="hint" id="thicknessHint">(inches)</span></label>
+        <input type="number" id="slabThickness" placeholder="4" min="0" step="any" />
+      </div>
+    </div>
+
+    <div id="footingInputs" style="display:none;">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Length <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="footingLength" placeholder="20" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Width <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="footingWidth" placeholder="1" min="0" step="any" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Depth <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="footingDepth" placeholder="1" min="0" step="any" />
+      </div>
+    </div>
+
+    <div id="columnInputs" style="display:none;">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Diameter <span class="hint" id="diamHint">(inches)</span></label>
+          <input type="number" id="colDiameter" placeholder="12" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Depth <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="colDepth" placeholder="3" min="0" step="any" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Number of Holes</label>
+        <input type="number" id="colCount" placeholder="4" min="1" step="1" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Cost per Cubic Yard <span class="hint">(optional, $)</span></label>
+      <input type="number" id="costPerYard" placeholder="125" min="0" step="any" />
+    </div>
+
+    <button class="btn-calculate" id="calcBtn">Calculate Concrete</button>
+
+    <div class="results-panel" id="results">
+      <h2>Results</h2>
+      <div class="result-row">
+        <span class="result-label">Volume</span>
+        <span class="result-value" id="resCubicYards">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">40 lb bags</span>
+        <span class="result-value" id="resBags40">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">60 lb bags</span>
+        <span class="result-value" id="resBags60">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">80 lb bags</span>
+        <span class="result-value" id="resBags80">—</span>
+      </div>
+      <div class="result-row" id="costRow" style="display:none;">
+        <span class="result-label">Estimated Cost</span>
+        <span class="result-value" id="resCost">—</span>
+      </div>
+      <p class="result-note">Includes 10% extra for waste and spillage. Actual amounts may vary.</p>
+      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+    </div>
+  </div>
+
+  <div class="ad-slot">Advertisement</div>
+
+  <div class="content-section">
+    <h2>How to Calculate Concrete</h2>
+    <p>Concrete is sold by the cubic yard. To calculate how much you need, determine the volume of the area you're filling, then convert to cubic yards.</p>
+
+    <h3>Slab / Patio Formula</h3>
+    <div class="formula-box">
+      Volume (cu yd) = (Length × Width × Thickness) / 27<br>
+      Where all dimensions are in feet (convert inches to feet by dividing by 12)
+    </div>
+
+    <h3>Column / Post Hole Formula</h3>
+    <div class="formula-box">
+      Volume (cu yd) = π × (Diameter/2)² × Depth × Quantity / 27<br>
+      Where diameter is converted to feet
+    </div>
+
+    <h3>Bag Coverage</h3>
+    <p>Pre-mixed concrete bags cover the following volumes:</p>
+    <ul>
+      <li><strong>40 lb bag:</strong> 0.011 cubic yards (0.30 cu ft)</li>
+      <li><strong>60 lb bag:</strong> 0.017 cubic yards (0.45 cu ft)</li>
+      <li><strong>80 lb bag:</strong> 0.022 cubic yards (0.60 cu ft)</li>
+    </ul>
+    <p>For projects over 1 cubic yard, consider ordering ready-mix concrete from a local supplier — it's typically cheaper and faster than mixing bags by hand.</p>
+
+    <h3>Common Concrete Thicknesses</h3>
+    <ul>
+      <li><strong>4 inches:</strong> Sidewalks, patios, shed floors</li>
+      <li><strong>5-6 inches:</strong> Driveways, garage floors</li>
+      <li><strong>8-12 inches:</strong> Footings, foundation walls</li>
+    </ul>
+
+    <h3>Tips for Ordering Concrete</h3>
+    <ul>
+      <li>Always order 10% extra to account for waste, spillage, and uneven subgrade</li>
+      <li>For colored or stamped concrete, order all material at once for color consistency</li>
+      <li>Ready-mix concrete starts at about $100-150 per cubic yard depending on your location</li>
+      <li>Standard concrete strength for residential is 3,000-4,000 PSI</li>
+      <li>For DIY slab projects, consider getting a <a href={affiliateLinks[0]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[0]?.text}</a> to save time and effort</li>
+      <li>A sturdy <a href={affiliateLinks[1]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[1]?.text}</a> makes transporting bags and mixed concrete much easier</li>
+    </ul>
+  </div>
+
+  <div class="related-calcs" style="margin-top:2rem;">
+    <h2 style="font-size:1.25rem;margin-bottom:1rem;">Related Calculators</h2>
+    <div class="calc-grid" style="max-width:100%;">
+      {relatedCalcs.map(rc => (
+        <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
+          <div class="icon">{rc.icon}</div>
+          <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
+          <p>{rc.description}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <FeedbackWidget calculatorName={calc.name} />
+
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Concrete Calculator",
+      "url": "https://tradecalchub.com/calculators/concrete",
+      "description": description,
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tradecalchub.com" },
+        { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://tradecalchub.com/calculators" },
+        { "@type": "ListItem", "position": 3, "name": calc.shortName }
+      ]
+    })} />
+    <style is:inline>
+      .shape-btn {
+        padding: 0.4rem 0.9rem;
+        border: 1.5px solid var(--color-border);
+        border-radius: var(--radius);
+        background: var(--color-surface);
+        font-size: 0.85rem;
+        font-weight: 500;
+        cursor: pointer;
+        color: var(--color-text-light);
+        transition: all 0.15s;
+      }
+      .shape-btn.active {
+        border-color: var(--color-primary);
+        background: var(--color-primary-light);
+        color: var(--color-primary);
+      }
+    </style>
+  </Fragment>
+</BaseLayout>
+
+<script>
+  const $ = (s: string) => document.querySelector(s) as HTMLElement;
+  const $$ = (s: string) => document.querySelectorAll(s);
+  const val = (s: string) => parseFloat(($(s) as HTMLInputElement).value) || 0;
+
+  let unit: 'imperial' | 'metric' = 'imperial';
+  let shape = 'slab';
+
+  // Unit toggle
+  $$('#unitToggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('#unitToggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      unit = (btn as HTMLElement).dataset.unit as 'imperial' | 'metric';
+      const label = unit === 'imperial' ? 'feet' : 'meters';
+      $$('.unit-label').forEach(el => el.textContent = `(${label})`);
+      $('#thicknessHint').textContent = unit === 'imperial' ? '(inches)' : '(cm)';
+      $('#diamHint').textContent = unit === 'imperial' ? '(inches)' : '(cm)';
+    });
+  });
+
+  // Shape toggle
+  $$('.shape-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('.shape-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      shape = (btn as HTMLElement).dataset.shape!;
+      $('#slabInputs').style.display = shape === 'slab' ? '' : 'none';
+      $('#footingInputs').style.display = shape === 'footing' ? '' : 'none';
+      $('#columnInputs').style.display = shape === 'column' ? '' : 'none';
+    });
+  });
+
+  // Calculate
+  $('#calcBtn').addEventListener('click', () => {
+    let cubicFeet = 0;
+
+    if (shape === 'slab') {
+      let l = val('#slabLength'), w = val('#slabWidth'), t = val('#slabThickness');
+      if (unit === 'metric') { l *= 3.28084; w *= 3.28084; t *= 0.393701; }
+      cubicFeet = l * w * (t / 12);
+    } else if (shape === 'footing') {
+      let l = val('#footingLength'), w = val('#footingWidth'), d = val('#footingDepth');
+      if (unit === 'metric') { l *= 3.28084; w *= 3.28084; d *= 3.28084; }
+      cubicFeet = l * w * d;
+    } else {
+      let diam = val('#colDiameter'), depth = val('#colDepth'), count = val('#colCount') || 1;
+      if (unit === 'metric') { diam *= 0.393701; depth *= 3.28084; }
+      const r = (diam / 12) / 2;
+      cubicFeet = Math.PI * r * r * depth * count;
+    }
+
+    if (cubicFeet <= 0) return;
+
+    const wasteFactor = 1.10;
+    const cubicYards = (cubicFeet / 27) * wasteFactor;
+
+    const bags40 = Math.ceil(cubicYards / 0.011);
+    const bags60 = Math.ceil(cubicYards / 0.017);
+    const bags80 = Math.ceil(cubicYards / 0.022);
+
+    const volLabel = unit === 'metric'
+      ? `${(cubicYards * 0.764555).toFixed(2)} m³`
+      : `${cubicYards.toFixed(2)} cu yd`;
+
+    $('#resCubicYards').textContent = volLabel;
+    $('#resBags40').textContent = bags40.toLocaleString();
+    $('#resBags60').textContent = bags60.toLocaleString();
+    $('#resBags80').textContent = bags80.toLocaleString();
+
+    const cost = val('#costPerYard');
+    if (cost > 0) {
+      $('#resCost').textContent = `$${(cubicYards * cost).toFixed(2)}`;
+      $('#costRow').style.display = '';
+    } else {
+      $('#costRow').style.display = 'none';
+    }
+
+    $('#results').classList.add('visible');
+  });
+
+  // Share
+  $('#shareBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      $('#shareBtn').textContent = 'Copied!';
+      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
+    });
+  });
+</script>

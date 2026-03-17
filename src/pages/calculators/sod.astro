@@ -1,0 +1,279 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { calculators } from '../../data/calculators';
+import FeedbackWidget from '../../components/FeedbackWidget.astro';
+import { getAffiliateLinksForCalculator } from '../../data/affiliates';
+const calc = calculators.find(c => c.slug === 'sod')!;
+const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
+const affiliateLinks = getAffiliateLinksForCalculator('sod');
+const title = 'Sod & Grass Seed Calculator — Coverage by Area';
+const description = 'Free sod and grass seed calculator. Estimate rolls of sod or pounds of seed for new lawns and overseeding. Imperial & metric support.';
+---
+
+<BaseLayout title={title} description={description} canonical="/calculators/sod">
+  <nav class="breadcrumbs">
+    <a href="/">Home</a><span>/</span><a href="/calculators">Calculators</a><span>/</span>Sod
+  </nav>
+
+  <div class="calc-card">
+    <h1>Sod & Grass Seed Calculator</h1>
+    <p class="subtitle">Calculate sod rolls or grass seed needed for your lawn area.</p>
+
+    <div class="unit-toggle" id="unitToggle">
+      <button class="active" data-unit="imperial">Imperial (ft)</button>
+      <button data-unit="metric">Metric (m)</button>
+    </div>
+
+    <div>
+      <label style="font-weight:600;font-size:0.875rem;margin-bottom:0.5rem;display:block;">Coverage Type</label>
+      <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
+        <button class="type-btn active" data-type="sod" style="padding:0.4rem 0.9rem;border:1.5px solid var(--color-border);border-radius:var(--radius);background:var(--color-surface);font-size:0.85rem;font-weight:500;cursor:pointer;color:var(--color-text-light);">Sod</button>
+        <button class="type-btn" data-type="seed" style="padding:0.4rem 0.9rem;border:1.5px solid var(--color-border);border-radius:var(--radius);background:var(--color-surface);font-size:0.85rem;font-weight:500;cursor:pointer;color:var(--color-text-light);">Grass Seed</button>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Lawn Length <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="length" placeholder="50" min="0" step="any" />
+      </div>
+      <div class="form-group">
+        <label>Lawn Width <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="width" placeholder="30" min="0" step="any" />
+      </div>
+    </div>
+
+    <div id="seedOptions" style="display:none;">
+      <div class="form-group">
+        <label>Application</label>
+        <select id="seedApp">
+          <option value="new">New lawn (higher seeding rate)</option>
+          <option value="overseed">Overseeding existing lawn</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Grass Type</label>
+        <select id="grassType">
+          <option value="kentucky-bluegrass">Kentucky Bluegrass (2-3 lbs/1000 sq ft)</option>
+          <option value="tall-fescue">Tall Fescue (6-8 lbs/1000 sq ft)</option>
+          <option value="bermuda">Bermuda Grass (1-2 lbs/1000 sq ft)</option>
+          <option value="perennial-rye">Perennial Ryegrass (6-8 lbs/1000 sq ft)</option>
+          <option value="zoysia">Zoysia (1-2 lbs/1000 sq ft)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Cost per Unit <span class="hint" id="costHint">(optional, $ per roll)</span></label>
+      <input type="number" id="cost" placeholder="5" min="0" step="any" />
+    </div>
+
+    <button class="btn-calculate" id="calcBtn">Calculate</button>
+
+    <div class="results-panel" id="results">
+      <h2>Results</h2>
+      <div class="result-row">
+        <span class="result-label">Lawn Area</span>
+        <span class="result-value" id="resArea">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label" id="quantityLabel">Sod Rolls</span>
+        <span class="result-value" id="resQuantity">—</span>
+      </div>
+      <div class="result-row" id="palletRow">
+        <span class="result-label">Pallets (approx)</span>
+        <span class="result-value" id="resPallets">—</span>
+      </div>
+      <div class="result-row" id="costRow" style="display:none;">
+        <span class="result-label">Estimated Cost</span>
+        <span class="result-value" id="resCost">—</span>
+      </div>
+      <p class="result-note">Order 5% extra sod for trimming waste. Sod roll sizes vary by supplier — most common is 2' × 5' (10 sq ft).</p>
+      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+    </div>
+  </div>
+
+  <div class="ad-slot">Advertisement</div>
+
+  <div class="content-section">
+    <h2>How to Calculate Sod</h2>
+    <p>Sod is sold in rolls or pieces, typically covering 10 sq ft each (2' × 5'). To calculate how much you need, measure your lawn area and divide by the roll size.</p>
+
+    <h3>Sod Formula</h3>
+    <div class="formula-box">
+      Lawn Area = Length × Width (in sq ft)<br>
+      Rolls = Area × 1.05 (5% waste) / 10 sq ft per roll<br>
+      Pallets = Rolls / 50 (most pallets hold ~450-500 sq ft)
+    </div>
+
+    <h3>Grass Seed Rates</h3>
+    <p>Seeding rates vary by grass type and whether you're establishing a new lawn or overseeding:</p>
+    <ul>
+      <li><strong>Kentucky Bluegrass:</strong> 2-3 lbs/1,000 sq ft (new), 1-2 lbs (overseed)</li>
+      <li><strong>Tall Fescue:</strong> 6-8 lbs/1,000 sq ft (new), 3-4 lbs (overseed)</li>
+      <li><strong>Bermuda Grass:</strong> 1-2 lbs/1,000 sq ft (new), 0.5-1 lb (overseed)</li>
+      <li><strong>Perennial Ryegrass:</strong> 6-8 lbs/1,000 sq ft (new), 3-4 lbs (overseed)</li>
+      <li><strong>Zoysia:</strong> 1-2 lbs/1,000 sq ft (new), 0.5-1 lb (overseed)</li>
+    </ul>
+
+    <h3>Sod vs. Seed</h3>
+    <ul>
+      <li><strong>Sod:</strong> Instant lawn, prevents erosion immediately. $0.30-0.80 per sq ft installed.</li>
+      <li><strong>Seed:</strong> Cheaper ($0.05-0.15 per sq ft), but takes 2-3 weeks to germinate and 6-8 weeks for full coverage.</li>
+      <li>Sod is best for slopes, high-traffic areas, and when you need immediate results.</li>
+      <li>Seed is best for large areas, budget projects, and when you can wait for results.</li>
+    </ul>
+
+    <h3>Installation Tips</h3>
+    <ul>
+      <li>Install sod within 24 hours of delivery — it starts dying quickly in summer heat</li>
+      <li>Prepare soil first: grade, rake, and add topsoil/compost as needed</li>
+      <li>Stagger sod seams like bricks — don't line them up</li>
+      <li>Water heavily for the first 2 weeks (1" per day) to establish roots</li>
+    </ul>
+    <p>After laying sod, use a <a href={affiliateLinks[0]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[0]?.text}</a> to press rolls firmly into the soil for better root contact. Consider laying <a href={affiliateLinks[1]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[1]?.text}</a> around garden beds to suppress weeds near the new lawn.</p>
+  </div>
+
+  <div class="related-calcs" style="margin-top:2rem;">
+    <h2 style="font-size:1.25rem;margin-bottom:1rem;">Related Calculators</h2>
+    <div class="calc-grid" style="max-width:100%;">
+      {relatedCalcs.map(rc => (
+        <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
+          <div class="icon">{rc.icon}</div>
+          <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
+          <p>{rc.description}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <FeedbackWidget calculatorName={calc.name} />
+
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Sod & Grass Seed Calculator",
+      "url": "https://tradecalchub.com/calculators/sod",
+      "description": description,
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tradecalchub.com" },
+        { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://tradecalchub.com/calculators" },
+        { "@type": "ListItem", "position": 3, "name": calc.shortName }
+      ]
+    })} />
+  </Fragment>
+</BaseLayout>
+
+<script>
+  const $ = (s: string) => document.querySelector(s) as HTMLElement;
+  const $$ = (s: string) => document.querySelectorAll(s);
+  const val = (s: string) => parseFloat(($(s) as HTMLInputElement).value) || 0;
+
+  let unit: 'imperial' | 'metric' = 'imperial';
+  let coverType: 'sod' | 'seed' = 'sod';
+
+  const seedRates: Record<string, { newRate: number; overseedRate: number }> = {
+    'kentucky-bluegrass': { newRate: 2.5, overseedRate: 1.5 },
+    'tall-fescue': { newRate: 7, overseedRate: 3.5 },
+    'bermuda': { newRate: 1.5, overseedRate: 0.75 },
+    'perennial-rye': { newRate: 7, overseedRate: 3.5 },
+    'zoysia': { newRate: 1.5, overseedRate: 0.75 },
+  };
+
+  $$('#unitToggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('#unitToggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      unit = (btn as HTMLElement).dataset.unit as 'imperial' | 'metric';
+      $$('.unit-label').forEach(el => el.textContent = `(${unit === 'imperial' ? 'feet' : 'meters'})`);
+    });
+  });
+
+  $$('.type-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('.type-btn').forEach(b => {
+        b.classList.remove('active');
+        (b as HTMLElement).style.borderColor = 'var(--color-border)';
+        (b as HTMLElement).style.background = 'var(--color-surface)';
+        (b as HTMLElement).style.color = 'var(--color-text-light)';
+      });
+      btn.classList.add('active');
+      (btn as HTMLElement).style.borderColor = 'var(--color-primary)';
+      (btn as HTMLElement).style.background = 'var(--color-primary-light)';
+      (btn as HTMLElement).style.color = 'var(--color-primary)';
+      coverType = (btn as HTMLElement).dataset.type as 'sod' | 'seed';
+      $('#seedOptions').style.display = coverType === 'seed' ? '' : 'none';
+      $('#costHint').textContent = coverType === 'sod' ? '(optional, $ per roll)' : '(optional, $ per lb)';
+    });
+    // Init active state
+    if (btn.classList.contains('active')) {
+      (btn as HTMLElement).style.borderColor = 'var(--color-primary)';
+      (btn as HTMLElement).style.background = 'var(--color-primary-light)';
+      (btn as HTMLElement).style.color = 'var(--color-primary)';
+    }
+  });
+
+  $('#calcBtn').addEventListener('click', () => {
+    let l = val('#length'), w = val('#width');
+    if (unit === 'metric') { l *= 3.28084; w *= 3.28084; }
+
+    const sqFt = l * w;
+    if (sqFt <= 0) return;
+
+    const areaLabel = unit === 'metric'
+      ? `${(sqFt * 0.092903).toFixed(0)} m²`
+      : `${sqFt.toFixed(0)} sq ft`;
+    $('#resArea').textContent = areaLabel;
+
+    if (coverType === 'sod') {
+      const rolls = Math.ceil(sqFt * 1.05 / 10);
+      const pallets = Math.ceil(rolls / 50);
+      $('#quantityLabel').textContent = 'Sod Rolls (2\'×5\')';
+      $('#resQuantity').textContent = `${rolls.toLocaleString()} rolls`;
+      $('#resPallets').textContent = `${pallets} pallet${pallets > 1 ? 's' : ''}`;
+      $('#palletRow').style.display = '';
+
+      const cost = val('#cost');
+      if (cost > 0) {
+        $('#resCost').textContent = `$${(rolls * cost).toFixed(2)}`;
+        $('#costRow').style.display = '';
+      } else {
+        $('#costRow').style.display = 'none';
+      }
+    } else {
+      const grassType = (document.querySelector('#grassType') as HTMLSelectElement).value;
+      const isNew = (document.querySelector('#seedApp') as HTMLSelectElement).value === 'new';
+      const rate = isNew ? seedRates[grassType].newRate : seedRates[grassType].overseedRate;
+      const lbs = Math.ceil((sqFt / 1000) * rate);
+
+      $('#quantityLabel').textContent = 'Grass Seed';
+      $('#resQuantity').textContent = `${lbs} lbs`;
+      $('#palletRow').style.display = 'none';
+
+      const cost = val('#cost');
+      if (cost > 0) {
+        $('#resCost').textContent = `$${(lbs * cost).toFixed(2)}`;
+        $('#costRow').style.display = '';
+      } else {
+        $('#costRow').style.display = 'none';
+      }
+    }
+
+    $('#results').classList.add('visible');
+  });
+
+  $('#shareBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      $('#shareBtn').textContent = 'Copied!';
+      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
+    });
+  });
+</script>

@@ -1,0 +1,234 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { calculators } from '../../data/calculators';
+import FeedbackWidget from '../../components/FeedbackWidget.astro';
+import { getAffiliateLinksForCalculator } from '../../data/affiliates';
+const calc = calculators.find(c => c.slug === 'drywall')!;
+const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
+const affiliateLinks = getAffiliateLinksForCalculator('drywall');
+const title = 'Drywall Calculator — Sheets, Tape, Mud & Screws';
+const description = 'Free drywall calculator. Estimate sheets (4x8, 4x10, 4x12), joint compound, tape, and screws for walls and ceilings.';
+---
+
+<BaseLayout title={title} description={description} canonical="/calculators/drywall">
+  <nav class="breadcrumbs">
+    <a href="/">Home</a><span>/</span><a href="/calculators">Calculators</a><span>/</span>Drywall
+  </nav>
+
+  <div class="calc-card">
+    <h1>Drywall Calculator</h1>
+    <p class="subtitle">Calculate sheets, joint compound, tape, and screws for your project.</p>
+
+    <div class="unit-toggle" id="unitToggle">
+      <button class="active" data-unit="imperial">Imperial (ft)</button>
+      <button data-unit="metric">Metric (m)</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Room Length <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="roomLength" placeholder="15" min="0" step="any" />
+      </div>
+      <div class="form-group">
+        <label>Room Width <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="roomWidth" placeholder="12" min="0" step="any" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Wall Height <span class="hint unit-label">(feet)</span></label>
+      <input type="number" id="wallHeight" placeholder="8" min="0" step="any" />
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Sheet Size</label>
+        <select id="sheetSize">
+          <option value="32">4' × 8' (32 sq ft)</option>
+          <option value="40">4' × 10' (40 sq ft)</option>
+          <option value="48">4' × 12' (48 sq ft)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Include Ceiling?</label>
+        <select id="ceiling">
+          <option value="no">No — walls only</option>
+          <option value="yes">Yes — walls + ceiling</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Doors to Subtract</label>
+        <input type="number" id="doors" placeholder="2" min="0" step="1" value="2" />
+      </div>
+      <div class="form-group">
+        <label>Windows to Subtract</label>
+        <input type="number" id="windows" placeholder="2" min="0" step="1" value="2" />
+      </div>
+    </div>
+
+    <button class="btn-calculate" id="calcBtn">Calculate Drywall</button>
+
+    <div class="results-panel" id="results">
+      <h2>Results</h2>
+      <div class="result-row">
+        <span class="result-label">Total Area</span>
+        <span class="result-value" id="resArea">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Sheets Needed</span>
+        <span class="result-value" id="resSheets">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Joint Compound</span>
+        <span class="result-value" id="resMud">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Joint Tape</span>
+        <span class="result-value" id="resTape">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Drywall Screws</span>
+        <span class="result-value" id="resScrews">—</span>
+      </div>
+      <p class="result-note">Includes 10% waste factor. Screws estimated at 1 per sq ft (16" OC framing).</p>
+      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+    </div>
+  </div>
+
+  <div class="ad-slot">Advertisement</div>
+
+  <div class="content-section">
+    <h2>How to Calculate Drywall</h2>
+    <p>To figure out how many sheets of drywall you need, calculate the total wall (and optionally ceiling) area, subtract openings, add waste, then divide by sheet size.</p>
+
+    <h3>Drywall Formula</h3>
+    <div class="formula-box">
+      Wall Area = Perimeter × Height<br>
+      Subtract: Doors (21 sq ft each) + Windows (15 sq ft each)<br>
+      Sheets = (Area × 1.10 waste factor) / Sheet Size (sq ft)
+    </div>
+
+    <h3>Sheet Sizes</h3>
+    <ul>
+      <li><strong>4' × 8':</strong> Standard size, easiest to handle. Best for 8' ceilings.</li>
+      <li><strong>4' × 10':</strong> Fewer seams on taller walls. Best for 9-10' ceilings.</li>
+      <li><strong>4' × 12':</strong> Best for large areas — reduces seams by 33% vs 4×8. Requires two people.</li>
+    </ul>
+
+    <h3>Drywall Thickness Guide</h3>
+    <ul>
+      <li><strong>1/4":</strong> Curved walls, covering old surfaces</li>
+      <li><strong>3/8":</strong> Budget option for ceilings with 16" OC framing</li>
+      <li><strong>1/2":</strong> Standard for walls and ceilings (most common)</li>
+      <li><strong>5/8":</strong> Required for garage/house firewall, soundproofing, ceiling with 24" OC framing</li>
+    </ul>
+
+    <h3>Supplies You'll Need</h3>
+    <ul>
+      <li><strong>Joint compound:</strong> ~0.05 gallons per sq ft (one 4.5-gallon bucket per 375 sq ft)</li>
+      <li><strong>Joint tape:</strong> ~1 foot of tape per sq ft of drywall</li>
+      <li><strong>Screws:</strong> ~1 screw per sq ft with 16" OC framing (32 screws per 4×8 sheet)</li>
+      <li><strong>Corner bead:</strong> 1 piece per outside corner</li>
+    </ul>
+    <p>For a smooth finish, invest in a quality <a href={affiliateLinks[0]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[0]?.text}</a> that includes taping knives, a mud pan, and a sanding block. You can also order <a href={affiliateLinks[1]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[1]?.text}</a> for delivery to save a trip.</p>
+  </div>
+
+  <div class="related-calcs" style="margin-top:2rem;">
+    <h2 style="font-size:1.25rem;margin-bottom:1rem;">Related Calculators</h2>
+    <div class="calc-grid" style="max-width:100%;">
+      {relatedCalcs.map(rc => (
+        <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
+          <div class="icon">{rc.icon}</div>
+          <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
+          <p>{rc.description}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <FeedbackWidget calculatorName={calc.name} />
+
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Drywall Calculator",
+      "url": "https://tradecalchub.com/calculators/drywall",
+      "description": description,
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tradecalchub.com" },
+        { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://tradecalchub.com/calculators" },
+        { "@type": "ListItem", "position": 3, "name": calc.shortName }
+      ]
+    })} />
+  </Fragment>
+</BaseLayout>
+
+<script>
+  const $ = (s: string) => document.querySelector(s) as HTMLElement;
+  const $$ = (s: string) => document.querySelectorAll(s);
+  const val = (s: string) => parseFloat(($(s) as HTMLInputElement).value) || 0;
+
+  let unit: 'imperial' | 'metric' = 'imperial';
+
+  $$('#unitToggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('#unitToggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      unit = (btn as HTMLElement).dataset.unit as 'imperial' | 'metric';
+      $$('.unit-label').forEach(el => el.textContent = `(${unit === 'imperial' ? 'feet' : 'meters'})`);
+    });
+  });
+
+  $('#calcBtn').addEventListener('click', () => {
+    let l = val('#roomLength'), w = val('#roomWidth'), h = val('#wallHeight');
+    if (unit === 'metric') { l *= 3.28084; w *= 3.28084; h *= 3.28084; }
+
+    const perimeter = 2 * (l + w);
+    const wallArea = perimeter * h;
+    const doorArea = val('#doors') * 21;
+    const windowArea = val('#windows') * 15;
+    const sheetSqFt = parseInt((document.querySelector('#sheetSize') as HTMLSelectElement).value);
+    const includeCeiling = (document.querySelector('#ceiling') as HTMLSelectElement).value === 'yes';
+
+    let totalArea = wallArea - doorArea - windowArea;
+    if (includeCeiling) totalArea += l * w;
+    if (totalArea <= 0) return;
+
+    const wasteArea = totalArea * 1.10;
+    const sheets = Math.ceil(wasteArea / sheetSqFt);
+    const mudGallons = (wasteArea * 0.053).toFixed(1);
+    const mudBuckets = Math.ceil(wasteArea / 375);
+    const tapeFeet = Math.ceil(wasteArea);
+    const screws = Math.ceil(wasteArea);
+
+    const areaLabel = unit === 'metric'
+      ? `${(totalArea * 0.092903).toFixed(0)} m²`
+      : `${totalArea.toFixed(0)} sq ft`;
+
+    $('#resArea').textContent = areaLabel;
+    $('#resSheets').textContent = `${sheets} sheets`;
+    $('#resMud').textContent = `${mudBuckets} bucket${mudBuckets > 1 ? 's' : ''} (4.5 gal)`;
+    $('#resTape').textContent = `${tapeFeet.toLocaleString()} ft (${Math.ceil(tapeFeet / 500)} roll${Math.ceil(tapeFeet / 500) > 1 ? 's' : ''})`;
+    $('#resScrews').textContent = `~${screws.toLocaleString()} screws (${Math.ceil(screws / 150)} lbs)`;
+
+    $('#results').classList.add('visible');
+  });
+
+  $('#shareBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      $('#shareBtn').textContent = 'Copied!';
+      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
+    });
+  });
+</script>

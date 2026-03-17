@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Contact Us — TradeCalc Hub"
+  description="Get in touch with TradeCalc Hub. Report a bug, suggest a calculator, or send feedback about our free construction calculators."
+  canonical="/contact"
+>
+  <h1>Contact Us</h1>
+  <div class="content-section">
+    <p>Have feedback, found a bug, or want to suggest a new calculator? We'd love to hear from you.</p>
+
+    <form
+      action="https://api.web3forms.com/submit"
+      method="POST"
+      class="contact-form"
+      id="contactForm"
+    >
+      <!-- Replace with your Web3Forms access key -->
+      <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY" />
+      <input type="hidden" name="subject" value="TradeCalc Hub Contact Form" />
+      <input type="hidden" name="from_name" value="TradeCalc Hub" />
+
+      <!-- Honeypot spam prevention -->
+      <input type="text" name="botcheck" style="display:none" />
+
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Your name" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required />
+      </div>
+
+      <div class="form-group">
+        <label for="subject">Subject</label>
+        <select id="subject" name="topic" required>
+          <option value="" disabled selected>Choose a topic...</option>
+          <option value="Bug Report">Bug Report — something isn't calculating correctly</option>
+          <option value="Calculator Request">Calculator Request — suggest a new calculator</option>
+          <option value="Feedback">General Feedback</option>
+          <option value="Question">Question about a calculation</option>
+          <option value="Business">Business / Advertising inquiry</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="5" placeholder="Tell us more..." required></textarea>
+      </div>
+
+      <button type="submit" class="btn-calculate" id="submitBtn">Send Message</button>
+
+      <div id="formResult" class="form-result" style="display:none;"></div>
+    </form>
+
+    <div style="margin-top:2rem;">
+      <h2>Other Ways to Reach Us</h2>
+      <p>Email: <strong>hello@tradecalchub.com</strong></p>
+      <p style="color:var(--color-text-light);font-size:0.9rem;">We typically respond within 1-2 business days.</p>
+    </div>
+  </div>
+
+  <Fragment slot="head">
+    <style is:inline>
+      .contact-form {
+        margin-top: 1.5rem;
+        max-width: 600px;
+      }
+      .contact-form textarea {
+        width: 100%;
+        padding: 0.6rem 0.75rem;
+        border: 1.5px solid var(--color-border);
+        border-radius: var(--radius);
+        font-size: 1rem;
+        font-family: inherit;
+        color: var(--color-text);
+        resize: vertical;
+        min-height: 120px;
+      }
+      .contact-form textarea:focus {
+        outline: none;
+        border-color: var(--color-border-focus);
+        box-shadow: 0 0 0 3px var(--color-primary-light);
+      }
+      .form-result {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: var(--radius);
+        font-weight: 500;
+      }
+      .form-result.success {
+        background: var(--color-success-light);
+        color: var(--color-success);
+        border: 1px solid var(--color-success);
+      }
+      .form-result.error {
+        background: #fef2f2;
+        color: var(--color-danger);
+        border: 1px solid var(--color-danger);
+      }
+    </style>
+  </Fragment>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('contactForm') as HTMLFormElement;
+  const result = document.getElementById('formResult') as HTMLElement;
+  const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        result.className = 'form-result success';
+        result.textContent = 'Message sent! We\'ll get back to you soon.';
+        result.style.display = 'block';
+        form.reset();
+      } else {
+        throw new Error(data.message || 'Something went wrong');
+      }
+    } catch (err) {
+      result.className = 'form-result error';
+      result.textContent = 'Failed to send. Please email us at hello@tradecalchub.com instead.';
+      result.style.display = 'block';
+    }
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send Message';
+  });
+</script>

@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const faqs = [
+  {
+    question: "Are the calculators really free?",
+    answer: "Yes, all calculators on TradeCalc Hub are completely free to use. No signup, no hidden fees, no premium tier. We're supported by non-intrusive advertising."
+  },
+  {
+    question: "How accurate are the calculations?",
+    answer: "Our calculators use industry-standard formulas — the same ones taught in trade schools and used by material suppliers. Results include appropriate waste factors (typically 5-15% depending on material). However, actual material needs may vary based on site conditions, material waste, and installation methods. Always verify with your supplier for large orders."
+  },
+  {
+    question: "Do the calculators work on mobile phones?",
+    answer: "Yes. TradeCalc Hub is designed mobile-first so it works great on smartphones and tablets at the job site. All calculators are fully responsive and touch-friendly."
+  },
+  {
+    question: "Can I switch between imperial and metric units?",
+    answer: "Every calculator supports both imperial (feet, inches, yards) and metric (meters, centimeters) units. Use the toggle at the top of each calculator to switch."
+  },
+  {
+    question: "Do you collect my data or require a login?",
+    answer: "No. All calculations run entirely in your browser. We don't collect personal information, store your calculations, or require any login. See our Privacy Policy for details."
+  },
+  {
+    question: "Can I share my calculation results?",
+    answer: "Yes. Each calculator has a 'Copy Link' button that copies the page URL to your clipboard. You can share this with clients, colleagues, or material suppliers."
+  },
+  {
+    question: "What waste factor should I use?",
+    answer: "It depends on the material and project. As a general rule: concrete (10%), tile (10-15% for straight layouts, 15-20% for diagonal), paint (5-10%), mulch and gravel (5%), drywall (10-12%), and brick (5-10%). Our calculators include standard waste factors automatically."
+  },
+  {
+    question: "Can I print the results?",
+    answer: "Yes. Use your browser's print function (Ctrl+P or Cmd+P) on any calculator page. The layout is optimized for printing — navigation and ads are automatically hidden, and results are clearly displayed."
+  },
+  {
+    question: "Why is my result different from another calculator online?",
+    answer: "Different calculators may use different waste factors, rounding methods, or unit conversions. Our formulas and waste factors are shown on each calculator page so you can verify the math. If you find an error, please contact us."
+  },
+  {
+    question: "Do you have a calculator for [specific material]?",
+    answer: "We're constantly adding new calculators. Current calculators cover concrete, mulch, gravel, paint, drywall, tile, fencing, sod, brick, and insulation. If you need a specific calculator, use our contact page to suggest it — popular requests get built first."
+  },
+  {
+    question: "Can I use these calculators for commercial projects?",
+    answer: "Our calculators provide estimates suitable for both residential and commercial projects. For large commercial jobs, we recommend verifying quantities with your material supplier and consulting project specifications."
+  },
+  {
+    question: "How do I calculate for irregular shapes?",
+    answer: "Break irregular areas into rectangles, triangles, or circles. Calculate each section separately and add the results together. Most of our calculators accept multiple area inputs for this purpose."
+  },
+  {
+    question: "Is TradeCalc Hub affiliated with any material suppliers?",
+    answer: "We are independent and not owned by any supplier. Some pages may contain affiliate links to retailers like Home Depot, Lowe's, or Amazon. These links help support the site but do not affect our calculations or recommendations."
+  }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(faq => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer
+    }
+  }))
+};
+---
+
+<BaseLayout
+  title="FAQ — Frequently Asked Questions | TradeCalc Hub"
+  description="Common questions about TradeCalc Hub's free construction calculators. Accuracy, mobile use, units, waste factors, and more."
+  canonical="/faq"
+>
+  <h1>Frequently Asked Questions</h1>
+  <div class="content-section">
+    <p>Find answers to common questions about our free construction and material calculators.</p>
+
+    <div class="faq-list">
+      {faqs.map((faq, i) => (
+        <details class="faq-item" open={i === 0}>
+          <summary>{faq.question}</summary>
+          <p>{faq.answer}</p>
+        </details>
+      ))}
+    </div>
+
+    <h2>Still Have Questions?</h2>
+    <p>Can't find what you're looking for? <a href="/contact">Contact us</a> and we'll get back to you as soon as possible.</p>
+  </div>
+
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+    <style is:inline>
+      .faq-list { margin-top: 1.5rem; }
+      .faq-item {
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius);
+        margin-bottom: 0.75rem;
+        background: var(--color-surface);
+      }
+      .faq-item summary {
+        padding: 1rem 1.25rem;
+        font-weight: 600;
+        cursor: pointer;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+      }
+      .faq-item summary::after {
+        content: '+';
+        font-size: 1.25rem;
+        color: var(--color-text-light);
+        flex-shrink: 0;
+      }
+      .faq-item[open] summary::after { content: '−'; }
+      .faq-item summary::-webkit-details-marker { display: none; }
+      .faq-item p {
+        padding: 0 1.25rem 1rem;
+        color: var(--color-text);
+        line-height: 1.7;
+      }
+    </style>
+  </Fragment>
+</BaseLayout>

@@ -1,0 +1,215 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { calculators } from '../../data/calculators';
+import FeedbackWidget from '../../components/FeedbackWidget.astro';
+import { getAffiliateLinksForCalculator } from '../../data/affiliates';
+const calc = calculators.find(c => c.slug === 'gravel')!;
+const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
+const affiliateLinks = getAffiliateLinksForCalculator('gravel');
+const title = 'Gravel & Stone Calculator — Tons & Cubic Yards';
+const description = 'Free gravel calculator. Estimate tons and cubic yards of gravel, crushed stone, or road base for driveways, patios, and landscaping.';
+---
+
+<BaseLayout title={title} description={description} canonical="/calculators/gravel">
+  <nav class="breadcrumbs">
+    <a href="/">Home</a><span>/</span><a href="/calculators">Calculators</a><span>/</span>Gravel
+  </nav>
+
+  <div class="calc-card">
+    <h1>Gravel & Stone Calculator</h1>
+    <p class="subtitle">Calculate tons and cubic yards of gravel or crushed stone for your project.</p>
+
+    <div class="unit-toggle" id="unitToggle">
+      <button class="active" data-unit="imperial">Imperial (ft)</button>
+      <button data-unit="metric">Metric (m)</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Length <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="length" placeholder="20" min="0" step="any" />
+      </div>
+      <div class="form-group">
+        <label>Width <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="width" placeholder="10" min="0" step="any" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Depth <span class="hint" id="depthHint">(inches)</span></label>
+      <input type="number" id="depth" placeholder="4" min="0" step="any" />
+    </div>
+
+    <div class="form-group">
+      <label>Material Type</label>
+      <select id="material">
+        <option value="1.4">Gravel (pea gravel, river rock) — 1.4 tons/cu yd</option>
+        <option value="1.35">Crushed stone — 1.35 tons/cu yd</option>
+        <option value="1.5">Crushed limestone — 1.5 tons/cu yd</option>
+        <option value="1.3">Road base (Class 5) — 1.3 tons/cu yd</option>
+        <option value="1.1">Lava rock — 1.1 tons/cu yd</option>
+        <option value="1.25">Sand — 1.25 tons/cu yd</option>
+        <option value="2.0">Decomposed granite — 2.0 tons/cu yd</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Cost per Ton <span class="hint">(optional, $)</span></label>
+      <input type="number" id="costPerTon" placeholder="50" min="0" step="any" />
+    </div>
+
+    <button class="btn-calculate" id="calcBtn">Calculate Gravel</button>
+
+    <div class="results-panel" id="results">
+      <h2>Results</h2>
+      <div class="result-row">
+        <span class="result-label">Volume</span>
+        <span class="result-value" id="resVolume">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Weight</span>
+        <span class="result-value" id="resTons">—</span>
+      </div>
+      <div class="result-row" id="costRow" style="display:none;">
+        <span class="result-label">Estimated Cost</span>
+        <span class="result-value" id="resCost">—</span>
+      </div>
+      <p class="result-note">Weight varies by material density and moisture content. Order 10-15% extra for compaction.</p>
+      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+    </div>
+  </div>
+
+  <div class="ad-slot">Advertisement</div>
+
+  <div class="content-section">
+    <h2>How to Calculate Gravel</h2>
+    <p>Gravel is sold by the ton or cubic yard. To estimate your needs, calculate the volume of the area, then multiply by the material's density.</p>
+
+    <h3>Gravel Formula</h3>
+    <div class="formula-box">
+      Volume (cu yd) = (Length × Width × Depth in inches / 12) / 27<br>
+      Weight (tons) = Volume (cu yd) × Material Density (tons/cu yd)
+    </div>
+
+    <h3>Recommended Gravel Depths</h3>
+    <ul>
+      <li><strong>2 inches:</strong> Decorative gravel over landscape fabric</li>
+      <li><strong>3-4 inches:</strong> Walkways, garden paths</li>
+      <li><strong>4-6 inches:</strong> Driveways (4" for light traffic, 6" for heavy)</li>
+      <li><strong>6-8 inches:</strong> Parking areas, drainage beds</li>
+      <li><strong>12+ inches:</strong> French drains, structural base</li>
+    </ul>
+
+    <h3>Gravel Weight by Type</h3>
+    <p>Different stone types have different densities. A cubic yard of gravel typically weighs 1.2-1.7 tons depending on the material:</p>
+    <ul>
+      <li><strong>Pea gravel:</strong> ~1.4 tons/cu yd</li>
+      <li><strong>Crushed stone (#57):</strong> ~1.35 tons/cu yd</li>
+      <li><strong>Crushed limestone:</strong> ~1.5 tons/cu yd</li>
+      <li><strong>River rock:</strong> ~1.4 tons/cu yd</li>
+      <li><strong>Decomposed granite:</strong> ~2.0 tons/cu yd</li>
+    </ul>
+
+    <h3>Delivery Tips</h3>
+    <ul>
+      <li>Most quarries and landscape suppliers have a minimum delivery of 1-3 tons</li>
+      <li>Delivery typically costs $50-150 depending on distance</li>
+      <li>A standard dump truck holds 10-14 tons; a small dump truck holds 5-6 tons</li>
+      <li>Order 10-15% extra for compaction and settling</li>
+      <li>A <a href={affiliateLinks[0]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[0]?.text}</a> makes it much easier to spread and level gravel evenly</li>
+      <li>Install <a href={affiliateLinks[1]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[1]?.text}</a> under the gravel to prevent weed growth and keep stone from sinking into the soil</li>
+    </ul>
+  </div>
+
+  <div class="related-calcs" style="margin-top:2rem;">
+    <h2 style="font-size:1.25rem;margin-bottom:1rem;">Related Calculators</h2>
+    <div class="calc-grid" style="max-width:100%;">
+      {relatedCalcs.map(rc => (
+        <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
+          <div class="icon">{rc.icon}</div>
+          <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
+          <p>{rc.description}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <FeedbackWidget calculatorName={calc.name} />
+
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Gravel Calculator",
+      "url": "https://tradecalchub.com/calculators/gravel",
+      "description": description,
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tradecalchub.com" },
+        { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://tradecalchub.com/calculators" },
+        { "@type": "ListItem", "position": 3, "name": calc.shortName }
+      ]
+    })} />
+  </Fragment>
+</BaseLayout>
+
+<script>
+  const $ = (s: string) => document.querySelector(s) as HTMLElement;
+  const $$ = (s: string) => document.querySelectorAll(s);
+  const val = (s: string) => parseFloat(($(s) as HTMLInputElement).value) || 0;
+
+  let unit: 'imperial' | 'metric' = 'imperial';
+
+  $$('#unitToggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('#unitToggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      unit = (btn as HTMLElement).dataset.unit as 'imperial' | 'metric';
+      $$('.unit-label').forEach(el => el.textContent = `(${unit === 'imperial' ? 'feet' : 'meters'})`);
+      $('#depthHint').textContent = unit === 'imperial' ? '(inches)' : '(cm)';
+    });
+  });
+
+  $('#calcBtn').addEventListener('click', () => {
+    let l = val('#length'), w = val('#width'), d = val('#depth');
+    const density = parseFloat((document.querySelector('#material') as HTMLSelectElement).value);
+
+    if (unit === 'metric') { l *= 3.28084; w *= 3.28084; d *= 0.393701; }
+
+    const cubicFeet = l * w * (d / 12);
+    if (cubicFeet <= 0) return;
+
+    const cubicYards = cubicFeet / 27;
+    const tons = cubicYards * density;
+
+    $('#resVolume').textContent = unit === 'metric'
+      ? `${(cubicYards * 0.764555).toFixed(2)} m³`
+      : `${cubicYards.toFixed(2)} cu yd`;
+    $('#resTons').textContent = unit === 'metric'
+      ? `${(tons * 0.907185).toFixed(2)} tonnes`
+      : `${tons.toFixed(2)} tons`;
+
+    const cost = val('#costPerTon');
+    if (cost > 0) {
+      $('#resCost').textContent = `$${(tons * cost).toFixed(2)}`;
+      $('#costRow').style.display = '';
+    } else {
+      $('#costRow').style.display = 'none';
+    }
+
+    $('#results').classList.add('visible');
+  });
+
+  $('#shareBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      $('#shareBtn').textContent = 'Copied!';
+      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
+    });
+  });
+</script>

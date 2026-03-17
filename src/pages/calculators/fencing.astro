@@ -1,0 +1,246 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { calculators } from '../../data/calculators';
+import FeedbackWidget from '../../components/FeedbackWidget.astro';
+import { getAffiliateLinksForCalculator } from '../../data/affiliates';
+const calc = calculators.find(c => c.slug === 'fencing')!;
+const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
+const affiliateLinks = getAffiliateLinksForCalculator('fencing');
+const title = 'Fence Calculator — Posts, Rails, Pickets & Materials';
+const description = 'Free fence calculator. Estimate posts, rails, pickets, concrete, and cost for wood, vinyl, or chain-link fences by linear feet.';
+---
+
+<BaseLayout title={title} description={description} canonical="/calculators/fencing">
+  <nav class="breadcrumbs">
+    <a href="/">Home</a><span>/</span><a href="/calculators">Calculators</a><span>/</span>Fencing
+  </nav>
+
+  <div class="calc-card">
+    <h1>Fence Calculator</h1>
+    <p class="subtitle">Calculate posts, rails, pickets, and concrete for any fence project.</p>
+
+    <div class="unit-toggle" id="unitToggle">
+      <button class="active" data-unit="imperial">Imperial (ft)</button>
+      <button data-unit="metric">Metric (m)</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Total Fence Length <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="fenceLength" placeholder="150" min="0" step="any" />
+      </div>
+      <div class="form-group">
+        <label>Fence Height <span class="hint unit-label">(feet)</span></label>
+        <select id="fenceHeight">
+          <option value="4">4 feet</option>
+          <option value="5">5 feet</option>
+          <option value="6" selected>6 feet</option>
+          <option value="8">8 feet</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Fence Type</label>
+        <select id="fenceType">
+          <option value="wood-picket">Wood Picket (standard)</option>
+          <option value="wood-privacy">Wood Privacy (board-on-board)</option>
+          <option value="wood-shadowbox">Wood Shadowbox</option>
+          <option value="chain-link">Chain Link</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Post Spacing <span class="hint unit-label">(feet)</span></label>
+        <select id="postSpacing">
+          <option value="6">6 feet</option>
+          <option value="8" selected>8 feet (standard)</option>
+          <option value="10">10 feet</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Number of Gates</label>
+      <input type="number" id="gates" placeholder="1" min="0" step="1" value="1" />
+    </div>
+
+    <button class="btn-calculate" id="calcBtn">Calculate Fence</button>
+
+    <div class="results-panel" id="results">
+      <h2>Results</h2>
+      <div class="result-row">
+        <span class="result-label">Posts</span>
+        <span class="result-value" id="resPosts">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Rails</span>
+        <span class="result-value" id="resRails">—</span>
+      </div>
+      <div class="result-row" id="picketRow">
+        <span class="result-label">Pickets / Boards</span>
+        <span class="result-value" id="resPickets">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Concrete (80 lb bags)</span>
+        <span class="result-value" id="resConcrete">—</span>
+      </div>
+      <div class="result-row" id="fabricRow" style="display:none;">
+        <span class="result-label">Chain Link Fabric</span>
+        <span class="result-value" id="resFabric">—</span>
+      </div>
+      <p class="result-note">Includes gate posts (add 2 extra per gate). Concrete estimated at 2 bags per post for standard depth.</p>
+      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+    </div>
+  </div>
+
+  <div class="ad-slot">Advertisement</div>
+
+  <div class="content-section">
+    <h2>How to Calculate Fence Materials</h2>
+    <p>Fence material calculations depend on the total linear footage, fence height, post spacing, and fence style. This calculator handles the math for the most common fence types.</p>
+
+    <h3>Fence Formula</h3>
+    <div class="formula-box">
+      Posts = (Fence Length / Post Spacing) + 1 + (Gates × 2)<br>
+      Rails per Section = 2 (for 4-5 ft) or 3 (for 6-8 ft)<br>
+      Pickets = Fence Length / Picket Width (typically 3.5" or 5.5")<br>
+      Concrete = Posts × 2 bags (80 lb) for standard 2 ft depth
+    </div>
+
+    <h3>Post Hole Depth Guide</h3>
+    <ul>
+      <li><strong>4' fence:</strong> 24" deep hole (1/3 of above-ground height + 6")</li>
+      <li><strong>6' fence:</strong> 30-36" deep (below frost line in cold climates)</li>
+      <li><strong>8' fence:</strong> 36-42" deep</li>
+    </ul>
+    <p>General rule: bury 1/3 of the total post length underground. In frost-prone areas, dig below the frost line.</p>
+
+    <h3>Common Fence Styles</h3>
+    <ul>
+      <li><strong>Picket fence:</strong> Spaced pickets (3.5" wide with 1-2" gap). Classic look, semi-private.</li>
+      <li><strong>Privacy fence:</strong> Boards butted together with no gaps. Full privacy.</li>
+      <li><strong>Shadowbox:</strong> Alternating boards on each side of rails. Looks good from both sides.</li>
+      <li><strong>Board-on-board:</strong> Overlapping boards for privacy with some airflow.</li>
+      <li><strong>Chain link:</strong> Most affordable per linear foot. Sold in rolls.</li>
+    </ul>
+
+    <h3>Material Tips</h3>
+    <ul>
+      <li>Use pressure-treated posts (rated for ground contact) — they last 15-20 years</li>
+      <li>Cedar and redwood resist rot naturally but cost 2-3x more than pine</li>
+      <li>Add 10% extra pickets/boards for waste and future repairs</li>
+      <li>Gate posts should be set deeper and in more concrete than line posts</li>
+    </ul>
+    <p>A <a href={affiliateLinks[0]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[0]?.text}</a> makes setting posts much easier, especially in hard soil. You can also browse <a href={affiliateLinks[1]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[1]?.text}</a> for pre-built panel options.</p>
+  </div>
+
+  <div class="related-calcs" style="margin-top:2rem;">
+    <h2 style="font-size:1.25rem;margin-bottom:1rem;">Related Calculators</h2>
+    <div class="calc-grid" style="max-width:100%;">
+      {relatedCalcs.map(rc => (
+        <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
+          <div class="icon">{rc.icon}</div>
+          <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
+          <p>{rc.description}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <FeedbackWidget calculatorName={calc.name} />
+
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Fence Calculator",
+      "url": "https://tradecalchub.com/calculators/fencing",
+      "description": description,
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tradecalchub.com" },
+        { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://tradecalchub.com/calculators" },
+        { "@type": "ListItem", "position": 3, "name": calc.shortName }
+      ]
+    })} />
+  </Fragment>
+</BaseLayout>
+
+<script>
+  const $ = (s: string) => document.querySelector(s) as HTMLElement;
+  const $$ = (s: string) => document.querySelectorAll(s);
+  const val = (s: string) => parseFloat(($(s) as HTMLInputElement).value) || 0;
+
+  let unit: 'imperial' | 'metric' = 'imperial';
+
+  $$('#unitToggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('#unitToggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      unit = (btn as HTMLElement).dataset.unit as 'imperial' | 'metric';
+      $$('.unit-label').forEach(el => el.textContent = `(${unit === 'imperial' ? 'feet' : 'meters'})`);
+    });
+  });
+
+  $('#calcBtn').addEventListener('click', () => {
+    let length = val('#fenceLength');
+    let height = parseFloat((document.querySelector('#fenceHeight') as HTMLSelectElement).value);
+    let spacing = parseFloat((document.querySelector('#postSpacing') as HTMLSelectElement).value);
+    const fenceType = (document.querySelector('#fenceType') as HTMLSelectElement).value;
+    const gates = val('#gates') || 0;
+
+    if (unit === 'metric') { length *= 3.28084; }
+    if (length <= 0) return;
+
+    const sections = Math.ceil(length / spacing);
+    const posts = sections + 1 + (gates * 2);
+    const railsPerSection = height >= 6 ? 3 : 2;
+    const totalRails = sections * railsPerSection;
+
+    let pickets = 0;
+    let picketLabel = '';
+    const isChainLink = fenceType === 'chain-link';
+
+    if (!isChainLink) {
+      const picketWidth = fenceType === 'wood-privacy' ? 5.5 : 3.5;
+      const gap = fenceType === 'wood-picket' ? 1.75 : 0;
+      pickets = Math.ceil(length * 12 / (picketWidth + gap));
+      if (fenceType === 'wood-shadowbox') pickets = Math.ceil(pickets * 1.5);
+      pickets = Math.ceil(pickets * 1.10); // 10% waste
+      picketLabel = `${pickets.toLocaleString()} boards`;
+    }
+
+    const concreteBags = posts * 2;
+
+    $('#resPosts').textContent = `${posts} posts`;
+    $('#resRails').textContent = isChainLink ? `${sections} top rails` : `${totalRails} rails`;
+    $('#resPickets').textContent = isChainLink ? 'N/A — fabric roll' : picketLabel;
+    $('#resConcrete').textContent = `${concreteBags} bags`;
+
+    if (isChainLink) {
+      const rolls = Math.ceil(length / 50);
+      $('#resFabric').textContent = `${rolls} roll${rolls > 1 ? 's' : ''} (50 ft each)`;
+      $('#fabricRow').style.display = '';
+      $('#picketRow').style.display = 'none';
+    } else {
+      $('#fabricRow').style.display = 'none';
+      $('#picketRow').style.display = '';
+    }
+
+    $('#results').classList.add('visible');
+  });
+
+  $('#shareBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      $('#shareBtn').textContent = 'Copied!';
+      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
+    });
+  });
+</script>

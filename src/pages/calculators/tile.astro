@@ -1,0 +1,247 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { calculators } from '../../data/calculators';
+import FeedbackWidget from '../../components/FeedbackWidget.astro';
+import { getAffiliateLinksForCalculator } from '../../data/affiliates';
+const calc = calculators.find(c => c.slug === 'tile')!;
+const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
+const affiliateLinks = getAffiliateLinksForCalculator('tile');
+const title = 'Tile & Flooring Calculator — Square Footage & Tiles Needed';
+const description = 'Free tile and flooring calculator. Estimate tiles, boxes, and cost with customizable waste factor. Works for ceramic, porcelain, vinyl, and hardwood.';
+---
+
+<BaseLayout title={title} description={description} canonical="/calculators/tile">
+  <nav class="breadcrumbs">
+    <a href="/">Home</a><span>/</span><a href="/calculators">Calculators</a><span>/</span>Tile
+  </nav>
+
+  <div class="calc-card">
+    <h1>Tile & Flooring Calculator</h1>
+    <p class="subtitle">Calculate tiles, boxes, and cost for floors and walls with waste factor.</p>
+
+    <div class="unit-toggle" id="unitToggle">
+      <button class="active" data-unit="imperial">Imperial (ft)</button>
+      <button data-unit="metric">Metric (m)</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Area Length <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="areaLength" placeholder="12" min="0" step="any" />
+      </div>
+      <div class="form-group">
+        <label>Area Width <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="areaWidth" placeholder="10" min="0" step="any" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Tile Length <span class="hint" id="tileLenHint">(inches)</span></label>
+        <input type="number" id="tileLength" placeholder="12" min="0" step="any" />
+      </div>
+      <div class="form-group">
+        <label>Tile Width <span class="hint" id="tileWidHint">(inches)</span></label>
+        <input type="number" id="tileWidth" placeholder="12" min="0" step="any" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Waste Factor</label>
+        <select id="waste">
+          <option value="5">5% — simple rectangular room</option>
+          <option value="10" selected>10% — standard (recommended)</option>
+          <option value="15">15% — diagonal layout or complex shape</option>
+          <option value="20">20% — complex pattern (herringbone, etc.)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Tiles per Box <span class="hint">(optional)</span></label>
+        <input type="number" id="tilesPerBox" placeholder="10" min="1" step="1" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Cost per Sq Ft <span class="hint">(optional, $)</span></label>
+      <input type="number" id="costPerSqFt" placeholder="5" min="0" step="any" />
+    </div>
+
+    <button class="btn-calculate" id="calcBtn">Calculate Tiles</button>
+
+    <div class="results-panel" id="results">
+      <h2>Results</h2>
+      <div class="result-row">
+        <span class="result-label">Room Area</span>
+        <span class="result-value" id="resArea">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Area with Waste</span>
+        <span class="result-value" id="resAreaWaste">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Tiles Needed</span>
+        <span class="result-value" id="resTiles">—</span>
+      </div>
+      <div class="result-row" id="boxRow" style="display:none;">
+        <span class="result-label">Boxes Needed</span>
+        <span class="result-value" id="resBoxes">—</span>
+      </div>
+      <div class="result-row" id="costRow" style="display:none;">
+        <span class="result-label">Estimated Cost</span>
+        <span class="result-value" id="resCost">—</span>
+      </div>
+      <p class="result-note">Always buy a few extra tiles for future repairs. Tile dye lots may vary between orders.</p>
+      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+    </div>
+  </div>
+
+  <div class="ad-slot">Advertisement</div>
+
+  <div class="content-section">
+    <h2>How to Calculate Tile</h2>
+    <p>To calculate how many tiles you need, divide the total area by the area of a single tile, then add waste for cuts and breakage.</p>
+
+    <h3>Tile Formula</h3>
+    <div class="formula-box">
+      Room Area = Length × Width (in sq ft)<br>
+      Tile Area = (Tile Length × Tile Width) / 144 (in sq ft)<br>
+      Tiles Needed = (Room Area × (1 + Waste%)) / Tile Area
+    </div>
+
+    <h3>Common Tile Sizes</h3>
+    <ul>
+      <li><strong>12" × 12":</strong> Classic floor tile, 1 sq ft each</li>
+      <li><strong>12" × 24":</strong> Modern rectangular format, popular for floors</li>
+      <li><strong>18" × 18":</strong> Large format, makes rooms look bigger</li>
+      <li><strong>24" × 24":</strong> Extra-large, minimal grout lines</li>
+      <li><strong>3" × 6":</strong> Subway tile (walls and backsplashes)</li>
+      <li><strong>6" × 6":</strong> Traditional wall tile</li>
+    </ul>
+
+    <h3>Waste Factor Guide</h3>
+    <ul>
+      <li><strong>5%:</strong> Simple rectangular room, straight lay, experienced installer</li>
+      <li><strong>10%:</strong> Standard recommendation for most projects</li>
+      <li><strong>15%:</strong> Diagonal layouts, L-shaped rooms, lots of cuts</li>
+      <li><strong>20%:</strong> Herringbone, chevron, or complex patterns</li>
+    </ul>
+
+    <h3>Don't Forget</h3>
+    <ul>
+      <li><strong>Grout:</strong> 1 lb per 5-10 sq ft depending on tile size and gap width</li>
+      <li><strong>Thinset mortar:</strong> 1 bag (50 lbs) covers ~60-75 sq ft</li>
+      <li><strong>Backer board:</strong> Required for wet areas (shower, tub surround)</li>
+      <li><strong>Spacers:</strong> 1 bag per 100 sq ft (1/8" or 1/16" size)</li>
+    </ul>
+    <p>A quality <a href={affiliateLinks[0]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[0]?.text}</a> makes cuts faster and cleaner, especially for large-format tiles. You'll also want a set of <a href={affiliateLinks[1]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[1]?.text}</a> for consistent grout lines.</p>
+  </div>
+
+  <div class="related-calcs" style="margin-top:2rem;">
+    <h2 style="font-size:1.25rem;margin-bottom:1rem;">Related Calculators</h2>
+    <div class="calc-grid" style="max-width:100%;">
+      {relatedCalcs.map(rc => (
+        <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
+          <div class="icon">{rc.icon}</div>
+          <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
+          <p>{rc.description}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <FeedbackWidget calculatorName={calc.name} />
+
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Tile Calculator",
+      "url": "https://tradecalchub.com/calculators/tile",
+      "description": description,
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tradecalchub.com" },
+        { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://tradecalchub.com/calculators" },
+        { "@type": "ListItem", "position": 3, "name": calc.shortName }
+      ]
+    })} />
+  </Fragment>
+</BaseLayout>
+
+<script>
+  const $ = (s: string) => document.querySelector(s) as HTMLElement;
+  const $$ = (s: string) => document.querySelectorAll(s);
+  const val = (s: string) => parseFloat(($(s) as HTMLInputElement).value) || 0;
+
+  let unit: 'imperial' | 'metric' = 'imperial';
+
+  $$('#unitToggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('#unitToggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      unit = (btn as HTMLElement).dataset.unit as 'imperial' | 'metric';
+      $$('.unit-label').forEach(el => el.textContent = `(${unit === 'imperial' ? 'feet' : 'meters'})`);
+      $('#tileLenHint').textContent = unit === 'imperial' ? '(inches)' : '(cm)';
+      $('#tileWidHint').textContent = unit === 'imperial' ? '(inches)' : '(cm)';
+    });
+  });
+
+  $('#calcBtn').addEventListener('click', () => {
+    let al = val('#areaLength'), aw = val('#areaWidth');
+    let tl = val('#tileLength'), tw = val('#tileWidth');
+
+    if (unit === 'metric') {
+      al *= 3.28084; aw *= 3.28084;
+      tl *= 0.393701; tw *= 0.393701;
+    }
+
+    const roomSqFt = al * aw;
+    const tileSqFt = (tl * tw) / 144;
+    if (roomSqFt <= 0 || tileSqFt <= 0) return;
+
+    const wastePct = parseInt((document.querySelector('#waste') as HTMLSelectElement).value) / 100;
+    const areaWithWaste = roomSqFt * (1 + wastePct);
+    const tilesNeeded = Math.ceil(areaWithWaste / tileSqFt);
+
+    const areaLabel = (sqft: number) => unit === 'metric'
+      ? `${(sqft * 0.092903).toFixed(1)} m²`
+      : `${sqft.toFixed(1)} sq ft`;
+
+    $('#resArea').textContent = areaLabel(roomSqFt);
+    $('#resAreaWaste').textContent = areaLabel(areaWithWaste);
+    $('#resTiles').textContent = tilesNeeded.toLocaleString();
+
+    const tilesPerBox = val('#tilesPerBox');
+    if (tilesPerBox > 0) {
+      const boxes = Math.ceil(tilesNeeded / tilesPerBox);
+      $('#resBoxes').textContent = `${boxes} box${boxes > 1 ? 'es' : ''}`;
+      $('#boxRow').style.display = '';
+    } else {
+      $('#boxRow').style.display = 'none';
+    }
+
+    const cost = val('#costPerSqFt');
+    if (cost > 0) {
+      $('#resCost').textContent = `$${(areaWithWaste * cost).toFixed(2)}`;
+      $('#costRow').style.display = '';
+    } else {
+      $('#costRow').style.display = 'none';
+    }
+
+    $('#results').classList.add('visible');
+  });
+
+  $('#shareBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      $('#shareBtn').textContent = 'Copied!';
+      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
+    });
+  });
+</script>

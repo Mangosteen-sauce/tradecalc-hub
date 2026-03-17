@@ -1,0 +1,225 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { calculators } from '../../data/calculators';
+import FeedbackWidget from '../../components/FeedbackWidget.astro';
+import { getAffiliateLinksForCalculator } from '../../data/affiliates';
+const calc = calculators.find(c => c.slug === 'mulch')!;
+const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
+const affiliateLinks = getAffiliateLinksForCalculator('mulch');
+const title = 'Mulch Calculator — Cubic Yards & Bags for Landscaping';
+const description = 'Free mulch calculator. Estimate cubic yards and bags of mulch for garden beds and landscaping projects. Choose depth and get instant results.';
+---
+
+<BaseLayout title={title} description={description} canonical="/calculators/mulch">
+  <nav class="breadcrumbs">
+    <a href="/">Home</a><span>/</span><a href="/calculators">Calculators</a><span>/</span>Mulch
+  </nav>
+
+  <div class="calc-card">
+    <h1>Mulch Calculator</h1>
+    <p class="subtitle">Calculate how much mulch you need for garden beds and landscaping.</p>
+
+    <div class="unit-toggle" id="unitToggle">
+      <button class="active" data-unit="imperial">Imperial (ft)</button>
+      <button data-unit="metric">Metric (m)</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Length <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="length" placeholder="20" min="0" step="any" />
+      </div>
+      <div class="form-group">
+        <label>Width <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="width" placeholder="10" min="0" step="any" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Depth <span class="hint" id="depthHint">(inches)</span></label>
+      <select id="depth">
+        <option value="1">1 inch</option>
+        <option value="2">2 inches</option>
+        <option value="3" selected>3 inches (recommended)</option>
+        <option value="4">4 inches</option>
+        <option value="6">6 inches</option>
+        <option value="custom">Custom...</option>
+      </select>
+    </div>
+
+    <div class="form-group" id="customDepthGroup" style="display:none;">
+      <label>Custom Depth <span class="hint" id="customDepthHint">(inches)</span></label>
+      <input type="number" id="customDepth" placeholder="3.5" min="0" step="any" />
+    </div>
+
+    <div class="form-group">
+      <label>Cost per Cubic Yard <span class="hint">(optional, $)</span></label>
+      <input type="number" id="costPerYard" placeholder="35" min="0" step="any" />
+    </div>
+
+    <button class="btn-calculate" id="calcBtn">Calculate Mulch</button>
+
+    <div class="results-panel" id="results">
+      <h2>Results</h2>
+      <div class="result-row">
+        <span class="result-label">Volume</span>
+        <span class="result-value" id="resVolume">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">2 cu ft bags</span>
+        <span class="result-value" id="resBags2">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">3 cu ft bags</span>
+        <span class="result-value" id="resBags3">—</span>
+      </div>
+      <div class="result-row" id="costRow" style="display:none;">
+        <span class="result-label">Estimated Cost (bulk)</span>
+        <span class="result-value" id="resCost">—</span>
+      </div>
+      <p class="result-note">Coverage is approximate. Actual amount varies with bed shape and existing mulch depth.</p>
+      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+    </div>
+  </div>
+
+  <div class="ad-slot">Advertisement</div>
+
+  <div class="content-section">
+    <h2>How to Calculate Mulch</h2>
+    <p>Mulch is sold in cubic yards (bulk) or in bags (typically 2 or 3 cubic feet). To figure out how much you need, calculate the volume of your garden bed area.</p>
+
+    <h3>Mulch Formula</h3>
+    <div class="formula-box">
+      Volume (cu yd) = (Length × Width × Depth) / 27<br>
+      Where length and width are in feet, depth in feet (divide inches by 12)
+    </div>
+
+    <h3>Recommended Mulch Depths</h3>
+    <ul>
+      <li><strong>2 inches:</strong> Annual flower beds, thin topdressing over existing mulch</li>
+      <li><strong>3 inches:</strong> Most garden beds and landscaping (standard recommendation)</li>
+      <li><strong>4 inches:</strong> Weed suppression in new beds, around trees and shrubs</li>
+      <li><strong>6 inches:</strong> Playground areas (safety requirement for wood chips)</li>
+    </ul>
+    <p>Avoid piling mulch deeper than 4 inches around plants — it can suffocate roots and trap moisture against stems. Laying down <a href={affiliateLinks[0]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[0]?.text}</a> before mulching helps prevent weeds and extends the life of your mulch bed.</p>
+
+    <h3>Mulch Types & Coverage</h3>
+    <p>All mulch types use the same volume calculation. Common options include:</p>
+    <ul>
+      <li><strong>Hardwood mulch:</strong> $30-45/cu yd — the most popular choice for landscaping</li>
+      <li><strong>Pine bark:</strong> $30-40/cu yd — lightweight, good for slopes</li>
+      <li><strong>Cedar mulch:</strong> $35-50/cu yd — natural insect resistance</li>
+      <li><strong>Rubber mulch:</strong> $80-160/cu yd — long-lasting for playgrounds</li>
+      <li><strong>River rock:</strong> $100-200/ton — permanent, no replacement needed</li>
+    </ul>
+
+    <h3>Bags vs. Bulk</h3>
+    <p>For areas under 4-5 cubic yards, bags are convenient. Above that, bulk delivery is usually cheaper. One cubic yard of mulch is about 13.5 bags (2 cu ft each) or 9 bags (3 cu ft each). A good <a href={affiliateLinks[1]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[1]?.text}</a> is essential for moving bags or bulk mulch around your yard.</p>
+  </div>
+
+  <div class="related-calcs" style="margin-top:2rem;">
+    <h2 style="font-size:1.25rem;margin-bottom:1rem;">Related Calculators</h2>
+    <div class="calc-grid" style="max-width:100%;">
+      {relatedCalcs.map(rc => (
+        <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
+          <div class="icon">{rc.icon}</div>
+          <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
+          <p>{rc.description}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <FeedbackWidget calculatorName={calc.name} />
+
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Mulch Calculator",
+      "url": "https://tradecalchub.com/calculators/mulch",
+      "description": description,
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tradecalchub.com" },
+        { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://tradecalchub.com/calculators" },
+        { "@type": "ListItem", "position": 3, "name": calc.shortName }
+      ]
+    })} />
+  </Fragment>
+</BaseLayout>
+
+<script>
+  const $ = (s: string) => document.querySelector(s) as HTMLElement;
+  const $$ = (s: string) => document.querySelectorAll(s);
+  const val = (s: string) => parseFloat(($(s) as HTMLInputElement).value) || 0;
+
+  let unit: 'imperial' | 'metric' = 'imperial';
+
+  $$('#unitToggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('#unitToggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      unit = (btn as HTMLElement).dataset.unit as 'imperial' | 'metric';
+      const label = unit === 'imperial' ? 'feet' : 'meters';
+      $$('.unit-label').forEach(el => el.textContent = `(${label})`);
+      $('#depthHint').textContent = unit === 'imperial' ? '(inches)' : '(cm)';
+      $('#customDepthHint').textContent = unit === 'imperial' ? '(inches)' : '(cm)';
+    });
+  });
+
+  const depthSelect = $('#depth') as HTMLSelectElement;
+  depthSelect.addEventListener('change', () => {
+    $('#customDepthGroup').style.display = depthSelect.value === 'custom' ? '' : 'none';
+  });
+
+  $('#calcBtn').addEventListener('click', () => {
+    let l = val('#length'), w = val('#width');
+    let depth = depthSelect.value === 'custom' ? val('#customDepth') : parseFloat(depthSelect.value);
+
+    if (unit === 'metric') {
+      l *= 3.28084;
+      w *= 3.28084;
+      depth *= 0.393701;
+    }
+
+    const depthFt = depth / 12;
+    const cubicFeet = l * w * depthFt;
+    if (cubicFeet <= 0) return;
+
+    const cubicYards = cubicFeet / 27;
+    const bags2 = Math.ceil((cubicFeet) / 2);
+    const bags3 = Math.ceil((cubicFeet) / 3);
+
+    const volLabel = unit === 'metric'
+      ? `${(cubicYards * 0.764555).toFixed(2)} m³`
+      : `${cubicYards.toFixed(2)} cu yd`;
+
+    $('#resVolume').textContent = volLabel;
+    $('#resBags2').textContent = bags2.toLocaleString();
+    $('#resBags3').textContent = bags3.toLocaleString();
+
+    const cost = val('#costPerYard');
+    if (cost > 0) {
+      $('#resCost').textContent = `$${(cubicYards * cost).toFixed(2)}`;
+      $('#costRow').style.display = '';
+    } else {
+      $('#costRow').style.display = 'none';
+    }
+
+    $('#results').classList.add('visible');
+  });
+
+  $('#shareBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      $('#shareBtn').textContent = 'Copied!';
+      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
+    });
+  });
+</script>

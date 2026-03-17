@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { calculators } from '../../data/calculators';
+
+// Group calculators by category
+const categories = calculators.reduce((acc, calc) => {
+  if (!acc[calc.category]) acc[calc.category] = [];
+  acc[calc.category].push(calc);
+  return acc;
+}, {} as Record<string, typeof calculators>);
+
+const categoryOrder = ['Masonry', 'Landscaping', 'Interior', 'Flooring', 'Outdoor'];
+const sortedCategories = categoryOrder.filter(c => categories[c]);
+---
+
+<BaseLayout
+  title="All Construction Calculators — Organized by Trade | TradeCalc Hub"
+  description="Browse all free construction and material calculators organized by category: masonry, landscaping, interior, flooring, and outdoor. Find the right calculator for your project."
+  canonical="/calculators"
+>
+  <div class="page-wide" style="max-width:1200px;margin:0 auto;">
+    <h1 style="text-align:center;margin-bottom:0.5rem;">All Calculators</h1>
+    <p style="text-align:center;color:var(--color-text-light);margin-bottom:2rem;max-width:600px;margin-left:auto;margin-right:auto;">
+      Free construction calculators organized by trade. Click any calculator to get started.
+    </p>
+
+    <nav class="category-nav" style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;margin-bottom:2rem;">
+      {sortedCategories.map(cat => (
+        <a href={`#${cat.toLowerCase()}`} style="padding:0.4rem 1rem;border:1.5px solid var(--color-border);border-radius:var(--radius);font-size:0.85rem;font-weight:500;color:var(--color-text-light);text-decoration:none;transition:all 0.15s;">{cat}</a>
+      ))}
+    </nav>
+
+    {sortedCategories.map(category => (
+      <section id={category.toLowerCase()} style="margin-bottom:2.5rem;">
+        <h2 style="font-size:1.15rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--color-primary-light);">{category}</h2>
+        <div class="calc-grid">
+          {categories[category].map(calc => (
+            <a href={`/calculators/${calc.slug}`} class="calc-grid-item">
+              <div class="icon">{calc.icon}</div>
+              <h3 style="font-size:1.05rem;margin-bottom:0.25rem;color:var(--color-text);">{calc.name}</h3>
+              <p>{calc.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
+
+    <div class="content-section" style="max-width:var(--max-width);margin:2rem auto 0;">
+      <h2>Can't Find What You Need?</h2>
+      <p>We're constantly adding new calculators. If you need a specific construction calculator, <a href="/contact">let us know</a> — popular requests get built first.</p>
+      <p>Coming soon: roofing, decking, stucco, rebar, and retaining wall calculators.</p>
+    </div>
+  </div>
+
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Construction Calculators",
+      "url": "https://tradecalchub.com/calculators",
+      "description": "Free construction and material calculators organized by trade category.",
+      "isPartOf": { "@type": "WebSite", "name": "TradeCalc Hub", "url": "https://tradecalchub.com" }
+    })} />
+  </Fragment>
+</BaseLayout>

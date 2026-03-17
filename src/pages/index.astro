@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { calculators } from '../data/calculators';
+---
+
+<BaseLayout
+  title="TradeCalc Hub — Free Construction & Material Calculators"
+  description="50+ free construction calculators for contractors and DIYers. Concrete, mulch, gravel, paint, drywall, tile, fencing, sod, brick, insulation and more. Mobile-friendly, no signup required."
+  canonical="/"
+>
+  <div class="page-wide" style="max-width:1200px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:2rem;">
+      <h1 style="font-size:1.75rem;margin-bottom:0.5rem;">Free Construction & Material Calculators</h1>
+      <p style="color:var(--color-text-light);max-width:600px;margin:0 auto;">
+        Accurate material estimates for professionals and DIYers. No signup, no ads on results, works on any device.
+      </p>
+    </div>
+
+    <div class="calc-grid">
+      {calculators.map((calc) => (
+        <a href={`/calculators/${calc.slug}`} class="calc-grid-item">
+          <div class="icon">{calc.icon}</div>
+          <h2>{calc.name}</h2>
+          <p>{calc.description}</p>
+        </a>
+      ))}
+    </div>
+
+    <div class="content-section" style="max-width:var(--max-width);margin:3rem auto 0;">
+      <h2>Why Use TradeCalc Hub?</h2>
+      <p>Whether you're a licensed contractor estimating a commercial job or a homeowner planning a weekend project, accurate material calculations save money and prevent waste. Our calculators use industry-standard formulas trusted by professionals across North America.</p>
+
+      <h3>Built for the Job Site</h3>
+      <ul>
+        <li><strong>Mobile-first design</strong> — works perfectly on your phone at the job site</li>
+        <li><strong>Imperial &amp; metric</strong> — switch units with one tap</li>
+        <li><strong>No signup required</strong> — get your answer in seconds</li>
+        <li><strong>Share results</strong> — send calculations to clients or colleagues</li>
+        <li><strong>Print-friendly</strong> — clean printouts for material orders</li>
+      </ul>
+
+      <h3>Trusted Formulas</h3>
+      <p>All calculations use the same formulas taught in trade schools and used by material suppliers. Each calculator page includes the formula breakdown so you can verify the math yourself.</p>
+
+      <h3>Covers Every Trade</h3>
+      <p>From concrete footings to roof insulation, our growing library of calculators covers materials used by electricians, plumbers, carpenters, masons, landscapers, and general contractors.</p>
+    </div>
+  </div>
+
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "TradeCalc Hub",
+      "url": "https://tradecalchub.com",
+      "description": "Free construction and material calculators for contractors and DIYers.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://tradecalchub.com/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    })} />
+  </Fragment>
+</BaseLayout>

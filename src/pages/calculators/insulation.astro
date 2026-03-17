@@ -1,0 +1,234 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { calculators } from '../../data/calculators';
+import FeedbackWidget from '../../components/FeedbackWidget.astro';
+import { getAffiliateLinksForCalculator } from '../../data/affiliates';
+const calc = calculators.find(c => c.slug === 'insulation')!;
+const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
+const affiliateLinks = getAffiliateLinksForCalculator('insulation');
+const title = 'Insulation Calculator — Batts, Rolls & Blown-In';
+const description = 'Free insulation calculator. Estimate batts, rolls, or blown-in insulation for walls, attics, and crawl spaces. Includes R-value guidance.';
+---
+
+<BaseLayout title={title} description={description} canonical="/calculators/insulation">
+  <nav class="breadcrumbs">
+    <a href="/">Home</a><span>/</span><a href="/calculators">Calculators</a><span>/</span>Insulation
+  </nav>
+
+  <div class="calc-card">
+    <h1>Insulation Calculator</h1>
+    <p class="subtitle">Calculate batts, rolls, or bags of blown-in insulation for your project.</p>
+
+    <div class="unit-toggle" id="unitToggle">
+      <button class="active" data-unit="imperial">Imperial (ft)</button>
+      <button data-unit="metric">Metric (m)</button>
+    </div>
+
+    <div class="form-group">
+      <label>Application</label>
+      <select id="application">
+        <option value="wall">Walls (stud cavities)</option>
+        <option value="attic">Attic (between joists / blown-in)</option>
+        <option value="floor">Floor / Crawl Space</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Total Length <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="length" placeholder="40" min="0" step="any" />
+      </div>
+      <div class="form-group">
+        <label>Height / Width <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="height" placeholder="8" min="0" step="any" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Insulation Type</label>
+      <select id="insulationType">
+        <option value="batt-r13">Fiberglass Batt R-13 (3.5", 2×4 walls)</option>
+        <option value="batt-r19">Fiberglass Batt R-19 (6.25", 2×6 walls)</option>
+        <option value="batt-r30">Fiberglass Batt R-30 (9.5", attic)</option>
+        <option value="batt-r38">Fiberglass Batt R-38 (12", attic)</option>
+        <option value="blown-cellulose">Blown-In Cellulose (attic)</option>
+        <option value="blown-fiberglass">Blown-In Fiberglass (attic)</option>
+        <option value="rigid-r5">Rigid Foam R-5 (1" board)</option>
+        <option value="rigid-r10">Rigid Foam R-10 (2" board)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Stud Spacing (for batts)</label>
+      <select id="studSpacing">
+        <option value="16" selected>16" on center (standard)</option>
+        <option value="24">24" on center</option>
+      </select>
+    </div>
+
+    <button class="btn-calculate" id="calcBtn">Calculate Insulation</button>
+
+    <div class="results-panel" id="results">
+      <h2>Results</h2>
+      <div class="result-row">
+        <span class="result-label">Total Area</span>
+        <span class="result-value" id="resArea">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label" id="qtyLabel">Quantity</span>
+        <span class="result-value" id="resQty">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">R-Value</span>
+        <span class="result-value" id="resRvalue">—</span>
+      </div>
+      <p class="result-note">Estimates include 5% waste. Check local building codes for minimum R-value requirements.</p>
+      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+    </div>
+  </div>
+
+  <div class="ad-slot">Advertisement</div>
+
+  <div class="content-section">
+    <h2>How to Calculate Insulation</h2>
+    <p>Insulation is measured by R-value (thermal resistance). Higher R-values mean better insulation. The amount you need depends on the area, insulation type, and your climate zone.</p>
+
+    <h3>Insulation Formula</h3>
+    <div class="formula-box">
+      Total Area = Length × Height (in sq ft)<br>
+      For batts: Bags = Area / Coverage per bag (check packaging)<br>
+      For blown-in: Bags = Area × Depth / Coverage per bag
+    </div>
+
+    <h3>Recommended R-Values by Climate Zone</h3>
+    <ul>
+      <li><strong>Zone 1-2 (Hot):</strong> Walls R-13, Attic R-30 to R-49</li>
+      <li><strong>Zone 3 (Warm):</strong> Walls R-13 to R-15, Attic R-30 to R-60</li>
+      <li><strong>Zone 4 (Mixed):</strong> Walls R-13 to R-21, Attic R-38 to R-60</li>
+      <li><strong>Zone 5-6 (Cold):</strong> Walls R-20 to R-21, Attic R-49 to R-60</li>
+      <li><strong>Zone 7-8 (Very Cold):</strong> Walls R-21+, Attic R-49 to R-60</li>
+    </ul>
+
+    <h3>Insulation Types Compared</h3>
+    <ul>
+      <li><strong>Fiberglass batts:</strong> Most common, affordable, DIY-friendly. R-3.1 to R-3.4 per inch.</li>
+      <li><strong>Blown-in cellulose:</strong> Good for attics and retrofits. R-3.2 to R-3.8 per inch. Requires blower machine.</li>
+      <li><strong>Blown-in fiberglass:</strong> Lighter than cellulose, won't absorb moisture. R-2.2 to R-2.7 per inch.</li>
+      <li><strong>Rigid foam (XPS/EPS):</strong> Great for basements, exterior walls. R-5 per inch (XPS).</li>
+      <li><strong>Spray foam:</strong> Best R-value per inch (R-6 to R-7 closed-cell), but most expensive. Professional install required.</li>
+    </ul>
+
+    <h3>Installation Tips</h3>
+    <ul>
+      <li>Don't compress fiberglass batts — compression reduces R-value</li>
+      <li>Use unfaced insulation when adding to existing insulation</li>
+      <li>Vapor barrier goes on the warm side (toward heated space)</li>
+      <li>Wear protective equipment: long sleeves, gloves, mask, and safety glasses</li>
+      <li>Don't cover soffit vents — attics need ventilation to prevent moisture problems</li>
+    </ul>
+    <p>An <a href={affiliateLinks[0]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[0]?.text}</a> speeds up batt installation in stud cavities. Browse <a href={affiliateLinks[1]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[1]?.text}</a> to compare R-values and pricing for your project.</p>
+  </div>
+
+  <div class="related-calcs" style="margin-top:2rem;">
+    <h2 style="font-size:1.25rem;margin-bottom:1rem;">Related Calculators</h2>
+    <div class="calc-grid" style="max-width:100%;">
+      {relatedCalcs.map(rc => (
+        <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
+          <div class="icon">{rc.icon}</div>
+          <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
+          <p>{rc.description}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <FeedbackWidget calculatorName={calc.name} />
+
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Insulation Calculator",
+      "url": "https://tradecalchub.com/calculators/insulation",
+      "description": description,
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tradecalchub.com" },
+        { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://tradecalchub.com/calculators" },
+        { "@type": "ListItem", "position": 3, "name": calc.shortName }
+      ]
+    })} />
+  </Fragment>
+</BaseLayout>
+
+<script>
+  const $ = (s: string) => document.querySelector(s) as HTMLElement;
+  const $$ = (s: string) => document.querySelectorAll(s);
+  const val = (s: string) => parseFloat(($(s) as HTMLInputElement).value) || 0;
+
+  let unit: 'imperial' | 'metric' = 'imperial';
+
+  interface InsulationData {
+    rValue: string;
+    coveragePerBag: number;
+    unitLabel: string;
+    isBlown: boolean;
+  }
+
+  const insulationData: Record<string, InsulationData> = {
+    'batt-r13': { rValue: 'R-13', coveragePerBag: 40, unitLabel: 'bags (batts)', isBlown: false },
+    'batt-r19': { rValue: 'R-19', coveragePerBag: 48.96, unitLabel: 'bags (batts)', isBlown: false },
+    'batt-r30': { rValue: 'R-30', coveragePerBag: 31.25, unitLabel: 'bags (batts)', isBlown: false },
+    'batt-r38': { rValue: 'R-38', coveragePerBag: 24, unitLabel: 'bags (batts)', isBlown: false },
+    'blown-cellulose': { rValue: 'R-38 (at 10.5")', coveragePerBag: 40, unitLabel: 'bags (30 lb)', isBlown: true },
+    'blown-fiberglass': { rValue: 'R-30 (at 10.5")', coveragePerBag: 27, unitLabel: 'bags (25 lb)', isBlown: true },
+    'rigid-r5': { rValue: 'R-5', coveragePerBag: 32, unitLabel: 'sheets (4×8)', isBlown: false },
+    'rigid-r10': { rValue: 'R-10', coveragePerBag: 32, unitLabel: 'sheets (4×8)', isBlown: false },
+  };
+
+  $$('#unitToggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('#unitToggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      unit = (btn as HTMLElement).dataset.unit as 'imperial' | 'metric';
+      $$('.unit-label').forEach(el => el.textContent = `(${unit === 'imperial' ? 'feet' : 'meters'})`);
+    });
+  });
+
+  $('#calcBtn').addEventListener('click', () => {
+    let l = val('#length'), h = val('#height');
+    if (unit === 'metric') { l *= 3.28084; h *= 3.28084; }
+
+    const area = l * h;
+    if (area <= 0) return;
+
+    const type = (document.querySelector('#insulationType') as HTMLSelectElement).value;
+    const data = insulationData[type];
+    const wasteArea = area * 1.05;
+    const qty = Math.ceil(wasteArea / data.coveragePerBag);
+
+    const areaLabel = unit === 'metric'
+      ? `${(area * 0.092903).toFixed(0)} m²`
+      : `${area.toFixed(0)} sq ft`;
+
+    $('#resArea').textContent = areaLabel;
+    $('#qtyLabel').textContent = data.unitLabel.charAt(0).toUpperCase() + data.unitLabel.slice(1);
+    $('#resQty').textContent = `${qty} ${data.unitLabel}`;
+    $('#resRvalue').textContent = data.rValue;
+
+    $('#results').classList.add('visible');
+  });
+
+  $('#shareBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      $('#shareBtn').textContent = 'Copied!';
+      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
+    });
+  });
+</script>

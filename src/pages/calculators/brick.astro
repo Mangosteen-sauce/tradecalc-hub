@@ -1,0 +1,239 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { calculators } from '../../data/calculators';
+import FeedbackWidget from '../../components/FeedbackWidget.astro';
+import { getAffiliateLinksForCalculator } from '../../data/affiliates';
+const calc = calculators.find(c => c.slug === 'brick')!;
+const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
+const affiliateLinks = getAffiliateLinksForCalculator('brick');
+const title = 'Brick & Block Calculator — Count, Mortar & Cost';
+const description = 'Free brick and block calculator. Estimate bricks, concrete blocks (CMU), and mortar bags for walls, patios, and walkways.';
+---
+
+<BaseLayout title={title} description={description} canonical="/calculators/brick">
+  <nav class="breadcrumbs">
+    <a href="/">Home</a><span>/</span><a href="/calculators">Calculators</a><span>/</span>Brick
+  </nav>
+
+  <div class="calc-card">
+    <h1>Brick & Block Calculator</h1>
+    <p class="subtitle">Calculate bricks or blocks and mortar for walls, patios, and walkways.</p>
+
+    <div class="unit-toggle" id="unitToggle">
+      <button class="active" data-unit="imperial">Imperial (ft)</button>
+      <button data-unit="metric">Metric (m)</button>
+    </div>
+
+    <div class="form-group">
+      <label>Project Type</label>
+      <select id="projectType">
+        <option value="wall">Wall (with mortar joints)</option>
+        <option value="patio">Patio / Walkway (flat, no mortar)</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Length <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="length" placeholder="20" min="0" step="any" />
+      </div>
+      <div class="form-group">
+        <label id="dimLabel">Height <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="height" placeholder="4" min="0" step="any" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Brick / Block Size</label>
+      <select id="brickSize">
+        <option value="standard-brick">Standard Brick (8" × 2.25" × 3.75")</option>
+        <option value="modular-brick">Modular Brick (7.625" × 2.25" × 3.625")</option>
+        <option value="queen-brick">Queen Brick (7.625" × 2.75" × 2.75")</option>
+        <option value="cmu-8">CMU Block 8" (15.625" × 7.625" × 7.625")</option>
+        <option value="cmu-6">CMU Block 6" (15.625" × 7.625" × 5.625")</option>
+        <option value="paver-4x8">Paver 4" × 8" (for patios)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Waste Factor</label>
+      <select id="waste">
+        <option value="5">5% — straight walls, experienced mason</option>
+        <option value="10" selected>10% — standard (recommended)</option>
+        <option value="15">15% — curves or complex patterns</option>
+      </select>
+    </div>
+
+    <button class="btn-calculate" id="calcBtn">Calculate Bricks</button>
+
+    <div class="results-panel" id="results">
+      <h2>Results</h2>
+      <div class="result-row">
+        <span class="result-label">Wall / Patio Area</span>
+        <span class="result-value" id="resArea">—</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label" id="brickLabel">Bricks Needed</span>
+        <span class="result-value" id="resBricks">—</span>
+      </div>
+      <div class="result-row" id="mortarRow">
+        <span class="result-label">Mortar Bags (80 lb)</span>
+        <span class="result-value" id="resMortar">—</span>
+      </div>
+      <p class="result-note">Includes waste factor. Mortar estimate based on standard 3/8" joints.</p>
+      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+    </div>
+  </div>
+
+  <div class="ad-slot">Advertisement</div>
+
+  <div class="content-section">
+    <h2>How to Calculate Bricks</h2>
+    <p>The number of bricks you need depends on the wall area and brick size. For walls with mortar, you need to account for the mortar joint thickness (typically 3/8").</p>
+
+    <h3>Brick Formula (Wall)</h3>
+    <div class="formula-box">
+      Wall Area = Length × Height (in sq ft)<br>
+      Bricks per sq ft depends on brick size:<br>
+      - Standard brick: ~6.75 per sq ft (with 3/8" mortar)<br>
+      - CMU 8" block: ~1.125 per sq ft<br>
+      Total Bricks = Wall Area × Bricks/sq ft × (1 + Waste%)
+    </div>
+
+    <h3>Bricks per Square Foot</h3>
+    <ul>
+      <li><strong>Standard brick:</strong> 6.75 bricks/sq ft (running bond with 3/8" joint)</li>
+      <li><strong>Modular brick:</strong> 6.86 bricks/sq ft</li>
+      <li><strong>Queen brick:</strong> 5.76 bricks/sq ft</li>
+      <li><strong>8" CMU block:</strong> 1.125 blocks/sq ft</li>
+      <li><strong>6" CMU block:</strong> 1.125 blocks/sq ft</li>
+      <li><strong>4" × 8" pavers:</strong> 4.5 pavers/sq ft (no mortar)</li>
+    </ul>
+
+    <h3>Mortar Estimates</h3>
+    <ul>
+      <li><strong>Standard brick wall:</strong> 1 bag (80 lb) per 30-35 bricks</li>
+      <li><strong>CMU block wall:</strong> 1 bag per 12-15 blocks</li>
+      <li>Use Type N mortar for above-grade walls</li>
+      <li>Use Type S mortar for below-grade, retaining walls, and high-wind areas</li>
+    </ul>
+
+    <h3>Bond Patterns</h3>
+    <ul>
+      <li><strong>Running bond:</strong> Most common, strongest. Bricks offset by half.</li>
+      <li><strong>Stack bond:</strong> Aligned vertically. Decorative only — not structural.</li>
+      <li><strong>Herringbone:</strong> 45-degree zigzag. Popular for patios. Uses 5-10% more material.</li>
+      <li><strong>Basket weave:</strong> Pairs of bricks alternating direction. Popular for walkways.</li>
+    </ul>
+    <p>A good <a href={affiliateLinks[0]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[0]?.text}</a> is essential for clean mortar joints. Pick up <a href={affiliateLinks[1]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[1]?.text}</a> while you're sourcing materials.</p>
+  </div>
+
+  <div class="related-calcs" style="margin-top:2rem;">
+    <h2 style="font-size:1.25rem;margin-bottom:1rem;">Related Calculators</h2>
+    <div class="calc-grid" style="max-width:100%;">
+      {relatedCalcs.map(rc => (
+        <a href={`/calculators/${rc.slug}`} class="calc-grid-item">
+          <div class="icon">{rc.icon}</div>
+          <h3 style="font-size:1rem;margin-bottom:0.25rem;color:var(--color-text);">{rc.name}</h3>
+          <p>{rc.description}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <FeedbackWidget calculatorName={calc.name} />
+
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Brick Calculator",
+      "url": "https://tradecalchub.com/calculators/brick",
+      "description": description,
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://tradecalchub.com" },
+        { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://tradecalchub.com/calculators" },
+        { "@type": "ListItem", "position": 3, "name": calc.shortName }
+      ]
+    })} />
+  </Fragment>
+</BaseLayout>
+
+<script>
+  const $ = (s: string) => document.querySelector(s) as HTMLElement;
+  const $$ = (s: string) => document.querySelectorAll(s);
+  const val = (s: string) => parseFloat(($(s) as HTMLInputElement).value) || 0;
+
+  let unit: 'imperial' | 'metric' = 'imperial';
+
+  const brickData: Record<string, { perSqFt: number; mortarPerUnit: number; label: string }> = {
+    'standard-brick': { perSqFt: 6.75, mortarPerUnit: 33, label: 'Bricks' },
+    'modular-brick': { perSqFt: 6.86, mortarPerUnit: 33, label: 'Bricks' },
+    'queen-brick': { perSqFt: 5.76, mortarPerUnit: 30, label: 'Bricks' },
+    'cmu-8': { perSqFt: 1.125, mortarPerUnit: 14, label: 'Blocks' },
+    'cmu-6': { perSqFt: 1.125, mortarPerUnit: 14, label: 'Blocks' },
+    'paver-4x8': { perSqFt: 4.5, mortarPerUnit: 0, label: 'Pavers' },
+  };
+
+  $$('#unitToggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('#unitToggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      unit = (btn as HTMLElement).dataset.unit as 'imperial' | 'metric';
+      $$('.unit-label').forEach(el => el.textContent = `(${unit === 'imperial' ? 'feet' : 'meters'})`);
+    });
+  });
+
+  const projectType = document.querySelector('#projectType') as HTMLSelectElement;
+  projectType.addEventListener('change', () => {
+    $('#dimLabel').innerHTML = projectType.value === 'wall'
+      ? 'Height <span class="hint unit-label">(' + (unit === 'imperial' ? 'feet' : 'meters') + ')</span>'
+      : 'Width <span class="hint unit-label">(' + (unit === 'imperial' ? 'feet' : 'meters') + ')</span>';
+  });
+
+  $('#calcBtn').addEventListener('click', () => {
+    let l = val('#length'), h = val('#height');
+    if (unit === 'metric') { l *= 3.28084; h *= 3.28084; }
+
+    const area = l * h;
+    if (area <= 0) return;
+
+    const brickType = (document.querySelector('#brickSize') as HTMLSelectElement).value;
+    const waste = parseInt((document.querySelector('#waste') as HTMLSelectElement).value) / 100;
+    const data = brickData[brickType];
+
+    const bricksNeeded = Math.ceil(area * data.perSqFt * (1 + waste));
+
+    const areaLabel = unit === 'metric'
+      ? `${(area * 0.092903).toFixed(1)} m²`
+      : `${area.toFixed(1)} sq ft`;
+
+    $('#resArea').textContent = areaLabel;
+    $('#brickLabel').textContent = `${data.label} Needed`;
+    $('#resBricks').textContent = bricksNeeded.toLocaleString();
+
+    if (data.mortarPerUnit > 0) {
+      const mortarBags = Math.ceil(bricksNeeded / data.mortarPerUnit);
+      $('#resMortar').textContent = `${mortarBags} bag${mortarBags > 1 ? 's' : ''}`;
+      $('#mortarRow').style.display = '';
+    } else {
+      $('#mortarRow').style.display = 'none';
+    }
+
+    $('#results').classList.add('visible');
+  });
+
+  $('#shareBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      $('#shareBtn').textContent = 'Copied!';
+      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
+    });
+  });
+</script>
