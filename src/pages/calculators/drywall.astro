@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { calculators } from '../../data/calculators';
 import FeedbackWidget from '../../components/FeedbackWidget.astro';
 import KofiButton from '../../components/KofiButton.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
 import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'drywall')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
@@ -28,17 +29,17 @@ const description = 'Free drywall calculator. Estimate sheets (4x8, 4x10, 4x12),
     <div class="form-row">
       <div class="form-group">
         <label>Room Length <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="roomLength" placeholder="15" min="0" step="any" />
+        <input type="number" id="roomLength" placeholder="0" min="0" step="any" />
       </div>
       <div class="form-group">
         <label>Room Width <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="roomWidth" placeholder="12" min="0" step="any" />
+        <input type="number" id="roomWidth" placeholder="0" min="0" step="any" />
       </div>
     </div>
 
     <div class="form-group">
       <label>Wall Height <span class="hint unit-label">(feet)</span></label>
-      <input type="number" id="wallHeight" placeholder="8" min="0" step="any" />
+      <input type="number" id="wallHeight" placeholder="0" min="0" step="any" />
     </div>
 
     <div class="form-row">
@@ -107,7 +108,7 @@ const description = 'Free drywall calculator. Estimate sheets (4x8, 4x10, 4x12),
         <div class="form-row">
           <div class="form-group">
             <label>Inside Corners <span class="hint">(adds tape)</span></label>
-            <input type="number" id="insideCorners" placeholder="4" min="0" step="1" value="0" />
+            <input type="number" id="insideCorners" placeholder="0" min="0" step="1" value="0" />
           </div>
           <div class="form-group">
             <label>Outside Corners <span class="hint">(adds bead)</span></label>
@@ -151,7 +152,7 @@ const description = 'Free drywall calculator. Estimate sheets (4x8, 4x10, 4x12),
         <span class="result-value" id="resCornerBead">—</span>
       </div>
       <p class="result-note">Includes 10% waste factor. Screws estimated at 1 per sq ft (16" OC framing).</p>
-      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+      <ShareButtons />
     </div>
   </div>
 
@@ -435,10 +436,5 @@ const description = 'Free drywall calculator. Estimate sheets (4x8, 4x10, 4x12),
     $('#results').classList.add('visible');
   });
 
-  $('#shareBtn').addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      $('#shareBtn').textContent = 'Copied!';
-      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
-    });
-  });
+
 </script>

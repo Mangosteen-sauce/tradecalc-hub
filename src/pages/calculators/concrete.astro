@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { calculators } from '../../data/calculators';
 import FeedbackWidget from '../../components/FeedbackWidget.astro';
 import KofiButton from '../../components/KofiButton.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
 import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'concrete')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
@@ -40,16 +41,16 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
       <div class="form-row">
         <div class="form-group">
           <label>Length <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="slabLength" placeholder="10" min="0" step="any" />
+          <input type="number" id="slabLength" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Width <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="slabWidth" placeholder="10" min="0" step="any" />
+          <input type="number" id="slabWidth" placeholder="0" min="0" step="any" />
         </div>
       </div>
       <div class="form-group">
         <label>Thickness <span class="hint" id="thicknessHint">(inches)</span></label>
-        <input type="number" id="slabThickness" placeholder="4" min="0" step="any" />
+        <input type="number" id="slabThickness" placeholder="0" min="0" step="any" />
       </div>
     </div>
 
@@ -57,16 +58,16 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
       <div class="form-row">
         <div class="form-group">
           <label>Length <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="footingLength" placeholder="20" min="0" step="any" />
+          <input type="number" id="footingLength" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Width <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="footingWidth" placeholder="1" min="0" step="any" />
+          <input type="number" id="footingWidth" placeholder="0" min="0" step="any" />
         </div>
       </div>
       <div class="form-group">
         <label>Depth <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="footingDepth" placeholder="1" min="0" step="any" />
+        <input type="number" id="footingDepth" placeholder="0" min="0" step="any" />
       </div>
     </div>
 
@@ -74,16 +75,16 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
       <div class="form-row">
         <div class="form-group">
           <label>Diameter <span class="hint" id="diamHint">(inches)</span></label>
-          <input type="number" id="colDiameter" placeholder="12" min="0" step="any" />
+          <input type="number" id="colDiameter" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Depth <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="colDepth" placeholder="3" min="0" step="any" />
+          <input type="number" id="colDepth" placeholder="0" min="0" step="any" />
         </div>
       </div>
       <div class="form-group">
         <label>Number of Holes</label>
-        <input type="number" id="colCount" placeholder="4" min="1" step="1" />
+        <input type="number" id="colCount" placeholder="0" min="1" step="1" />
       </div>
     </div>
 
@@ -91,21 +92,21 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
       <div class="form-row">
         <div class="form-group">
           <label>Number of Steps</label>
-          <input type="number" id="stairSteps" placeholder="4" min="1" step="1" />
+          <input type="number" id="stairSteps" placeholder="0" min="1" step="1" />
         </div>
         <div class="form-group">
           <label>Stair Width <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="stairWidth" placeholder="3" min="0" step="any" />
+          <input type="number" id="stairWidth" placeholder="0" min="0" step="any" />
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label>Tread Depth <span class="hint" id="treadHint">(inches)</span></label>
-          <input type="number" id="treadDepth" placeholder="11" min="0" step="any" />
+          <input type="number" id="treadDepth" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Riser Height <span class="hint" id="riserHint">(inches)</span></label>
-          <input type="number" id="riserHeight" placeholder="7" min="0" step="any" />
+          <input type="number" id="riserHeight" placeholder="0" min="0" step="any" />
         </div>
       </div>
     </div>
@@ -113,23 +114,23 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
     <div id="curbInputs" style="display:none;">
       <div class="form-group">
         <label>Total Length <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="curbLength" placeholder="20" min="0" step="any" />
+        <input type="number" id="curbLength" placeholder="0" min="0" step="any" />
       </div>
       <div class="form-row">
         <div class="form-group">
           <label>Width <span class="hint" id="curbWidthHint">(inches)</span></label>
-          <input type="number" id="curbWidth" placeholder="6" min="0" step="any" />
+          <input type="number" id="curbWidth" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Height <span class="hint" id="curbHeightHint">(inches)</span></label>
-          <input type="number" id="curbHeight" placeholder="6" min="0" step="any" />
+          <input type="number" id="curbHeight" placeholder="0" min="0" step="any" />
         </div>
       </div>
     </div>
 
     <div class="form-group">
       <label>Cost per Cubic Yard <span class="hint">(optional, $)</span></label>
-      <input type="number" id="costPerYard" placeholder="125" min="0" step="any" />
+      <input type="number" id="costPerYard" placeholder="0" min="0" step="any" />
     </div>
 
     <!-- Advanced Options -->
@@ -176,7 +177,7 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
         <span class="result-value" id="resCost">—</span>
       </div>
       <p class="result-note">Includes 10% extra for waste and spillage. Actual amounts may vary.</p>
-      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+      <ShareButtons />
     </div>
   </div>
 
@@ -410,10 +411,5 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
   });
 
   // Share
-  $('#shareBtn').addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      $('#shareBtn').textContent = 'Copied!';
-      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
-    });
-  });
+
 </script>

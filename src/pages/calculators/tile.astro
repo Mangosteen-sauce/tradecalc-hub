@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { calculators } from '../../data/calculators';
 import FeedbackWidget from '../../components/FeedbackWidget.astro';
 import KofiButton from '../../components/KofiButton.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
 import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'tile')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
@@ -41,11 +42,11 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
       <div class="form-row">
         <div class="form-group">
           <label>Area Length <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="areaLength" placeholder="12" min="0" step="any" />
+          <input type="number" id="areaLength" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Area Width <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="areaWidth" placeholder="10" min="0" step="any" />
+          <input type="number" id="areaWidth" placeholder="0" min="0" step="any" />
         </div>
       </div>
     </div>
@@ -56,21 +57,21 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
       <div class="form-row">
         <div class="form-group">
           <label>Section 1 Length <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="l1Length" placeholder="12" min="0" step="any" />
+          <input type="number" id="l1Length" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Section 1 Width <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="l1Width" placeholder="6" min="0" step="any" />
+          <input type="number" id="l1Width" placeholder="0" min="0" step="any" />
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label>Section 2 Length <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="l2Length" placeholder="8" min="0" step="any" />
+          <input type="number" id="l2Length" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Section 2 Width <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="l2Width" placeholder="6" min="0" step="any" />
+          <input type="number" id="l2Width" placeholder="0" min="0" step="any" />
         </div>
       </div>
     </div>
@@ -81,31 +82,31 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
       <div class="form-row">
         <div class="form-group">
           <label>Section 1 Length <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="u1Length" placeholder="10" min="0" step="any" />
+          <input type="number" id="u1Length" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Section 1 Width <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="u1Width" placeholder="4" min="0" step="any" />
+          <input type="number" id="u1Width" placeholder="0" min="0" step="any" />
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label>Section 2 Length <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="u2Length" placeholder="6" min="0" step="any" />
+          <input type="number" id="u2Length" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Section 2 Width <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="u2Width" placeholder="4" min="0" step="any" />
+          <input type="number" id="u2Width" placeholder="0" min="0" step="any" />
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label>Section 3 Length <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="u3Length" placeholder="10" min="0" step="any" />
+          <input type="number" id="u3Length" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Section 3 Width <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="u3Width" placeholder="4" min="0" step="any" />
+          <input type="number" id="u3Width" placeholder="0" min="0" step="any" />
         </div>
       </div>
     </div>
@@ -115,11 +116,11 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
       <div class="form-row">
         <div class="form-group">
           <label>Base <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="triBase" placeholder="10" min="0" step="any" />
+          <input type="number" id="triBase" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Height <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="triHeight" placeholder="8" min="0" step="any" />
+          <input type="number" id="triHeight" placeholder="0" min="0" step="any" />
         </div>
       </div>
     </div>
@@ -127,11 +128,11 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
     <div class="form-row">
       <div class="form-group">
         <label>Tile Length <span class="hint" id="tileLenHint">(inches)</span></label>
-        <input type="number" id="tileLength" placeholder="12" min="0" step="any" />
+        <input type="number" id="tileLength" placeholder="0" min="0" step="any" />
       </div>
       <div class="form-group">
         <label>Tile Width <span class="hint" id="tileWidHint">(inches)</span></label>
-        <input type="number" id="tileWidth" placeholder="12" min="0" step="any" />
+        <input type="number" id="tileWidth" placeholder="0" min="0" step="any" />
       </div>
     </div>
 
@@ -147,13 +148,13 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
       </div>
       <div class="form-group">
         <label>Tiles per Box <span class="hint">(optional)</span></label>
-        <input type="number" id="tilesPerBox" placeholder="10" min="1" step="1" />
+        <input type="number" id="tilesPerBox" placeholder="0" min="1" step="1" />
       </div>
     </div>
 
     <div class="form-group">
       <label>Cost per Sq Ft <span class="hint">(optional, $)</span></label>
-      <input type="number" id="costPerSqFt" placeholder="5" min="0" step="any" />
+      <input type="number" id="costPerSqFt" placeholder="0" min="0" step="any" />
     </div>
 
     <!-- Advanced Options -->
@@ -221,7 +222,7 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
         <span class="result-value" id="resCost">—</span>
       </div>
       <p class="result-note">Always buy a few extra tiles for future repairs. Tile dye lots may vary between orders.</p>
-      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+      <ShareButtons />
     </div>
   </div>
 
@@ -430,10 +431,5 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
     $('#results').classList.add('visible');
   });
 
-  $('#shareBtn').addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      $('#shareBtn').textContent = 'Copied!';
-      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
-    });
-  });
+
 </script>

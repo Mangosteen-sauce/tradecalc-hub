@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { calculators } from '../../data/calculators';
 import FeedbackWidget from '../../components/FeedbackWidget.astro';
 import KofiButton from '../../components/KofiButton.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
 import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'gravel')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
@@ -40,11 +41,11 @@ const description = 'Free gravel calculator. Estimate tons and cubic yards of gr
       <div class="form-row">
         <div class="form-group">
           <label>Length <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="length" placeholder="20" min="0" step="any" />
+          <input type="number" id="length" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Width <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="width" placeholder="10" min="0" step="any" />
+          <input type="number" id="width" placeholder="0" min="0" step="any" />
         </div>
       </div>
     </div>
@@ -53,7 +54,7 @@ const description = 'Free gravel calculator. Estimate tons and cubic yards of gr
     <div id="circleInputs" style="display:none;">
       <div class="form-group">
         <label>Radius <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="radius" placeholder="5" min="0" step="any" />
+        <input type="number" id="radius" placeholder="0" min="0" step="any" />
       </div>
     </div>
 
@@ -62,18 +63,18 @@ const description = 'Free gravel calculator. Estimate tons and cubic yards of gr
       <div class="form-row">
         <div class="form-group">
           <label>Base <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="triBase" placeholder="10" min="0" step="any" />
+          <input type="number" id="triBase" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Height <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="triHeight" placeholder="8" min="0" step="any" />
+          <input type="number" id="triHeight" placeholder="0" min="0" step="any" />
         </div>
       </div>
     </div>
 
     <div class="form-group">
       <label>Depth <span class="hint" id="depthHint">(inches)</span></label>
-      <input type="number" id="depth" placeholder="4" min="0" step="any" />
+      <input type="number" id="depth" placeholder="0" min="0" step="any" />
     </div>
 
     <div class="form-group">
@@ -91,7 +92,7 @@ const description = 'Free gravel calculator. Estimate tons and cubic yards of gr
 
     <div class="form-group">
       <label>Cost per Ton <span class="hint">(optional, $)</span></label>
-      <input type="number" id="costPerTon" placeholder="50" min="0" step="any" />
+      <input type="number" id="costPerTon" placeholder="0" min="0" step="any" />
     </div>
 
     <!-- Advanced Options -->
@@ -131,7 +132,7 @@ const description = 'Free gravel calculator. Estimate tons and cubic yards of gr
         <span class="result-value" id="resCost">—</span>
       </div>
       <p class="result-note">Weight varies by material density and moisture content. Order 10-15% extra for compaction.</p>
-      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+      <ShareButtons />
     </div>
   </div>
 
@@ -300,10 +301,5 @@ const description = 'Free gravel calculator. Estimate tons and cubic yards of gr
     $('#results').classList.add('visible');
   });
 
-  $('#shareBtn').addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      $('#shareBtn').textContent = 'Copied!';
-      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
-    });
-  });
+
 </script>

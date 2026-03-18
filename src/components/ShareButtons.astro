@@ -1,0 +1,74 @@
+<div class="share-actions">
+  <button class="btn-share" id="copyResultsBtn">Copy Results</button>
+  <button class="btn-share" id="shareResultsBtn">Share</button>
+</div>
+
+<script>
+  function getCalcText(): string {
+    const name = document.querySelector('.calc-card h1')?.textContent || 'Calculator';
+    const lines: string[] = [name + ' - TradeCalc Hub', ''];
+
+    // Read visible form-group inputs (parameters)
+    document.querySelectorAll('.calc-card .form-group').forEach(el => {
+      const group = el as HTMLElement;
+      if (group.offsetParent === null) return;
+      if (group.closest('#results')) return;
+
+      const label = group.querySelector('label');
+      const input = group.querySelector('input, select') as HTMLInputElement | HTMLSelectElement | null;
+      if (!label || !input) return;
+
+      // Get label text without hint spans
+      let lbl = '';
+      label.childNodes.forEach(node => {
+        if (node.nodeType === 3) lbl += node.textContent;
+      });
+      lbl = lbl.trim();
+      if (!lbl) return;
+
+      if (input instanceof HTMLSelectElement) {
+        const optText = input.options[input.selectedIndex]?.textContent?.trim();
+        if (optText) lines.push(lbl + ': ' + optText);
+      } else {
+        const val = input.value;
+        if (val && val !== '0' && val !== '') lines.push(lbl + ': ' + val);
+      }
+    });
+
+    lines.push('', 'Results:');
+
+    document.querySelectorAll('#results .result-row').forEach(el => {
+      const row = el as HTMLElement;
+      if (row.offsetParent === null) return;
+      const rl = row.querySelector('.result-label')?.textContent?.trim();
+      const rv = row.querySelector('.result-value')?.textContent?.trim();
+      if (rl && rv && rv !== '\u2014') lines.push(rl + ': ' + rv);
+    });
+
+    lines.push('', 'tradecalchub.com' + window.location.pathname);
+    return lines.join('\n');
+  }
+
+  const copyBtn = document.querySelector('#copyResultsBtn') as HTMLButtonElement;
+  const shareBtn = document.querySelector('#shareResultsBtn') as HTMLButtonElement;
+
+  if (copyBtn) {
+    copyBtn.addEventListener('click', () => {
+      const text = getCalcText();
+      navigator.clipboard.writeText(text).then(() => {
+        copyBtn.textContent = 'Copied!';
+        setTimeout(() => { copyBtn.textContent = 'Copy Results'; }, 2000);
+      });
+    });
+  }
+
+  if (shareBtn) {
+    if (navigator.share) {
+      shareBtn.addEventListener('click', () => {
+        navigator.share({ text: getCalcText() }).catch(() => {});
+      });
+    } else {
+      shareBtn.style.display = 'none';
+    }
+  }
+</script>

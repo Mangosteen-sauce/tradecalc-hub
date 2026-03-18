@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { calculators } from '../../data/calculators';
 import FeedbackWidget from '../../components/FeedbackWidget.astro';
 import KofiButton from '../../components/KofiButton.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
 import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'mulch')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
@@ -40,11 +41,11 @@ const description = 'Free mulch calculator. Estimate cubic yards and bags of mul
       <div class="form-row">
         <div class="form-group">
           <label>Length <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="length" placeholder="20" min="0" step="any" />
+          <input type="number" id="length" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Width <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="width" placeholder="10" min="0" step="any" />
+          <input type="number" id="width" placeholder="0" min="0" step="any" />
         </div>
       </div>
     </div>
@@ -53,7 +54,7 @@ const description = 'Free mulch calculator. Estimate cubic yards and bags of mul
     <div id="circleInputs" style="display:none;">
       <div class="form-group">
         <label>Radius <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="circleRadius" placeholder="5" min="0" step="any" />
+        <input type="number" id="circleRadius" placeholder="0" min="0" step="any" />
       </div>
     </div>
 
@@ -62,11 +63,11 @@ const description = 'Free mulch calculator. Estimate cubic yards and bags of mul
       <div class="form-row">
         <div class="form-group">
           <label>Outer Radius <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="outerRadius" placeholder="5" min="0" step="any" />
+          <input type="number" id="outerRadius" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Inner Radius <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="innerRadius" placeholder="1" min="0" step="any" />
+          <input type="number" id="innerRadius" placeholder="0" min="0" step="any" />
         </div>
       </div>
       <p class="hint" style="font-size:0.8rem;color:var(--color-text-light);margin-top:-0.5rem;">Inner radius = distance from tree trunk to mulch inner edge.</p>
@@ -86,12 +87,12 @@ const description = 'Free mulch calculator. Estimate cubic yards and bags of mul
 
     <div class="form-group" id="customDepthGroup" style="display:none;">
       <label>Custom Depth <span class="hint" id="customDepthHint">(inches)</span></label>
-      <input type="number" id="customDepth" placeholder="3.5" min="0" step="any" />
+      <input type="number" id="customDepth" placeholder="0" min="0" step="any" />
     </div>
 
     <div class="form-group">
       <label>Cost per Cubic Yard <span class="hint">(optional, $)</span></label>
-      <input type="number" id="costPerYard" placeholder="35" min="0" step="any" />
+      <input type="number" id="costPerYard" placeholder="0" min="0" step="any" />
     </div>
 
     <button class="btn-calculate" id="calcBtn">Calculate Mulch</button>
@@ -119,7 +120,7 @@ const description = 'Free mulch calculator. Estimate cubic yards and bags of mul
         <span class="result-value" id="resCost">—</span>
       </div>
       <p class="result-note">Coverage is approximate. Actual amount varies with bed shape and existing mulch depth.</p>
-      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+      <ShareButtons />
     </div>
   </div>
 
@@ -290,10 +291,5 @@ const description = 'Free mulch calculator. Estimate cubic yards and bags of mul
     $('#results').classList.add('visible');
   });
 
-  $('#shareBtn').addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      $('#shareBtn').textContent = 'Copied!';
-      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
-    });
-  });
+
 </script>

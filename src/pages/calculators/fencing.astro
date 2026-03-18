@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { calculators } from '../../data/calculators';
 import FeedbackWidget from '../../components/FeedbackWidget.astro';
 import KofiButton from '../../components/KofiButton.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
 import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'fencing')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
@@ -28,7 +29,7 @@ const description = 'Free fence calculator. Estimate posts, rails, pickets, conc
     <div class="form-row">
       <div class="form-group">
         <label>Total Fence Length <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="fenceLength" placeholder="150" min="0" step="any" />
+        <input type="number" id="fenceLength" placeholder="0" min="0" step="any" />
       </div>
       <div class="form-group">
         <label>Fence Height <span class="hint unit-label">(feet)</span></label>
@@ -126,7 +127,7 @@ const description = 'Free fence calculator. Estimate posts, rails, pickets, conc
         <span class="result-value" id="resGateInfo">—</span>
       </div>
       <p class="result-note">Includes gate posts (add 2 extra per gate). Concrete estimated at 2 bags per post for standard depth.</p>
-      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+      <ShareButtons />
     </div>
   </div>
 
@@ -346,10 +347,5 @@ const description = 'Free fence calculator. Estimate posts, rails, pickets, conc
     $('#results').classList.add('visible');
   });
 
-  $('#shareBtn').addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      $('#shareBtn').textContent = 'Copied!';
-      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
-    });
-  });
+
 </script>

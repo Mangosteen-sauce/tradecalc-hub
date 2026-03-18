@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { calculators } from '../../data/calculators';
 import FeedbackWidget from '../../components/FeedbackWidget.astro';
 import KofiButton from '../../components/KofiButton.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
 import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'paint')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
@@ -28,17 +29,17 @@ const description = 'Free paint calculator. Estimate gallons of paint needed for
     <div class="form-row">
       <div class="form-group">
         <label>Room Length <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="roomLength" placeholder="15" min="0" step="any" />
+        <input type="number" id="roomLength" placeholder="0" min="0" step="any" />
       </div>
       <div class="form-group">
         <label>Room Width <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="roomWidth" placeholder="12" min="0" step="any" />
+        <input type="number" id="roomWidth" placeholder="0" min="0" step="any" />
       </div>
     </div>
 
     <div class="form-group">
       <label>Wall Height <span class="hint unit-label">(feet)</span></label>
-      <input type="number" id="wallHeight" placeholder="8" min="0" step="any" />
+      <input type="number" id="wallHeight" placeholder="0" min="0" step="any" />
     </div>
 
     <div class="form-row">
@@ -61,7 +62,7 @@ const description = 'Free paint calculator. Estimate gallons of paint needed for
 
     <div class="form-group">
       <label>Cost per Gallon <span class="hint">(optional, $)</span></label>
-      <input type="number" id="costPerGallon" placeholder="35" min="0" step="any" />
+      <input type="number" id="costPerGallon" placeholder="0" min="0" step="any" />
     </div>
 
     <!-- Advanced Options -->
@@ -153,7 +154,7 @@ const description = 'Free paint calculator. Estimate gallons of paint needed for
         <span class="result-value" id="resCost">—</span>
       </div>
       <p class="result-note" id="resultNote">Based on 350 sq ft coverage per gallon. Textured walls or porous surfaces may require more paint.</p>
-      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+      <ShareButtons />
     </div>
   </div>
 
@@ -452,10 +453,4 @@ const description = 'Free paint calculator. Estimate gallons of paint needed for
     $('#results').classList.add('visible');
   });
 
-  $('#shareBtn').addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      $('#shareBtn').textContent = 'Copied!';
-      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
-    });
-  });
 </script>

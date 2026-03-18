@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { calculators } from '../../data/calculators';
 import FeedbackWidget from '../../components/FeedbackWidget.astro';
 import KofiButton from '../../components/KofiButton.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
 import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'insulation')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
@@ -37,11 +38,11 @@ const description = 'Free insulation calculator. Estimate batts, rolls, or blown
     <div class="form-row">
       <div class="form-group">
         <label>Total Length <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="length" placeholder="40" min="0" step="any" />
+        <input type="number" id="length" placeholder="0" min="0" step="any" />
       </div>
       <div class="form-group">
         <label>Height / Width <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="height" placeholder="8" min="0" step="any" />
+        <input type="number" id="height" placeholder="0" min="0" step="any" />
       </div>
     </div>
 
@@ -147,7 +148,7 @@ const description = 'Free insulation calculator. Estimate batts, rolls, or blown
         <span class="result-value" id="resTotalR">—</span>
       </div>
       <p class="result-note">Estimates include 5% waste. Check local building codes for minimum R-value requirements.</p>
-      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+      <ShareButtons />
     </div>
   </div>
 
@@ -422,10 +423,5 @@ const description = 'Free insulation calculator. Estimate batts, rolls, or blown
     $('#results').classList.add('visible');
   });
 
-  $('#shareBtn').addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      $('#shareBtn').textContent = 'Copied!';
-      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
-    });
-  });
+
 </script>

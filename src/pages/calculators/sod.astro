@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { calculators } from '../../data/calculators';
 import FeedbackWidget from '../../components/FeedbackWidget.astro';
 import KofiButton from '../../components/KofiButton.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
 import { getAffiliateLinksForCalculator } from '../../data/affiliates';
 const calc = calculators.find(c => c.slug === 'sod')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
@@ -50,11 +51,11 @@ const description = 'Free sod and grass seed calculator. Estimate rolls of sod o
       <div class="form-row">
         <div class="form-group">
           <label>Lawn Length <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="length" placeholder="50" min="0" step="any" />
+          <input type="number" id="length" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Lawn Width <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="width" placeholder="30" min="0" step="any" />
+          <input type="number" id="width" placeholder="0" min="0" step="any" />
         </div>
       </div>
     </div>
@@ -64,21 +65,21 @@ const description = 'Free sod and grass seed calculator. Estimate rolls of sod o
       <div class="form-row">
         <div class="form-group">
           <label>Section 1 Length <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="l1Length" placeholder="30" min="0" step="any" />
+          <input type="number" id="l1Length" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Section 1 Width <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="l1Width" placeholder="20" min="0" step="any" />
+          <input type="number" id="l1Width" placeholder="0" min="0" step="any" />
         </div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label>Section 2 Length <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="l2Length" placeholder="20" min="0" step="any" />
+          <input type="number" id="l2Length" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Section 2 Width <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="l2Width" placeholder="15" min="0" step="any" />
+          <input type="number" id="l2Width" placeholder="0" min="0" step="any" />
         </div>
       </div>
     </div>
@@ -87,7 +88,7 @@ const description = 'Free sod and grass seed calculator. Estimate rolls of sod o
     <div id="circleInputs" style="display:none;">
       <div class="form-group">
         <label>Radius <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="circleRadius" placeholder="15" min="0" step="any" />
+        <input type="number" id="circleRadius" placeholder="0" min="0" step="any" />
       </div>
     </div>
 
@@ -96,11 +97,11 @@ const description = 'Free sod and grass seed calculator. Estimate rolls of sod o
       <div class="form-row">
         <div class="form-group">
           <label>Oval Length <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="ovalLength" placeholder="30" min="0" step="any" />
+          <input type="number" id="ovalLength" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Oval Width <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="ovalWidth" placeholder="20" min="0" step="any" />
+          <input type="number" id="ovalWidth" placeholder="0" min="0" step="any" />
         </div>
       </div>
     </div>
@@ -110,11 +111,11 @@ const description = 'Free sod and grass seed calculator. Estimate rolls of sod o
       <div class="form-row">
         <div class="form-group">
           <label>Base <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="triBase" placeholder="30" min="0" step="any" />
+          <input type="number" id="triBase" placeholder="0" min="0" step="any" />
         </div>
         <div class="form-group">
           <label>Height <span class="hint unit-label">(feet)</span></label>
-          <input type="number" id="triHeight" placeholder="20" min="0" step="any" />
+          <input type="number" id="triHeight" placeholder="0" min="0" step="any" />
         </div>
       </div>
     </div>
@@ -141,7 +142,7 @@ const description = 'Free sod and grass seed calculator. Estimate rolls of sod o
 
     <div class="form-group">
       <label>Cost per Unit <span class="hint" id="costHint">(optional, $ per roll)</span></label>
-      <input type="number" id="cost" placeholder="5" min="0" step="any" />
+      <input type="number" id="cost" placeholder="0" min="0" step="any" />
     </div>
 
     <!-- Advanced Options -->
@@ -176,7 +177,7 @@ const description = 'Free sod and grass seed calculator. Estimate rolls of sod o
         <span class="result-value" id="resCost">—</span>
       </div>
       <p class="result-note">Order 5% extra sod for trimming waste. Sod roll sizes vary by supplier. Most common is 2' × 5' (10 sq ft).</p>
-      <button class="btn-share" id="shareBtn">Copy Link to Results</button>
+      <ShareButtons />
     </div>
   </div>
 
@@ -389,10 +390,5 @@ const description = 'Free sod and grass seed calculator. Estimate rolls of sod o
     $('#results').classList.add('visible');
   });
 
-  $('#shareBtn').addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-      $('#shareBtn').textContent = 'Copied!';
-      setTimeout(() => { $('#shareBtn').textContent = 'Copy Link to Results'; }, 2000);
-    });
-  });
+
 </script>
