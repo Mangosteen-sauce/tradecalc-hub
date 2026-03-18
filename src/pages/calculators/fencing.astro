@@ -61,10 +61,41 @@ const description = 'Free fence calculator. Estimate posts, rails, pickets, conc
       </div>
     </div>
 
-    <div class="form-group">
-      <label>Number of Gates</label>
-      <input type="number" id="gates" placeholder="1" min="0" step="1" value="1" />
-    </div>
+    <!-- Advanced Options -->
+    <details class="advanced-options" id="advancedOptions">
+      <summary>Advanced Options</summary>
+      <div class="advanced-inner">
+
+        <span class="advanced-section-label">Gates</span>
+        <div class="opening-rows" id="gateRows">
+          <div class="opening-row" data-row="gate">
+            <select class="gate-type">
+              <option value="3.5">Walk Gate (3.5 ft)</option>
+              <option value="11">Single Drive (11 ft)</option>
+              <option value="18">Double Drive (18 ft)</option>
+              <option value="custom">Custom Width</option>
+            </select>
+            <div class="custom-dims" style="display:none;">
+              <input type="number" class="gate-w" placeholder="Width (ft)" min="0" step="any" />
+            </div>
+            <input type="number" class="qty-input" value="1" min="0" step="1" title="Count" />
+            <button type="button" class="btn-remove-row" title="Remove">×</button>
+          </div>
+        </div>
+        <button type="button" class="btn-add-row" id="addGateRow">+ Add gate</button>
+
+        <div class="form-group" style="margin-top:0.75rem;">
+          <label>Terrain</label>
+          <select id="terrain">
+            <option value="1">Flat (no adjustment)</option>
+            <option value="1.10">Slight slope (+10% material)</option>
+            <option value="1.20">Steep slope (+20% material)</option>
+          </select>
+        </div>
+        <p class="hint" style="margin-top:-0.5rem;font-size:0.8rem;color:var(--color-text-light);">Sloped terrain requires more material. Stepped fences use more posts; racked fences follow the ground.</p>
+
+      </div>
+    </details>
 
     <button class="btn-calculate" id="calcBtn">Calculate Fence</button>
 
@@ -90,6 +121,10 @@ const description = 'Free fence calculator. Estimate posts, rails, pickets, conc
         <span class="result-label">Chain Link Fabric</span>
         <span class="result-value" id="resFabric">—</span>
       </div>
+      <div class="result-row" id="gateInfoRow" style="display:none;">
+        <span class="result-label">Gate Openings</span>
+        <span class="result-value" id="resGateInfo">—</span>
+      </div>
       <p class="result-note">Includes gate posts (add 2 extra per gate). Concrete estimated at 2 bags per post for standard depth.</p>
       <button class="btn-share" id="shareBtn">Copy Link to Results</button>
     </div>
@@ -105,7 +140,7 @@ const description = 'Free fence calculator. Estimate posts, rails, pickets, conc
     <div class="formula-box">
       Posts = (Fence Length / Post Spacing) + 1 + (Gates × 2)<br>
       Rails per Section = 2 (for 4-5 ft) or 3 (for 6-8 ft)<br>
-      Pickets = Fence Length / Picket Width (typically 3.5" or 5.5")<br>
+      Pickets = (Fence Length - Gate Openings) / Picket Width<br>
       Concrete = Posts × 2 bags (80 lb) for standard 2 ft depth
     </div>
 
@@ -191,31 +226,95 @@ const description = 'Free fence calculator. Estimate posts, rails, pickets, conc
     });
   });
 
+  // --- Gate row helpers ---
+  function setupGateToggle(row: Element) {
+    const select = row.querySelector('.gate-type') as HTMLSelectElement;
+    const dims = row.querySelector('.custom-dims') as HTMLElement;
+    if (!select || !dims) return;
+    select.addEventListener('change', () => {
+      dims.style.display = select.value === 'custom' ? '' : 'none';
+    });
+  }
+
+  function addGateRow() {
+    const container = $('#gateRows');
+    const row = document.createElement('div');
+    row.className = 'opening-row';
+    row.dataset.row = 'gate';
+    row.innerHTML = `
+      <select class="gate-type">
+        <option value="3.5">Walk Gate (3.5 ft)</option>
+        <option value="11">Single Drive (11 ft)</option>
+        <option value="18">Double Drive (18 ft)</option>
+        <option value="custom">Custom Width</option>
+      </select>
+      <div class="custom-dims" style="display:none;">
+        <input type="number" class="gate-w" placeholder="Width (ft)" min="0" step="any" />
+      </div>
+      <input type="number" class="qty-input" value="1" min="0" step="1" title="Count" />
+      <button type="button" class="btn-remove-row" title="Remove">×</button>`;
+    container.appendChild(row);
+    setupGateToggle(row);
+    row.querySelector('.btn-remove-row')!.addEventListener('click', () => row.remove());
+  }
+
+  // Wire up initial rows
+  document.querySelectorAll('#gateRows .opening-row').forEach(row => {
+    setupGateToggle(row);
+    row.querySelector('.btn-remove-row')!.addEventListener('click', () => row.remove());
+  });
+  $('#addGateRow').addEventListener('click', addGateRow);
+
+  // --- Gate total helpers ---
+  function getGateData(): { totalWidth: number; totalCount: number } {
+    let totalWidth = 0, totalCount = 0;
+    document.querySelectorAll('#gateRows .opening-row').forEach(row => {
+      const select = row.querySelector('.gate-type') as HTMLSelectElement;
+      const qty = parseFloat((row.querySelector('.qty-input') as HTMLInputElement).value) || 0;
+      let w: number;
+      if (select.value === 'custom') {
+        w = parseFloat((row.querySelector('.gate-w') as HTMLInputElement).value) || 0;
+        if (unit === 'metric') w *= 3.28084;
+      } else {
+        w = parseFloat(select.value);
+      }
+      totalWidth += w * qty;
+      totalCount += qty;
+    });
+    return { totalWidth, totalCount };
+  }
+
+  // --- Main calculation ---
   $('#calcBtn').addEventListener('click', () => {
     let length = val('#fenceLength');
     let height = parseFloat((document.querySelector('#fenceHeight') as HTMLSelectElement).value);
     let spacing = parseFloat((document.querySelector('#postSpacing') as HTMLSelectElement).value);
     const fenceType = (document.querySelector('#fenceType') as HTMLSelectElement).value;
-    const gates = val('#gates') || 0;
+    const terrainFactor = parseFloat((document.querySelector('#terrain') as HTMLSelectElement)?.value || '1');
 
     if (unit === 'metric') { length *= 3.28084; }
     if (length <= 0) return;
 
+    const gateData = getGateData();
+    const gates = gateData.totalCount;
+    const gateWidth = gateData.totalWidth;
+
     const sections = Math.ceil(length / spacing);
     const posts = sections + 1 + (gates * 2);
     const railsPerSection = height >= 6 ? 3 : 2;
-    const totalRails = sections * railsPerSection;
+    const totalRails = Math.ceil(sections * railsPerSection * terrainFactor);
 
     let pickets = 0;
     let picketLabel = '';
     const isChainLink = fenceType === 'chain-link';
+    const picketLength = Math.max(0, length - gateWidth); // subtract gate openings
 
     if (!isChainLink) {
       const picketWidth = fenceType === 'wood-privacy' ? 5.5 : 3.5;
       const gap = fenceType === 'wood-picket' ? 1.75 : 0;
-      pickets = Math.ceil(length * 12 / (picketWidth + gap));
+      pickets = Math.ceil(picketLength * 12 / (picketWidth + gap));
       if (fenceType === 'wood-shadowbox') pickets = Math.ceil(pickets * 1.5);
-      pickets = Math.ceil(pickets * 1.10); // 10% waste
+      pickets = Math.ceil(pickets * 1.10 * terrainFactor); // 10% waste + terrain
       picketLabel = `${pickets.toLocaleString()} boards`;
     }
 
@@ -227,13 +326,21 @@ const description = 'Free fence calculator. Estimate posts, rails, pickets, conc
     $('#resConcrete').textContent = `${concreteBags} bags`;
 
     if (isChainLink) {
-      const rolls = Math.ceil(length / 50);
+      const fabricLength = Math.max(0, length - gateWidth);
+      const rolls = Math.ceil(fabricLength / 50);
       $('#resFabric').textContent = `${rolls} roll${rolls > 1 ? 's' : ''} (50 ft each)`;
       $('#fabricRow').style.display = '';
       $('#picketRow').style.display = 'none';
     } else {
       $('#fabricRow').style.display = 'none';
       $('#picketRow').style.display = '';
+    }
+
+    if (gates > 0) {
+      $('#resGateInfo').textContent = `${gates} gate${gates > 1 ? 's' : ''} (${gateWidth.toFixed(1)} ft total opening)`;
+      $('#gateInfoRow').style.display = '';
+    } else {
+      $('#gateInfoRow').style.display = 'none';
     }
 
     $('#results').classList.add('visible');

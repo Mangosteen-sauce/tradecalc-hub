@@ -27,20 +27,95 @@ const description = 'Free sod and grass seed calculator. Estimate rolls of sod o
 
     <div>
       <label style="font-weight:600;font-size:0.875rem;margin-bottom:0.5rem;display:block;">Coverage Type</label>
-      <div style="display:flex;gap:0.5rem;margin-bottom:1rem;">
-        <button class="type-btn active" data-type="sod" style="padding:0.4rem 0.9rem;border:1.5px solid var(--color-border);border-radius:var(--radius);background:var(--color-surface);font-size:0.85rem;font-weight:500;cursor:pointer;color:var(--color-text-light);">Sod</button>
-        <button class="type-btn" data-type="seed" style="padding:0.4rem 0.9rem;border:1.5px solid var(--color-border);border-radius:var(--radius);background:var(--color-surface);font-size:0.85rem;font-weight:500;cursor:pointer;color:var(--color-text-light);">Grass Seed</button>
+      <div class="shape-selector">
+        <button class="shape-btn type-btn active" data-type="sod">Sod</button>
+        <button class="shape-btn type-btn" data-type="seed">Grass Seed</button>
       </div>
     </div>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label>Lawn Length <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="length" placeholder="50" min="0" step="any" />
+    <!-- Lawn Shape Selector -->
+    <div>
+      <label style="font-weight:600;font-size:0.875rem;margin-bottom:0.5rem;display:block;">Lawn Shape</label>
+      <div class="shape-selector">
+        <button class="shape-btn lawn-shape active" data-shape="rectangle">Rectangle</button>
+        <button class="shape-btn lawn-shape" data-shape="l-shape">L-Shape</button>
+        <button class="shape-btn lawn-shape" data-shape="circle">Circle</button>
+        <button class="shape-btn lawn-shape" data-shape="oval">Oval</button>
+        <button class="shape-btn lawn-shape" data-shape="triangle">Triangle</button>
       </div>
+    </div>
+
+    <!-- Rectangle Inputs (default) -->
+    <div id="rectInputs">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Lawn Length <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="length" placeholder="50" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Lawn Width <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="width" placeholder="30" min="0" step="any" />
+        </div>
+      </div>
+    </div>
+
+    <!-- L-Shape Inputs -->
+    <div id="lInputs" style="display:none;">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Section 1 Length <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="l1Length" placeholder="30" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Section 1 Width <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="l1Width" placeholder="20" min="0" step="any" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Section 2 Length <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="l2Length" placeholder="20" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Section 2 Width <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="l2Width" placeholder="15" min="0" step="any" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Circle Inputs -->
+    <div id="circleInputs" style="display:none;">
       <div class="form-group">
-        <label>Lawn Width <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="width" placeholder="30" min="0" step="any" />
+        <label>Radius <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="circleRadius" placeholder="15" min="0" step="any" />
+      </div>
+    </div>
+
+    <!-- Oval Inputs -->
+    <div id="ovalInputs" style="display:none;">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Oval Length <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="ovalLength" placeholder="30" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Oval Width <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="ovalWidth" placeholder="20" min="0" step="any" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Triangle Inputs -->
+    <div id="triInputs" style="display:none;">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Base <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="triBase" placeholder="30" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Height <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="triHeight" placeholder="20" min="0" step="any" />
+        </div>
       </div>
     </div>
 
@@ -68,6 +143,17 @@ const description = 'Free sod and grass seed calculator. Estimate rolls of sod o
       <label>Cost per Unit <span class="hint" id="costHint">(optional, $ per roll)</span></label>
       <input type="number" id="cost" placeholder="5" min="0" step="any" />
     </div>
+
+    <!-- Advanced Options -->
+    <details class="advanced-options">
+      <summary>Advanced Options</summary>
+      <div class="advanced-inner">
+        <div class="form-group">
+          <label>Subtract Areas <span class="hint">(total sq ft for gardens, paths, trees)</span></label>
+          <input type="number" id="subtractArea" placeholder="0" min="0" step="any" value="0" />
+        </div>
+      </div>
+    </details>
 
     <button class="btn-calculate" id="calcBtn">Calculate</button>
 
@@ -103,6 +189,9 @@ const description = 'Free sod and grass seed calculator. Estimate rolls of sod o
     <h3>Sod Formula</h3>
     <div class="formula-box">
       Lawn Area = Length × Width (in sq ft)<br>
+      Circle: π × radius²<br>
+      Oval: π × (length/2) × (width/2)<br>
+      Triangle: 0.5 × base × height<br>
       Rolls = Area × 1.05 (5% waste) / 10 sq ft per roll<br>
       Pallets = Rolls / 50 (most pallets hold ~450-500 sq ft)
     </div>
@@ -181,6 +270,7 @@ const description = 'Free sod and grass seed calculator. Estimate rolls of sod o
 
   let unit: 'imperial' | 'metric' = 'imperial';
   let coverType: 'sod' | 'seed' = 'sod';
+  let lawnShape = 'rectangle';
 
   const seedRates: Record<string, { newRate: number; overseedRate: number }> = {
     'kentucky-bluegrass': { newRate: 2.5, overseedRate: 1.5 },
@@ -199,35 +289,62 @@ const description = 'Free sod and grass seed calculator. Estimate rolls of sod o
     });
   });
 
+  // Type toggle (sod/seed)
   $$('.type-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      $$('.type-btn').forEach(b => {
-        b.classList.remove('active');
-        (b as HTMLElement).style.borderColor = 'var(--color-border)';
-        (b as HTMLElement).style.background = 'var(--color-surface)';
-        (b as HTMLElement).style.color = 'var(--color-text-light)';
-      });
+      $$('.type-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      (btn as HTMLElement).style.borderColor = 'var(--color-primary)';
-      (btn as HTMLElement).style.background = 'var(--color-primary-light)';
-      (btn as HTMLElement).style.color = 'var(--color-primary)';
       coverType = (btn as HTMLElement).dataset.type as 'sod' | 'seed';
       $('#seedOptions').style.display = coverType === 'seed' ? '' : 'none';
       $('#costHint').textContent = coverType === 'sod' ? '(optional, $ per roll)' : '(optional, $ per lb)';
     });
-    // Init active state
-    if (btn.classList.contains('active')) {
-      (btn as HTMLElement).style.borderColor = 'var(--color-primary)';
-      (btn as HTMLElement).style.background = 'var(--color-primary-light)';
-      (btn as HTMLElement).style.color = 'var(--color-primary)';
-    }
+  });
+
+  // Lawn shape toggle
+  $$('.lawn-shape').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('.lawn-shape').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      lawnShape = (btn as HTMLElement).dataset.shape!;
+      $('#rectInputs').style.display = lawnShape === 'rectangle' ? '' : 'none';
+      $('#lInputs').style.display = lawnShape === 'l-shape' ? '' : 'none';
+      $('#circleInputs').style.display = lawnShape === 'circle' ? '' : 'none';
+      $('#ovalInputs').style.display = lawnShape === 'oval' ? '' : 'none';
+      $('#triInputs').style.display = lawnShape === 'triangle' ? '' : 'none';
+    });
   });
 
   $('#calcBtn').addEventListener('click', () => {
-    let l = val('#length'), w = val('#width');
-    if (unit === 'metric') { l *= 3.28084; w *= 3.28084; }
+    const m2ft = 3.28084;
+    let sqFt = 0;
 
-    const sqFt = l * w;
+    if (lawnShape === 'rectangle') {
+      let l = val('#length'), w = val('#width');
+      if (unit === 'metric') { l *= m2ft; w *= m2ft; }
+      sqFt = l * w;
+    } else if (lawnShape === 'l-shape') {
+      let l1l = val('#l1Length'), l1w = val('#l1Width'), l2l = val('#l2Length'), l2w = val('#l2Width');
+      if (unit === 'metric') { l1l *= m2ft; l1w *= m2ft; l2l *= m2ft; l2w *= m2ft; }
+      sqFt = (l1l * l1w) + (l2l * l2w);
+    } else if (lawnShape === 'circle') {
+      let r = val('#circleRadius');
+      if (unit === 'metric') r *= m2ft;
+      sqFt = Math.PI * r * r;
+    } else if (lawnShape === 'oval') {
+      let ol = val('#ovalLength'), ow = val('#ovalWidth');
+      if (unit === 'metric') { ol *= m2ft; ow *= m2ft; }
+      sqFt = Math.PI * (ol / 2) * (ow / 2);
+    } else {
+      let b = val('#triBase'), h = val('#triHeight');
+      if (unit === 'metric') { b *= m2ft; h *= m2ft; }
+      sqFt = 0.5 * b * h;
+    }
+
+    // Subtract areas
+    let subtract = val('#subtractArea');
+    if (unit === 'metric' && subtract > 0) subtract *= 10.764; // m² to sq ft
+    sqFt -= subtract;
+
     if (sqFt <= 0) return;
 
     const areaLabel = unit === 'metric'

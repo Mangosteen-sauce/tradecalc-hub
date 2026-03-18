@@ -65,6 +65,65 @@ const description = 'Free brick and block calculator. Estimate bricks, concrete 
       </select>
     </div>
 
+    <!-- Advanced Options -->
+    <details class="advanced-options" id="advancedOptions">
+      <summary>Advanced Options</summary>
+      <div class="advanced-inner">
+
+        <div class="form-group">
+          <label>Bond Pattern</label>
+          <select id="bondPattern">
+            <option value="0">Running Bond (standard)</option>
+            <option value="0">Stack Bond</option>
+            <option value="15">Herringbone (+15% waste)</option>
+            <option value="5">Basketweave (+5% waste)</option>
+          </select>
+        </div>
+
+        <div id="wallOpenings">
+          <span class="advanced-section-label">Doors to Subtract</span>
+          <div class="opening-rows" id="doorRows">
+            <div class="opening-row" data-row="door">
+              <select class="door-type">
+                <option value="21">Interior (21 sq ft)</option>
+                <option value="23">Exterior (23 sq ft)</option>
+                <option value="40">Sliding Glass (40 sq ft)</option>
+                <option value="custom">Custom (H × W)</option>
+              </select>
+              <div class="custom-dims" style="display:none;">
+                <input type="number" class="door-h" placeholder="H" min="0" step="any" />
+                <input type="number" class="door-w" placeholder="W" min="0" step="any" />
+              </div>
+              <input type="number" class="qty-input" value="0" min="0" step="1" title="Count" />
+              <button type="button" class="btn-remove-row" title="Remove">×</button>
+            </div>
+          </div>
+          <button type="button" class="btn-add-row" id="addDoorRow">+ Add door type</button>
+
+          <span class="advanced-section-label" style="margin-top:0.75rem;">Windows to Subtract</span>
+          <div class="opening-rows" id="windowRows">
+            <div class="opening-row" data-row="window">
+              <select class="window-type">
+                <option value="12">Standard (12 sq ft)</option>
+                <option value="6">Small (6 sq ft)</option>
+                <option value="20">Picture (20 sq ft)</option>
+                <option value="30">Bay (30 sq ft)</option>
+                <option value="custom">Custom (H × W)</option>
+              </select>
+              <div class="custom-dims" style="display:none;">
+                <input type="number" class="win-h" placeholder="H" min="0" step="any" />
+                <input type="number" class="win-w" placeholder="W" min="0" step="any" />
+              </div>
+              <input type="number" class="qty-input" value="0" min="0" step="1" title="Count" />
+              <button type="button" class="btn-remove-row" title="Remove">×</button>
+            </div>
+          </div>
+          <button type="button" class="btn-add-row" id="addWindowRow">+ Add window type</button>
+        </div>
+
+      </div>
+    </details>
+
     <button class="btn-calculate" id="calcBtn">Calculate Bricks</button>
 
     <div class="results-panel" id="results">
@@ -95,10 +154,11 @@ const description = 'Free brick and block calculator. Estimate bricks, concrete 
     <h3>Brick Formula (Wall)</h3>
     <div class="formula-box">
       Wall Area = Length × Height (in sq ft)<br>
+      Subtract: Doors + Windows<br>
       Bricks per sq ft depends on brick size:<br>
       - Standard brick: ~6.75 per sq ft (with 3/8" mortar)<br>
       - CMU 8" block: ~1.125 per sq ft<br>
-      Total Bricks = Wall Area × Bricks/sq ft × (1 + Waste%)
+      Total Bricks = Area × Bricks/sq ft × (1 + Waste% + Pattern%)
     </div>
 
     <h3>Bricks per Square Foot</h3>
@@ -123,8 +183,8 @@ const description = 'Free brick and block calculator. Estimate bricks, concrete 
     <ul>
       <li><strong>Running bond:</strong> Most common, strongest. Bricks offset by half.</li>
       <li><strong>Stack bond:</strong> Aligned vertically. Decorative only, not structural.</li>
-      <li><strong>Herringbone:</strong> 45-degree zigzag. Popular for patios. Uses 5-10% more material.</li>
-      <li><strong>Basket weave:</strong> Pairs of bricks alternating direction. Popular for walkways.</li>
+      <li><strong>Herringbone:</strong> 45-degree zigzag. Popular for patios. Uses 15% more material due to angled perimeter cuts.</li>
+      <li><strong>Basket weave:</strong> Pairs of bricks alternating direction. Uses 5% more material.</li>
     </ul>
     <p>A good <a href={affiliateLinks[0]?.url} target="_blank">{affiliateLinks[0]?.text}</a> is essential for clean mortar joints. Pick up <a href={affiliateLinks[1]?.url} rel="nofollow sponsored" target="_blank">{affiliateLinks[1]?.text}</a> while you're sourcing materials.</p>
   </div>
@@ -195,23 +255,123 @@ const description = 'Free brick and block calculator. Estimate bricks, concrete 
 
   const projectType = document.querySelector('#projectType') as HTMLSelectElement;
   projectType.addEventListener('change', () => {
-    $('#dimLabel').innerHTML = projectType.value === 'wall'
+    const isWall = projectType.value === 'wall';
+    $('#dimLabel').innerHTML = isWall
       ? 'Height <span class="hint unit-label">(' + (unit === 'imperial' ? 'feet' : 'meters') + ')</span>'
       : 'Width <span class="hint unit-label">(' + (unit === 'imperial' ? 'feet' : 'meters') + ')</span>';
+    $('#wallOpenings').style.display = isWall ? '' : 'none';
   });
 
+  // --- Dynamic row helpers ---
+  function setupCustomToggle(row: Element, typeClass: string, dimsSelector: string) {
+    const select = row.querySelector(typeClass) as HTMLSelectElement;
+    const dims = row.querySelector(dimsSelector) as HTMLElement;
+    if (!select || !dims) return;
+    select.addEventListener('change', () => {
+      dims.style.display = select.value === 'custom' ? '' : 'none';
+    });
+  }
+
+  function addDoorRow() {
+    const container = $('#doorRows');
+    const row = document.createElement('div');
+    row.className = 'opening-row';
+    row.dataset.row = 'door';
+    row.innerHTML = `
+      <select class="door-type">
+        <option value="21">Interior (21 sq ft)</option>
+        <option value="23">Exterior (23 sq ft)</option>
+        <option value="40">Sliding Glass (40 sq ft)</option>
+        <option value="custom">Custom (H × W)</option>
+      </select>
+      <div class="custom-dims" style="display:none;">
+        <input type="number" class="door-h" placeholder="H" min="0" step="any" />
+        <input type="number" class="door-w" placeholder="W" min="0" step="any" />
+      </div>
+      <input type="number" class="qty-input" value="1" min="0" step="1" title="Count" />
+      <button type="button" class="btn-remove-row" title="Remove">×</button>`;
+    container.appendChild(row);
+    setupCustomToggle(row, '.door-type', '.custom-dims');
+    row.querySelector('.btn-remove-row')!.addEventListener('click', () => row.remove());
+  }
+
+  function addWindowRow() {
+    const container = $('#windowRows');
+    const row = document.createElement('div');
+    row.className = 'opening-row';
+    row.dataset.row = 'window';
+    row.innerHTML = `
+      <select class="window-type">
+        <option value="12">Standard (12 sq ft)</option>
+        <option value="6">Small (6 sq ft)</option>
+        <option value="20">Picture (20 sq ft)</option>
+        <option value="30">Bay (30 sq ft)</option>
+        <option value="custom">Custom (H × W)</option>
+      </select>
+      <div class="custom-dims" style="display:none;">
+        <input type="number" class="win-h" placeholder="H" min="0" step="any" />
+        <input type="number" class="win-w" placeholder="W" min="0" step="any" />
+      </div>
+      <input type="number" class="qty-input" value="1" min="0" step="1" title="Count" />
+      <button type="button" class="btn-remove-row" title="Remove">×</button>`;
+    container.appendChild(row);
+    setupCustomToggle(row, '.window-type', '.custom-dims');
+    row.querySelector('.btn-remove-row')!.addEventListener('click', () => row.remove());
+  }
+
+  // Wire up initial rows
+  document.querySelectorAll('#doorRows .opening-row').forEach(row => {
+    setupCustomToggle(row, '.door-type', '.custom-dims');
+    row.querySelector('.btn-remove-row')!.addEventListener('click', () => row.remove());
+  });
+  document.querySelectorAll('#windowRows .opening-row').forEach(row => {
+    setupCustomToggle(row, '.window-type', '.custom-dims');
+    row.querySelector('.btn-remove-row')!.addEventListener('click', () => row.remove());
+  });
+
+  $('#addDoorRow').addEventListener('click', addDoorRow);
+  $('#addWindowRow').addEventListener('click', addWindowRow);
+
+  // --- Area helpers ---
+  function getOpeningArea(containerSelector: string, typeClass: string, hClass: string, wClass: string): number {
+    let total = 0;
+    document.querySelectorAll(`${containerSelector} .opening-row`).forEach(row => {
+      const select = row.querySelector(typeClass) as HTMLSelectElement;
+      const qty = parseFloat((row.querySelector('.qty-input') as HTMLInputElement).value) || 0;
+      if (select.value === 'custom') {
+        let h = parseFloat((row.querySelector(hClass) as HTMLInputElement).value) || 0;
+        let w = parseFloat((row.querySelector(wClass) as HTMLInputElement).value) || 0;
+        if (unit === 'metric') { h *= 3.28084; w *= 3.28084; }
+        total += h * w * qty;
+      } else {
+        total += parseFloat(select.value) * qty;
+      }
+    });
+    return total;
+  }
+
+  // --- Main calculation ---
   $('#calcBtn').addEventListener('click', () => {
     let l = val('#length'), h = val('#height');
     if (unit === 'metric') { l *= 3.28084; h *= 3.28084; }
 
-    const area = l * h;
+    let area = l * h;
+
+    // Subtract openings for wall projects
+    if (projectType.value === 'wall') {
+      const doorArea = getOpeningArea('#doorRows', '.door-type', '.door-h', '.door-w');
+      const windowArea = getOpeningArea('#windowRows', '.window-type', '.win-h', '.win-w');
+      area -= (doorArea + windowArea);
+    }
+
     if (area <= 0) return;
 
     const brickType = (document.querySelector('#brickSize') as HTMLSelectElement).value;
     const waste = parseInt((document.querySelector('#waste') as HTMLSelectElement).value) / 100;
+    const patternExtra = parseInt((document.querySelector('#bondPattern') as HTMLSelectElement)?.value || '0') / 100;
     const data = brickData[brickType];
 
-    const bricksNeeded = Math.ceil(area * data.perSqFt * (1 + waste));
+    const bricksNeeded = Math.ceil(area * data.perSqFt * (1 + waste + patternExtra));
 
     const areaLabel = unit === 'metric'
       ? `${(area * 0.092903).toFixed(1)} m²`

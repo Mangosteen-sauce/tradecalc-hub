@@ -67,6 +67,61 @@ const description = 'Free insulation calculator. Estimate batts, rolls, or blown
       </select>
     </div>
 
+    <!-- Advanced Options -->
+    <details class="advanced-options" id="advancedOptions">
+      <summary>Advanced Options</summary>
+      <div class="advanced-inner">
+
+        <div id="wallOpenings">
+          <span class="advanced-section-label">Doors to Subtract</span>
+          <div class="opening-rows" id="doorRows">
+            <div class="opening-row" data-row="door">
+              <select class="door-type">
+                <option value="21">Interior (21 sq ft)</option>
+                <option value="23">Exterior (23 sq ft)</option>
+                <option value="40">Sliding Glass (40 sq ft)</option>
+                <option value="custom">Custom (H × W)</option>
+              </select>
+              <div class="custom-dims" style="display:none;">
+                <input type="number" class="door-h" placeholder="H" min="0" step="any" />
+                <input type="number" class="door-w" placeholder="W" min="0" step="any" />
+              </div>
+              <input type="number" class="qty-input" value="0" min="0" step="1" title="Count" />
+              <button type="button" class="btn-remove-row" title="Remove">×</button>
+            </div>
+          </div>
+          <button type="button" class="btn-add-row" id="addDoorRow">+ Add door type</button>
+
+          <span class="advanced-section-label" style="margin-top:0.75rem;">Windows to Subtract</span>
+          <div class="opening-rows" id="windowRows">
+            <div class="opening-row" data-row="window">
+              <select class="window-type">
+                <option value="12">Standard (12 sq ft)</option>
+                <option value="6">Small (6 sq ft)</option>
+                <option value="20">Picture (20 sq ft)</option>
+                <option value="30">Bay (30 sq ft)</option>
+                <option value="custom">Custom (H × W)</option>
+              </select>
+              <div class="custom-dims" style="display:none;">
+                <input type="number" class="win-h" placeholder="H" min="0" step="any" />
+                <input type="number" class="win-w" placeholder="W" min="0" step="any" />
+              </div>
+              <input type="number" class="qty-input" value="0" min="0" step="1" title="Count" />
+              <button type="button" class="btn-remove-row" title="Remove">×</button>
+            </div>
+          </div>
+          <button type="button" class="btn-add-row" id="addWindowRow">+ Add window type</button>
+        </div>
+
+        <div class="form-group" style="margin-top:0.75rem;">
+          <label>Existing Insulation Depth <span class="hint">(inches, 0 = none)</span></label>
+          <input type="number" id="existingDepth" placeholder="0" min="0" step="any" value="0" />
+          <p class="hint" style="margin-top:0.25rem;font-size:0.8rem;color:var(--color-text-light);" id="existingNote"></p>
+        </div>
+
+      </div>
+    </details>
+
     <button class="btn-calculate" id="calcBtn">Calculate Insulation</button>
 
     <div class="results-panel" id="results">
@@ -82,6 +137,14 @@ const description = 'Free insulation calculator. Estimate batts, rolls, or blown
       <div class="result-row">
         <span class="result-label">R-Value</span>
         <span class="result-value" id="resRvalue">—</span>
+      </div>
+      <div class="result-row" id="existingRow" style="display:none;">
+        <span class="result-label">Existing R-Value (approx)</span>
+        <span class="result-value" id="resExisting">—</span>
+      </div>
+      <div class="result-row" id="totalRRow" style="display:none;">
+        <span class="result-label">Total R-Value After</span>
+        <span class="result-value" id="resTotalR">—</span>
       </div>
       <p class="result-note">Estimates include 5% waste. Check local building codes for minimum R-value requirements.</p>
       <button class="btn-share" id="shareBtn">Copy Link to Results</button>
@@ -178,20 +241,22 @@ const description = 'Free insulation calculator. Estimate batts, rolls, or blown
 
   interface InsulationData {
     rValue: string;
+    rNumeric: number;
     coveragePerBag: number;
     unitLabel: string;
     isBlown: boolean;
+    rPerInch: number;
   }
 
   const insulationData: Record<string, InsulationData> = {
-    'batt-r13': { rValue: 'R-13', coveragePerBag: 40, unitLabel: 'bags (batts)', isBlown: false },
-    'batt-r19': { rValue: 'R-19', coveragePerBag: 48.96, unitLabel: 'bags (batts)', isBlown: false },
-    'batt-r30': { rValue: 'R-30', coveragePerBag: 31.25, unitLabel: 'bags (batts)', isBlown: false },
-    'batt-r38': { rValue: 'R-38', coveragePerBag: 24, unitLabel: 'bags (batts)', isBlown: false },
-    'blown-cellulose': { rValue: 'R-38 (at 10.5")', coveragePerBag: 40, unitLabel: 'bags (30 lb)', isBlown: true },
-    'blown-fiberglass': { rValue: 'R-30 (at 10.5")', coveragePerBag: 27, unitLabel: 'bags (25 lb)', isBlown: true },
-    'rigid-r5': { rValue: 'R-5', coveragePerBag: 32, unitLabel: 'sheets (4×8)', isBlown: false },
-    'rigid-r10': { rValue: 'R-10', coveragePerBag: 32, unitLabel: 'sheets (4×8)', isBlown: false },
+    'batt-r13': { rValue: 'R-13', rNumeric: 13, coveragePerBag: 40, unitLabel: 'bags (batts)', isBlown: false, rPerInch: 3.7 },
+    'batt-r19': { rValue: 'R-19', rNumeric: 19, coveragePerBag: 48.96, unitLabel: 'bags (batts)', isBlown: false, rPerInch: 3.0 },
+    'batt-r30': { rValue: 'R-30', rNumeric: 30, coveragePerBag: 31.25, unitLabel: 'bags (batts)', isBlown: false, rPerInch: 3.2 },
+    'batt-r38': { rValue: 'R-38', rNumeric: 38, coveragePerBag: 24, unitLabel: 'bags (batts)', isBlown: false, rPerInch: 3.2 },
+    'blown-cellulose': { rValue: 'R-38 (at 10.5")', rNumeric: 38, coveragePerBag: 40, unitLabel: 'bags (30 lb)', isBlown: true, rPerInch: 3.5 },
+    'blown-fiberglass': { rValue: 'R-30 (at 10.5")', rNumeric: 30, coveragePerBag: 27, unitLabel: 'bags (25 lb)', isBlown: true, rPerInch: 2.5 },
+    'rigid-r5': { rValue: 'R-5', rNumeric: 5, coveragePerBag: 32, unitLabel: 'sheets (4×8)', isBlown: false, rPerInch: 5.0 },
+    'rigid-r10': { rValue: 'R-10', rNumeric: 10, coveragePerBag: 32, unitLabel: 'sheets (4×8)', isBlown: false, rPerInch: 5.0 },
   };
 
   $$('#unitToggle button').forEach(btn => {
@@ -203,11 +268,127 @@ const description = 'Free insulation calculator. Estimate batts, rolls, or blown
     });
   });
 
+  // Show/hide wall openings based on application
+  const appSelect = document.querySelector('#application') as HTMLSelectElement;
+  appSelect.addEventListener('change', () => {
+    $('#wallOpenings').style.display = appSelect.value === 'wall' ? '' : 'none';
+  });
+
+  // --- Dynamic row helpers ---
+  function setupCustomToggle(row: Element, typeClass: string, dimsSelector: string) {
+    const select = row.querySelector(typeClass) as HTMLSelectElement;
+    const dims = row.querySelector(dimsSelector) as HTMLElement;
+    if (!select || !dims) return;
+    select.addEventListener('change', () => {
+      dims.style.display = select.value === 'custom' ? '' : 'none';
+    });
+  }
+
+  function addDoorRow() {
+    const container = $('#doorRows');
+    const row = document.createElement('div');
+    row.className = 'opening-row';
+    row.dataset.row = 'door';
+    row.innerHTML = `
+      <select class="door-type">
+        <option value="21">Interior (21 sq ft)</option>
+        <option value="23">Exterior (23 sq ft)</option>
+        <option value="40">Sliding Glass (40 sq ft)</option>
+        <option value="custom">Custom (H × W)</option>
+      </select>
+      <div class="custom-dims" style="display:none;">
+        <input type="number" class="door-h" placeholder="H" min="0" step="any" />
+        <input type="number" class="door-w" placeholder="W" min="0" step="any" />
+      </div>
+      <input type="number" class="qty-input" value="1" min="0" step="1" title="Count" />
+      <button type="button" class="btn-remove-row" title="Remove">×</button>`;
+    container.appendChild(row);
+    setupCustomToggle(row, '.door-type', '.custom-dims');
+    row.querySelector('.btn-remove-row')!.addEventListener('click', () => row.remove());
+  }
+
+  function addWindowRow() {
+    const container = $('#windowRows');
+    const row = document.createElement('div');
+    row.className = 'opening-row';
+    row.dataset.row = 'window';
+    row.innerHTML = `
+      <select class="window-type">
+        <option value="12">Standard (12 sq ft)</option>
+        <option value="6">Small (6 sq ft)</option>
+        <option value="20">Picture (20 sq ft)</option>
+        <option value="30">Bay (30 sq ft)</option>
+        <option value="custom">Custom (H × W)</option>
+      </select>
+      <div class="custom-dims" style="display:none;">
+        <input type="number" class="win-h" placeholder="H" min="0" step="any" />
+        <input type="number" class="win-w" placeholder="W" min="0" step="any" />
+      </div>
+      <input type="number" class="qty-input" value="1" min="0" step="1" title="Count" />
+      <button type="button" class="btn-remove-row" title="Remove">×</button>`;
+    container.appendChild(row);
+    setupCustomToggle(row, '.window-type', '.custom-dims');
+    row.querySelector('.btn-remove-row')!.addEventListener('click', () => row.remove());
+  }
+
+  // Wire up initial rows
+  document.querySelectorAll('#doorRows .opening-row').forEach(row => {
+    setupCustomToggle(row, '.door-type', '.custom-dims');
+    row.querySelector('.btn-remove-row')!.addEventListener('click', () => row.remove());
+  });
+  document.querySelectorAll('#windowRows .opening-row').forEach(row => {
+    setupCustomToggle(row, '.window-type', '.custom-dims');
+    row.querySelector('.btn-remove-row')!.addEventListener('click', () => row.remove());
+  });
+
+  $('#addDoorRow').addEventListener('click', addDoorRow);
+  $('#addWindowRow').addEventListener('click', addWindowRow);
+
+  // --- Area helper ---
+  function getOpeningArea(containerSelector: string, typeClass: string, hClass: string, wClass: string): number {
+    let total = 0;
+    document.querySelectorAll(`${containerSelector} .opening-row`).forEach(row => {
+      const select = row.querySelector(typeClass) as HTMLSelectElement;
+      const qty = parseFloat((row.querySelector('.qty-input') as HTMLInputElement).value) || 0;
+      if (select.value === 'custom') {
+        let h = parseFloat((row.querySelector(hClass) as HTMLInputElement).value) || 0;
+        let w = parseFloat((row.querySelector(wClass) as HTMLInputElement).value) || 0;
+        if (unit === 'metric') { h *= 3.28084; w *= 3.28084; }
+        total += h * w * qty;
+      } else {
+        total += parseFloat(select.value) * qty;
+      }
+    });
+    return total;
+  }
+
+  // Existing depth note
+  const existingDepthInput = document.querySelector('#existingDepth') as HTMLInputElement;
+  existingDepthInput.addEventListener('input', () => {
+    const d = parseFloat(existingDepthInput.value) || 0;
+    if (d > 0) {
+      // Approximate existing R-value: ~3.2 per inch for typical fiberglass
+      const approxR = (d * 3.2).toFixed(0);
+      $('#existingNote').textContent = `Existing insulation is approximately R-${approxR}. New insulation adds on top.`;
+    } else {
+      $('#existingNote').textContent = '';
+    }
+  });
+
+  // --- Main calculation ---
   $('#calcBtn').addEventListener('click', () => {
     let l = val('#length'), h = val('#height');
     if (unit === 'metric') { l *= 3.28084; h *= 3.28084; }
 
-    const area = l * h;
+    let area = l * h;
+
+    // Subtract openings for wall applications
+    if (appSelect.value === 'wall') {
+      const doorArea = getOpeningArea('#doorRows', '.door-type', '.door-h', '.door-w');
+      const windowArea = getOpeningArea('#windowRows', '.window-type', '.win-h', '.win-w');
+      area -= (doorArea + windowArea);
+    }
+
     if (area <= 0) return;
 
     const type = (document.querySelector('#insulationType') as HTMLSelectElement).value;
@@ -223,6 +404,20 @@ const description = 'Free insulation calculator. Estimate batts, rolls, or blown
     $('#qtyLabel').textContent = data.unitLabel.charAt(0).toUpperCase() + data.unitLabel.slice(1);
     $('#resQty').textContent = `${qty} ${data.unitLabel}`;
     $('#resRvalue').textContent = data.rValue;
+
+    // Existing insulation depth
+    const existingDepth = val('#existingDepth');
+    if (existingDepth > 0) {
+      const existingR = existingDepth * 3.2;
+      const totalR = existingR + data.rNumeric;
+      $('#resExisting').textContent = `~R-${existingR.toFixed(0)}`;
+      $('#resTotalR').textContent = `~R-${totalR.toFixed(0)}`;
+      $('#existingRow').style.display = '';
+      $('#totalRRow').style.display = '';
+    } else {
+      $('#existingRow').style.display = 'none';
+      $('#totalRRow').style.display = 'none';
+    }
 
     $('#results').classList.add('visible');
   });

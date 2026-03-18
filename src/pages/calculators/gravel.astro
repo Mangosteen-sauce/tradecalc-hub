@@ -25,14 +25,49 @@ const description = 'Free gravel calculator. Estimate tons and cubic yards of gr
       <button data-unit="metric">Metric (m)</button>
     </div>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label>Length <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="length" placeholder="20" min="0" step="any" />
+    <!-- Shape Selector -->
+    <div>
+      <label style="font-weight:600;font-size:0.875rem;margin-bottom:0.5rem;display:block;">Area Shape</label>
+      <div class="shape-selector">
+        <button class="shape-btn active" data-shape="rectangle">Rectangle</button>
+        <button class="shape-btn" data-shape="circle">Circle</button>
+        <button class="shape-btn" data-shape="triangle">Triangle</button>
       </div>
+    </div>
+
+    <!-- Rectangle Inputs (default) -->
+    <div id="rectInputs">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Length <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="length" placeholder="20" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Width <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="width" placeholder="10" min="0" step="any" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Circle Inputs -->
+    <div id="circleInputs" style="display:none;">
       <div class="form-group">
-        <label>Width <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="width" placeholder="10" min="0" step="any" />
+        <label>Radius <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="radius" placeholder="5" min="0" step="any" />
+      </div>
+    </div>
+
+    <!-- Triangle Inputs -->
+    <div id="triangleInputs" style="display:none;">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Base <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="triBase" placeholder="10" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Height <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="triHeight" placeholder="8" min="0" step="any" />
+        </div>
       </div>
     </div>
 
@@ -59,10 +94,30 @@ const description = 'Free gravel calculator. Estimate tons and cubic yards of gr
       <input type="number" id="costPerTon" placeholder="50" min="0" step="any" />
     </div>
 
+    <!-- Advanced Options -->
+    <details class="advanced-options">
+      <summary>Advanced Options</summary>
+      <div class="advanced-inner">
+        <div class="form-group">
+          <label>Compaction Factor</label>
+          <select id="compaction">
+            <option value="1">None (decorative, no traffic)</option>
+            <option value="1.10">Standard +10% (walkways, patios)</option>
+            <option value="1.15">Moderate +15% (driveways, parking)</option>
+            <option value="1.25">Heavy +25% (road base, heavy traffic)</option>
+          </select>
+        </div>
+      </div>
+    </details>
+
     <button class="btn-calculate" id="calcBtn">Calculate Gravel</button>
 
     <div class="results-panel" id="results">
       <h2>Results</h2>
+      <div class="result-row">
+        <span class="result-label">Area</span>
+        <span class="result-value" id="resAreaVal">—</span>
+      </div>
       <div class="result-row">
         <span class="result-label">Volume</span>
         <span class="result-value" id="resVolume">—</span>
@@ -88,8 +143,9 @@ const description = 'Free gravel calculator. Estimate tons and cubic yards of gr
 
     <h3>Gravel Formula</h3>
     <div class="formula-box">
-      Volume (cu yd) = (Length × Width × Depth in inches / 12) / 27<br>
-      Weight (tons) = Volume (cu yd) × Material Density (tons/cu yd)
+      Volume (cu yd) = (Area × Depth in inches / 12) / 27<br>
+      Weight (tons) = Volume (cu yd) × Material Density (tons/cu yd)<br>
+      With compaction: Volume × Compaction Factor
     </div>
 
     <h3>Recommended Gravel Depths</h3>
@@ -167,6 +223,7 @@ const description = 'Free gravel calculator. Estimate tons and cubic yards of gr
   const val = (s: string) => parseFloat(($(s) as HTMLInputElement).value) || 0;
 
   let unit: 'imperial' | 'metric' = 'imperial';
+  let shape = 'rectangle';
 
   $$('#unitToggle button').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -178,17 +235,52 @@ const description = 'Free gravel calculator. Estimate tons and cubic yards of gr
     });
   });
 
+  // Shape toggle
+  $$('.shape-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('.shape-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      shape = (btn as HTMLElement).dataset.shape!;
+      $('#rectInputs').style.display = shape === 'rectangle' ? '' : 'none';
+      $('#circleInputs').style.display = shape === 'circle' ? '' : 'none';
+      $('#triangleInputs').style.display = shape === 'triangle' ? '' : 'none';
+    });
+  });
+
   $('#calcBtn').addEventListener('click', () => {
-    let l = val('#length'), w = val('#width'), d = val('#depth');
+    let areaSqFt = 0;
+    const m2ft = 3.28084;
+
+    if (shape === 'rectangle') {
+      let l = val('#length'), w = val('#width');
+      if (unit === 'metric') { l *= m2ft; w *= m2ft; }
+      areaSqFt = l * w;
+    } else if (shape === 'circle') {
+      let r = val('#radius');
+      if (unit === 'metric') r *= m2ft;
+      areaSqFt = Math.PI * r * r;
+    } else {
+      let b = val('#triBase'), h = val('#triHeight');
+      if (unit === 'metric') { b *= m2ft; h *= m2ft; }
+      areaSqFt = 0.5 * b * h;
+    }
+
+    let d = val('#depth');
+    if (unit === 'metric') d *= 0.393701;
+
     const density = parseFloat((document.querySelector('#material') as HTMLSelectElement).value);
+    const compaction = parseFloat((document.querySelector('#compaction') as HTMLSelectElement)?.value || '1');
 
-    if (unit === 'metric') { l *= 3.28084; w *= 3.28084; d *= 0.393701; }
-
-    const cubicFeet = l * w * (d / 12);
+    const cubicFeet = areaSqFt * (d / 12);
     if (cubicFeet <= 0) return;
 
-    const cubicYards = cubicFeet / 27;
+    const cubicYards = (cubicFeet / 27) * compaction;
     const tons = cubicYards * density;
+
+    const areaLabel = unit === 'metric'
+      ? `${(areaSqFt * 0.092903).toFixed(1)} m²`
+      : `${areaSqFt.toFixed(1)} sq ft`;
+    $('#resAreaVal').textContent = areaLabel;
 
     $('#resVolume').textContent = unit === 'metric'
       ? `${(cubicYards * 0.764555).toFixed(2)} m³`

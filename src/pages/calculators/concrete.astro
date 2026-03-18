@@ -8,7 +8,7 @@ const calc = calculators.find(c => c.slug === 'concrete')!;
 const relatedCalcs = calc.related.map(r => calculators.find(c => c.slug === r)!);
 const affiliateLinks = getAffiliateLinksForCalculator('concrete');
 const title = 'Concrete Calculator | Cubic Yards, Bags & Cost Estimate';
-const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60/80 lb), and cost for slabs, footings, columns, and post holes. Imperial & metric support.';
+const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60/80 lb), and cost for slabs, footings, columns, stairs, and curbs. Imperial & metric support.';
 ---
 
 <BaseLayout title={title} description={description} canonical="/calculators/concrete">
@@ -27,10 +27,12 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
 
     <div>
       <label style="font-weight:600;font-size:0.875rem;margin-bottom:0.5rem;display:block;">Project Type</label>
-      <div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <div class="shape-selector">
         <button class="shape-btn active" data-shape="slab">Slab / Patio</button>
         <button class="shape-btn" data-shape="footing">Footing / Wall</button>
-        <button class="shape-btn" data-shape="column">Column / Post Hole</button>
+        <button class="shape-btn" data-shape="column">Column / Post</button>
+        <button class="shape-btn" data-shape="stairs">Stairs</button>
+        <button class="shape-btn" data-shape="curb">Curb / Border</button>
       </div>
     </div>
 
@@ -85,10 +87,65 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
       </div>
     </div>
 
+    <div id="stairsInputs" style="display:none;">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Number of Steps</label>
+          <input type="number" id="stairSteps" placeholder="4" min="1" step="1" />
+        </div>
+        <div class="form-group">
+          <label>Stair Width <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="stairWidth" placeholder="3" min="0" step="any" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tread Depth <span class="hint" id="treadHint">(inches)</span></label>
+          <input type="number" id="treadDepth" placeholder="11" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Riser Height <span class="hint" id="riserHint">(inches)</span></label>
+          <input type="number" id="riserHeight" placeholder="7" min="0" step="any" />
+        </div>
+      </div>
+    </div>
+
+    <div id="curbInputs" style="display:none;">
+      <div class="form-group">
+        <label>Total Length <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="curbLength" placeholder="20" min="0" step="any" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Width <span class="hint" id="curbWidthHint">(inches)</span></label>
+          <input type="number" id="curbWidth" placeholder="6" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Height <span class="hint" id="curbHeightHint">(inches)</span></label>
+          <input type="number" id="curbHeight" placeholder="6" min="0" step="any" />
+        </div>
+      </div>
+    </div>
+
     <div class="form-group">
       <label>Cost per Cubic Yard <span class="hint">(optional, $)</span></label>
       <input type="number" id="costPerYard" placeholder="125" min="0" step="any" />
     </div>
+
+    <!-- Advanced Options -->
+    <details class="advanced-options">
+      <summary>Advanced Options</summary>
+      <div class="advanced-inner">
+        <div class="form-group">
+          <label>Reinforcement</label>
+          <select id="reinforcement">
+            <option value="none">None</option>
+            <option value="mesh">Wire Mesh (for slabs)</option>
+            <option value="rebar">Rebar (for footings, slabs)</option>
+          </select>
+        </div>
+      </div>
+    </details>
 
     <button class="btn-calculate" id="calcBtn">Calculate Concrete</button>
 
@@ -109,6 +166,10 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
       <div class="result-row">
         <span class="result-label">80 lb bags</span>
         <span class="result-value" id="resBags80">—</span>
+      </div>
+      <div class="result-row" id="rebarRow" style="display:none;">
+        <span class="result-label" id="rebarLabel">Reinforcement</span>
+        <span class="result-value" id="resRebar">—</span>
       </div>
       <div class="result-row" id="costRow" style="display:none;">
         <span class="result-label">Estimated Cost</span>
@@ -135,6 +196,17 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
     <div class="formula-box">
       Volume (cu yd) = π × (Diameter/2)² × Depth × Quantity / 27<br>
       Where diameter is converted to feet
+    </div>
+
+    <h3>Stairs Formula</h3>
+    <div class="formula-box">
+      Volume (cu ft) = Width × TreadDepth(ft) × RiserHeight(ft) × n(n+1)/2<br>
+      Where n = number of steps
+    </div>
+
+    <h3>Curb / Border Formula</h3>
+    <div class="formula-box">
+      Volume (cu ft) = Length × (Width in/12) × (Height in/12)
     </div>
 
     <h3>Bag Coverage</h3>
@@ -200,24 +272,6 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
         { "@type": "ListItem", "position": 3, "name": calc.shortName }
       ]
     })} />
-    <style is:inline>
-      .shape-btn {
-        padding: 0.4rem 0.9rem;
-        border: 1.5px solid var(--color-border);
-        border-radius: var(--radius);
-        background: var(--color-surface);
-        font-size: 0.85rem;
-        font-weight: 500;
-        cursor: pointer;
-        color: var(--color-text-light);
-        transition: all 0.15s;
-      }
-      .shape-btn.active {
-        border-color: var(--color-primary);
-        background: var(--color-primary-light);
-        color: var(--color-primary);
-      }
-    </style>
   </Fragment>
 </BaseLayout>
 
@@ -237,8 +291,13 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
       unit = (btn as HTMLElement).dataset.unit as 'imperial' | 'metric';
       const label = unit === 'imperial' ? 'feet' : 'meters';
       $$('.unit-label').forEach(el => el.textContent = `(${label})`);
-      $('#thicknessHint').textContent = unit === 'imperial' ? '(inches)' : '(cm)';
-      $('#diamHint').textContent = unit === 'imperial' ? '(inches)' : '(cm)';
+      const inLabel = unit === 'imperial' ? '(inches)' : '(cm)';
+      $('#thicknessHint').textContent = inLabel;
+      $('#diamHint').textContent = inLabel;
+      $('#treadHint').textContent = inLabel;
+      $('#riserHint').textContent = inLabel;
+      $('#curbWidthHint').textContent = inLabel;
+      $('#curbHeightHint').textContent = inLabel;
     });
   });
 
@@ -251,26 +310,47 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
       $('#slabInputs').style.display = shape === 'slab' ? '' : 'none';
       $('#footingInputs').style.display = shape === 'footing' ? '' : 'none';
       $('#columnInputs').style.display = shape === 'column' ? '' : 'none';
+      $('#stairsInputs').style.display = shape === 'stairs' ? '' : 'none';
+      $('#curbInputs').style.display = shape === 'curb' ? '' : 'none';
     });
   });
 
   // Calculate
   $('#calcBtn').addEventListener('click', () => {
     let cubicFeet = 0;
+    let areaSqFt = 0; // For rebar/mesh estimate
 
     if (shape === 'slab') {
       let l = val('#slabLength'), w = val('#slabWidth'), t = val('#slabThickness');
       if (unit === 'metric') { l *= 3.28084; w *= 3.28084; t *= 0.393701; }
+      areaSqFt = l * w;
       cubicFeet = l * w * (t / 12);
     } else if (shape === 'footing') {
       let l = val('#footingLength'), w = val('#footingWidth'), d = val('#footingDepth');
       if (unit === 'metric') { l *= 3.28084; w *= 3.28084; d *= 3.28084; }
+      areaSqFt = l * w;
       cubicFeet = l * w * d;
-    } else {
+    } else if (shape === 'column') {
       let diam = val('#colDiameter'), depth = val('#colDepth'), count = val('#colCount') || 1;
       if (unit === 'metric') { diam *= 0.393701; depth *= 3.28084; }
       const r = (diam / 12) / 2;
       cubicFeet = Math.PI * r * r * depth * count;
+    } else if (shape === 'stairs') {
+      let n = val('#stairSteps') || 1;
+      let w = val('#stairWidth');
+      let tread = val('#treadDepth');
+      let riser = val('#riserHeight');
+      if (unit === 'metric') { w *= 3.28084; tread *= 0.393701; riser *= 0.393701; }
+      const treadFt = tread / 12;
+      const riserFt = riser / 12;
+      // Volume = width × treadFt × riserFt × n(n+1)/2
+      cubicFeet = w * treadFt * riserFt * (n * (n + 1)) / 2;
+    } else if (shape === 'curb') {
+      let l = val('#curbLength');
+      let cw = val('#curbWidth');
+      let ch = val('#curbHeight');
+      if (unit === 'metric') { l *= 3.28084; cw *= 0.393701; ch *= 0.393701; }
+      cubicFeet = l * (cw / 12) * (ch / 12);
     }
 
     if (cubicFeet <= 0) return;
@@ -290,6 +370,33 @@ const description = 'Free concrete calculator. Estimate cubic yards, bags (40/60
     $('#resBags40').textContent = bags40.toLocaleString();
     $('#resBags60').textContent = bags60.toLocaleString();
     $('#resBags80').textContent = bags80.toLocaleString();
+
+    // Reinforcement
+    const reinforcement = (document.querySelector('#reinforcement') as HTMLSelectElement)?.value || 'none';
+    if (reinforcement === 'mesh' && areaSqFt > 0) {
+      // Wire mesh: sold in 5' × 150' rolls (750 sq ft) or 5' × 10' sheets
+      const sheets = Math.ceil(areaSqFt * 1.1 / 50); // 5×10 sheets with overlap
+      $('#rebarLabel').textContent = 'Wire Mesh (5\'×10\' sheets)';
+      $('#resRebar').textContent = `${sheets} sheet${sheets > 1 ? 's' : ''}`;
+      $('#rebarRow').style.display = '';
+    } else if (reinforcement === 'rebar') {
+      // #4 rebar on 12" grid: linear feet ≈ 2 × (L + W) rows × area dimension
+      // Simplified: ~2 linear feet of rebar per sq ft of slab, 20ft bars
+      if (areaSqFt > 0) {
+        const linearFt = Math.ceil(areaSqFt * 2);
+        const bars = Math.ceil(linearFt / 20); // 20 ft bars
+        $('#rebarLabel').textContent = 'Rebar (#4, 20 ft bars)';
+        $('#resRebar').textContent = `~${bars} bar${bars > 1 ? 's' : ''} (${linearFt} linear ft)`;
+      } else {
+        // For non-slab shapes, estimate by volume
+        const bars = Math.ceil(cubicYards * 15);
+        $('#rebarLabel').textContent = 'Rebar (#4, 20 ft bars)';
+        $('#resRebar').textContent = `~${bars} bar${bars > 1 ? 's' : ''}`;
+      }
+      $('#rebarRow').style.display = '';
+    } else {
+      $('#rebarRow').style.display = 'none';
+    }
 
     const cost = val('#costPerYard');
     if (cost > 0) {

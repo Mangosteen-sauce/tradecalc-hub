@@ -25,14 +25,102 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
       <button data-unit="metric">Metric (m)</button>
     </div>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label>Area Length <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="areaLength" placeholder="12" min="0" step="any" />
+    <!-- Shape Selector -->
+    <div>
+      <label style="font-weight:600;font-size:0.875rem;margin-bottom:0.5rem;display:block;">Room Shape</label>
+      <div class="shape-selector">
+        <button class="shape-btn active" data-shape="rectangle">Rectangle</button>
+        <button class="shape-btn" data-shape="l-shape">L-Shape</button>
+        <button class="shape-btn" data-shape="u-shape">U-Shape</button>
+        <button class="shape-btn" data-shape="triangle">Triangle</button>
       </div>
-      <div class="form-group">
-        <label>Area Width <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="areaWidth" placeholder="10" min="0" step="any" />
+    </div>
+
+    <!-- Rectangle Inputs (default) -->
+    <div id="rectInputs">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Area Length <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="areaLength" placeholder="12" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Area Width <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="areaWidth" placeholder="10" min="0" step="any" />
+        </div>
+      </div>
+    </div>
+
+    <!-- L-Shape Inputs -->
+    <div id="lInputs" style="display:none;">
+      <p class="hint" style="margin-bottom:0.5rem;">Enter two rectangles that form the L-shape.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Section 1 Length <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="l1Length" placeholder="12" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Section 1 Width <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="l1Width" placeholder="6" min="0" step="any" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Section 2 Length <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="l2Length" placeholder="8" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Section 2 Width <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="l2Width" placeholder="6" min="0" step="any" />
+        </div>
+      </div>
+    </div>
+
+    <!-- U-Shape Inputs -->
+    <div id="uInputs" style="display:none;">
+      <p class="hint" style="margin-bottom:0.5rem;">Enter three rectangles that form the U-shape.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Section 1 Length <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="u1Length" placeholder="10" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Section 1 Width <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="u1Width" placeholder="4" min="0" step="any" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Section 2 Length <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="u2Length" placeholder="6" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Section 2 Width <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="u2Width" placeholder="4" min="0" step="any" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Section 3 Length <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="u3Length" placeholder="10" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Section 3 Width <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="u3Width" placeholder="4" min="0" step="any" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Triangle Inputs -->
+    <div id="triInputs" style="display:none;">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Base <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="triBase" placeholder="10" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Height <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="triHeight" placeholder="8" min="0" step="any" />
+        </div>
       </div>
     </div>
 
@@ -68,6 +156,38 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
       <input type="number" id="costPerSqFt" placeholder="5" min="0" step="any" />
     </div>
 
+    <!-- Advanced Options -->
+    <details class="advanced-options">
+      <summary>Advanced Options</summary>
+      <div class="advanced-inner">
+
+        <div class="form-group">
+          <label>Subtract Obstacles <span class="hint">(total sq ft for toilets, vanities, islands)</span></label>
+          <input type="number" id="obstacles" placeholder="0" min="0" step="any" value="0" />
+        </div>
+
+        <div class="form-group">
+          <label>Grout Line Width</label>
+          <select id="groutWidth">
+            <option value="0">No grout calculation</option>
+            <option value="0.0625">1/16" (thin)</option>
+            <option value="0.125">1/8" (standard)</option>
+            <option value="0.1875">3/16"</option>
+            <option value="0.25">1/4" (wide)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Estimate Thinset?</label>
+          <select id="thinset">
+            <option value="no">No</option>
+            <option value="yes">Yes (50 lb bag per 65 sq ft)</option>
+          </select>
+        </div>
+
+      </div>
+    </details>
+
     <button class="btn-calculate" id="calcBtn">Calculate Tiles</button>
 
     <div class="results-panel" id="results">
@@ -88,6 +208,14 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
         <span class="result-label">Boxes Needed</span>
         <span class="result-value" id="resBoxes">—</span>
       </div>
+      <div class="result-row" id="groutRow" style="display:none;">
+        <span class="result-label">Grout Needed</span>
+        <span class="result-value" id="resGrout">—</span>
+      </div>
+      <div class="result-row" id="thinsetRow" style="display:none;">
+        <span class="result-label">Thinset Bags (50 lb)</span>
+        <span class="result-value" id="resThinset">—</span>
+      </div>
       <div class="result-row" id="costRow" style="display:none;">
         <span class="result-label">Estimated Cost</span>
         <span class="result-value" id="resCost">—</span>
@@ -107,7 +235,9 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
     <div class="formula-box">
       Room Area = Length × Width (in sq ft)<br>
       Tile Area = (Tile Length × Tile Width) / 144 (in sq ft)<br>
-      Tiles Needed = (Room Area × (1 + Waste%)) / Tile Area
+      Tiles Needed = (Room Area × (1 + Waste%)) / Tile Area<br>
+      Grout (lbs) = Tiles × Tile Perimeter × Grout Width × 0.375 / 13.5<br>
+      Thinset (bags) = Area / 65
     </div>
 
     <h3>Common Tile Sizes</h3>
@@ -131,7 +261,7 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
     <h3>Don't Forget</h3>
     <ul>
       <li><strong>Grout:</strong> 1 lb per 5-10 sq ft depending on tile size and gap width</li>
-      <li><strong>Thinset mortar:</strong> 1 bag (50 lbs) covers ~60-75 sq ft</li>
+      <li><strong>Thinset mortar:</strong> 1 bag (50 lbs) covers ~60-75 sq ft with a 1/4"x3/8" trowel. Large-format tiles (18"+) need a bigger trowel and use 30-50% more thinset</li>
       <li><strong>Backer board:</strong> Required for wet areas (shower, tub surround)</li>
       <li><strong>Spacers:</strong> 1 bag per 100 sq ft (1/8" or 1/16" size)</li>
     </ul>
@@ -183,6 +313,7 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
   const val = (s: string) => parseFloat(($(s) as HTMLInputElement).value) || 0;
 
   let unit: 'imperial' | 'metric' = 'imperial';
+  let shape = 'rectangle';
 
   $$('#unitToggle button').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -195,16 +326,51 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
     });
   });
 
-  $('#calcBtn').addEventListener('click', () => {
-    let al = val('#areaLength'), aw = val('#areaWidth');
-    let tl = val('#tileLength'), tw = val('#tileWidth');
+  // Shape toggle
+  $$('.shape-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('.shape-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      shape = (btn as HTMLElement).dataset.shape!;
+      $('#rectInputs').style.display = shape === 'rectangle' ? '' : 'none';
+      $('#lInputs').style.display = shape === 'l-shape' ? '' : 'none';
+      $('#uInputs').style.display = shape === 'u-shape' ? '' : 'none';
+      $('#triInputs').style.display = shape === 'triangle' ? '' : 'none';
+    });
+  });
 
-    if (unit === 'metric') {
-      al *= 3.28084; aw *= 3.28084;
-      tl *= 0.393701; tw *= 0.393701;
+  $('#calcBtn').addEventListener('click', () => {
+    const m2ft = 3.28084;
+    let roomSqFt = 0;
+
+    if (shape === 'rectangle') {
+      let al = val('#areaLength'), aw = val('#areaWidth');
+      if (unit === 'metric') { al *= m2ft; aw *= m2ft; }
+      roomSqFt = al * aw;
+    } else if (shape === 'l-shape') {
+      let l1l = val('#l1Length'), l1w = val('#l1Width'), l2l = val('#l2Length'), l2w = val('#l2Width');
+      if (unit === 'metric') { l1l *= m2ft; l1w *= m2ft; l2l *= m2ft; l2w *= m2ft; }
+      roomSqFt = (l1l * l1w) + (l2l * l2w);
+    } else if (shape === 'u-shape') {
+      let u1l = val('#u1Length'), u1w = val('#u1Width'), u2l = val('#u2Length'), u2w = val('#u2Width'), u3l = val('#u3Length'), u3w = val('#u3Width');
+      if (unit === 'metric') { u1l *= m2ft; u1w *= m2ft; u2l *= m2ft; u2w *= m2ft; u3l *= m2ft; u3w *= m2ft; }
+      roomSqFt = (u1l * u1w) + (u2l * u2w) + (u3l * u3w);
+    } else {
+      let b = val('#triBase'), h = val('#triHeight');
+      if (unit === 'metric') { b *= m2ft; h *= m2ft; }
+      roomSqFt = 0.5 * b * h;
     }
 
-    const roomSqFt = al * aw;
+    // Subtract obstacles
+    let obstacles = val('#obstacles');
+    if (unit === 'metric') obstacles *= (m2ft * m2ft * 0.092903); // m² to sq ft - actually just convert: val is in m², so × 10.764
+    // Actually: if metric, user enters m², we need sq ft. 1 m² = 10.764 sq ft
+    if (unit === 'metric' && obstacles > 0) obstacles *= 10.764;
+    roomSqFt -= obstacles;
+
+    let tl = val('#tileLength'), tw = val('#tileWidth');
+    if (unit === 'metric') { tl *= 0.393701; tw *= 0.393701; }
+
     const tileSqFt = (tl * tw) / 144;
     if (roomSqFt <= 0 || tileSqFt <= 0) return;
 
@@ -227,6 +393,30 @@ const description = 'Free tile and flooring calculator. Estimate tiles, boxes, a
       $('#boxRow').style.display = '';
     } else {
       $('#boxRow').style.display = 'none';
+    }
+
+    // Grout calculation
+    const groutWidth = parseFloat((document.querySelector('#groutWidth') as HTMLSelectElement).value);
+    if (groutWidth > 0) {
+      // Tile perimeter in inches
+      const tilePerimeter = 2 * (tl + tw);
+      // lbs = tiles × tilePerimeter × groutWidth × groutDepth(0.375") / 13.5
+      const groutLbs = Math.ceil(tilesNeeded * tilePerimeter * groutWidth * 0.375 / 13.5);
+      const groutBags = Math.ceil(groutLbs / 25); // 25 lb bags
+      $('#resGrout').textContent = `${groutLbs} lbs (~${groutBags} bag${groutBags > 1 ? 's' : ''} of 25 lb)`;
+      $('#groutRow').style.display = '';
+    } else {
+      $('#groutRow').style.display = 'none';
+    }
+
+    // Thinset calculation
+    const addThinset = (document.querySelector('#thinset') as HTMLSelectElement).value === 'yes';
+    if (addThinset) {
+      const thinsetBags = Math.ceil(areaWithWaste / 65);
+      $('#resThinset').textContent = `${thinsetBags} bag${thinsetBags > 1 ? 's' : ''}`;
+      $('#thinsetRow').style.display = '';
+    } else {
+      $('#thinsetRow').style.display = 'none';
     }
 
     const cost = val('#costPerSqFt');

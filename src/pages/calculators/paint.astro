@@ -43,17 +43,6 @@ const description = 'Free paint calculator. Estimate gallons of paint needed for
 
     <div class="form-row">
       <div class="form-group">
-        <label>Number of Doors</label>
-        <input type="number" id="doors" placeholder="2" min="0" step="1" value="2" />
-      </div>
-      <div class="form-group">
-        <label>Number of Windows</label>
-        <input type="number" id="windows" placeholder="2" min="0" step="1" value="2" />
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-group">
         <label>Number of Coats</label>
         <select id="coats">
           <option value="1">1 coat</option>
@@ -75,6 +64,74 @@ const description = 'Free paint calculator. Estimate gallons of paint needed for
       <input type="number" id="costPerGallon" placeholder="35" min="0" step="any" />
     </div>
 
+    <!-- Advanced Options -->
+    <details class="advanced-options" id="advancedOptions">
+      <summary>Advanced Options</summary>
+      <div class="advanced-inner">
+
+        <div class="form-group">
+          <label>Surface Type</label>
+          <select id="surfaceType">
+            <option value="350">Standard / Eggshell (350 sq ft/gal)</option>
+            <option value="400">Smooth / Flat (400 sq ft/gal)</option>
+            <option value="250">Textured / Stucco (250 sq ft/gal)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Add Primer Coat?</label>
+          <select id="primer">
+            <option value="no">No primer</option>
+            <option value="yes">Yes - add primer (250 sq ft/gal)</option>
+          </select>
+        </div>
+
+        <span class="advanced-section-label">Doors to Subtract</span>
+        <div class="opening-rows" id="doorRows">
+          <div class="opening-row" data-row="door">
+            <select class="door-type">
+              <option value="21">Interior (21 sq ft)</option>
+              <option value="23">Exterior (23 sq ft)</option>
+              <option value="40">Sliding Glass (40 sq ft)</option>
+              <option value="custom">Custom (H × W)</option>
+            </select>
+            <div class="custom-dims" style="display:none;">
+              <input type="number" class="door-h" placeholder="H" min="0" step="any" />
+              <input type="number" class="door-w" placeholder="W" min="0" step="any" />
+            </div>
+            <input type="number" class="qty-input" value="2" min="0" step="1" title="Count" />
+            <button type="button" class="btn-remove-row" title="Remove">×</button>
+          </div>
+        </div>
+        <button type="button" class="btn-add-row" id="addDoorRow">+ Add door type</button>
+
+        <span class="advanced-section-label" style="margin-top:0.75rem;">Windows to Subtract</span>
+        <div class="opening-rows" id="windowRows">
+          <div class="opening-row" data-row="window">
+            <select class="window-type">
+              <option value="12">Standard (12 sq ft)</option>
+              <option value="6">Small (6 sq ft)</option>
+              <option value="20">Picture (20 sq ft)</option>
+              <option value="30">Bay (30 sq ft)</option>
+              <option value="custom">Custom (H × W)</option>
+            </select>
+            <div class="custom-dims" style="display:none;">
+              <input type="number" class="win-h" placeholder="H" min="0" step="any" />
+              <input type="number" class="win-w" placeholder="W" min="0" step="any" />
+            </div>
+            <input type="number" class="qty-input" value="2" min="0" step="1" title="Count" />
+            <button type="button" class="btn-remove-row" title="Remove">×</button>
+          </div>
+        </div>
+        <button type="button" class="btn-add-row" id="addWindowRow">+ Add window type</button>
+
+        <span class="advanced-section-label" style="margin-top:0.75rem;">Other Exclusions</span>
+        <div class="opening-rows" id="exclusionRows"></div>
+        <button type="button" class="btn-add-row" id="addExclusionRow">+ Add exclusion (columns, murals, etc.)</button>
+
+      </div>
+    </details>
+
     <button class="btn-calculate" id="calcBtn">Calculate Paint</button>
 
     <div class="results-panel" id="results">
@@ -87,11 +144,15 @@ const description = 'Free paint calculator. Estimate gallons of paint needed for
         <span class="result-label">Gallons Needed</span>
         <span class="result-value" id="resGallons">—</span>
       </div>
+      <div class="result-row" id="primerRow" style="display:none;">
+        <span class="result-label">Primer Gallons</span>
+        <span class="result-value" id="resPrimer">—</span>
+      </div>
       <div class="result-row" id="costRow" style="display:none;">
         <span class="result-label">Estimated Cost</span>
         <span class="result-value" id="resCost">—</span>
       </div>
-      <p class="result-note">Based on 350 sq ft coverage per gallon. Textured walls or porous surfaces may require more paint.</p>
+      <p class="result-note" id="resultNote">Based on 350 sq ft coverage per gallon. Textured walls or porous surfaces may require more paint.</p>
       <button class="btn-share" id="shareBtn">Copy Link to Results</button>
     </div>
   </div>
@@ -105,8 +166,8 @@ const description = 'Free paint calculator. Estimate gallons of paint needed for
     <h3>Paint Formula</h3>
     <div class="formula-box">
       Wall Area = Perimeter × Height<br>
-      Subtract: Doors (21 sq ft each) + Windows (15 sq ft each)<br>
-      Gallons = (Paintable Area × Coats) / 350
+      Subtract: Doors + Windows + Other Exclusions<br>
+      Gallons = (Paintable Area × Coats) / Coverage Rate
     </div>
 
     <h3>Coverage Rates</h3>
@@ -129,7 +190,7 @@ const description = 'Free paint calculator. Estimate gallons of paint needed for
       <li>Always round up to the nearest gallon. Leftover paint is good for touch-ups</li>
       <li>Buy all paint at once to ensure consistent color (same batch/lot)</li>
       <li>Textured walls use 20-30% more paint than smooth walls</li>
-      <li>Standard door size is 3' × 7' (21 sq ft); standard window is 3' × 5' (15 sq ft)</li>
+      <li>Standard door size is 3' × 7' (21 sq ft); standard window is 3' × 4' (12 sq ft)</li>
       <li>For large rooms, a <a href={affiliateLinks[0]?.url} target="_blank">{affiliateLinks[0]?.text}</a> can cut application time in half compared to brushing</li>
       <li>A quality <a href={affiliateLinks[1]?.url} target="_blank">{affiliateLinks[1]?.text}</a> gives a smooth, even finish on walls and ceilings</li>
     </ul>
@@ -190,26 +251,177 @@ const description = 'Free paint calculator. Estimate gallons of paint needed for
     });
   });
 
-  const DOOR_SQFT = 21;
-  const WINDOW_SQFT = 15;
-  const COVERAGE_PER_GALLON = 350;
+  // --- Dynamic row helpers ---
+  function setupCustomToggle(row: Element, typeClass: string, dimsSelector: string) {
+    const select = row.querySelector(typeClass) as HTMLSelectElement;
+    const dims = row.querySelector(dimsSelector) as HTMLElement;
+    if (!select || !dims) return;
+    select.addEventListener('change', () => {
+      dims.style.display = select.value === 'custom' ? '' : 'none';
+    });
+  }
 
+  function addDoorRow() {
+    const container = $('#doorRows');
+    const row = document.createElement('div');
+    row.className = 'opening-row';
+    row.dataset.row = 'door';
+    row.innerHTML = `
+      <select class="door-type">
+        <option value="21">Interior (21 sq ft)</option>
+        <option value="23">Exterior (23 sq ft)</option>
+        <option value="40">Sliding Glass (40 sq ft)</option>
+        <option value="custom">Custom (H × W)</option>
+      </select>
+      <div class="custom-dims" style="display:none;">
+        <input type="number" class="door-h" placeholder="H" min="0" step="any" />
+        <input type="number" class="door-w" placeholder="W" min="0" step="any" />
+      </div>
+      <input type="number" class="qty-input" value="1" min="0" step="1" title="Count" />
+      <button type="button" class="btn-remove-row" title="Remove">×</button>`;
+    container.appendChild(row);
+    setupCustomToggle(row, '.door-type', '.custom-dims');
+    row.querySelector('.btn-remove-row')!.addEventListener('click', () => row.remove());
+  }
+
+  function addWindowRow() {
+    const container = $('#windowRows');
+    const row = document.createElement('div');
+    row.className = 'opening-row';
+    row.dataset.row = 'window';
+    row.innerHTML = `
+      <select class="window-type">
+        <option value="12">Standard (12 sq ft)</option>
+        <option value="6">Small (6 sq ft)</option>
+        <option value="20">Picture (20 sq ft)</option>
+        <option value="30">Bay (30 sq ft)</option>
+        <option value="custom">Custom (H × W)</option>
+      </select>
+      <div class="custom-dims" style="display:none;">
+        <input type="number" class="win-h" placeholder="H" min="0" step="any" />
+        <input type="number" class="win-w" placeholder="W" min="0" step="any" />
+      </div>
+      <input type="number" class="qty-input" value="1" min="0" step="1" title="Count" />
+      <button type="button" class="btn-remove-row" title="Remove">×</button>`;
+    container.appendChild(row);
+    setupCustomToggle(row, '.window-type', '.custom-dims');
+    row.querySelector('.btn-remove-row')!.addEventListener('click', () => row.remove());
+  }
+
+  function addExclusionRow() {
+    const container = $('#exclusionRows');
+    const row = document.createElement('div');
+    row.className = 'opening-row';
+    row.dataset.row = 'exclusion';
+    row.innerHTML = `
+      <input type="text" class="excl-name" placeholder="Name (e.g. column)" style="font-size:0.85rem;padding:0.45rem 0.6rem;" />
+      <div class="custom-dims">
+        <input type="number" class="excl-h" placeholder="H (ft)" min="0" step="any" />
+        <input type="number" class="excl-w" placeholder="W (ft)" min="0" step="any" />
+      </div>
+      <input type="number" class="qty-input" value="1" min="0" step="1" title="Count" />
+      <button type="button" class="btn-remove-row" title="Remove">×</button>`;
+    container.appendChild(row);
+    row.querySelector('.btn-remove-row')!.addEventListener('click', () => row.remove());
+  }
+
+  // Wire up initial rows and add buttons
+  document.querySelectorAll('#doorRows .opening-row').forEach(row => {
+    setupCustomToggle(row, '.door-type', '.custom-dims');
+    row.querySelector('.btn-remove-row')!.addEventListener('click', () => row.remove());
+  });
+  document.querySelectorAll('#windowRows .opening-row').forEach(row => {
+    setupCustomToggle(row, '.window-type', '.custom-dims');
+    row.querySelector('.btn-remove-row')!.addEventListener('click', () => row.remove());
+  });
+
+  $('#addDoorRow').addEventListener('click', addDoorRow);
+  $('#addWindowRow').addEventListener('click', addWindowRow);
+  $('#addExclusionRow').addEventListener('click', addExclusionRow);
+
+  // --- Calculation helpers ---
+  function getDoorArea(): number {
+    let total = 0;
+    document.querySelectorAll('#doorRows .opening-row').forEach(row => {
+      const select = row.querySelector('.door-type') as HTMLSelectElement;
+      const qty = parseFloat((row.querySelector('.qty-input') as HTMLInputElement).value) || 0;
+      if (select.value === 'custom') {
+        let h = parseFloat((row.querySelector('.door-h') as HTMLInputElement).value) || 0;
+        let w = parseFloat((row.querySelector('.door-w') as HTMLInputElement).value) || 0;
+        if (unit === 'metric') { h *= 3.28084; w *= 3.28084; }
+        total += h * w * qty;
+      } else {
+        total += parseFloat(select.value) * qty;
+      }
+    });
+    return total;
+  }
+
+  function getWindowArea(): number {
+    let total = 0;
+    document.querySelectorAll('#windowRows .opening-row').forEach(row => {
+      const select = row.querySelector('.window-type') as HTMLSelectElement;
+      const qty = parseFloat((row.querySelector('.qty-input') as HTMLInputElement).value) || 0;
+      if (select.value === 'custom') {
+        let h = parseFloat((row.querySelector('.win-h') as HTMLInputElement).value) || 0;
+        let w = parseFloat((row.querySelector('.win-w') as HTMLInputElement).value) || 0;
+        if (unit === 'metric') { h *= 3.28084; w *= 3.28084; }
+        total += h * w * qty;
+      } else {
+        total += parseFloat(select.value) * qty;
+      }
+    });
+    return total;
+  }
+
+  function getExclusionArea(): number {
+    let total = 0;
+    document.querySelectorAll('#exclusionRows .opening-row').forEach(row => {
+      let h = parseFloat((row.querySelector('.excl-h') as HTMLInputElement).value) || 0;
+      let w = parseFloat((row.querySelector('.excl-w') as HTMLInputElement).value) || 0;
+      const qty = parseFloat((row.querySelector('.qty-input') as HTMLInputElement).value) || 0;
+      if (unit === 'metric') { h *= 3.28084; w *= 3.28084; }
+      total += h * w * qty;
+    });
+    return total;
+  }
+
+  // --- Main calculation ---
   $('#calcBtn').addEventListener('click', () => {
     let l = val('#roomLength'), w = val('#roomWidth'), h = val('#wallHeight');
     if (unit === 'metric') { l *= 3.28084; w *= 3.28084; h *= 3.28084; }
 
     const perimeter = 2 * (l + w);
     const wallArea = perimeter * h;
-    const doorArea = val('#doors') * DOOR_SQFT;
-    const windowArea = val('#windows') * WINDOW_SQFT;
     const coats = parseInt((document.querySelector('#coats') as HTMLSelectElement).value);
     const includeCeiling = (document.querySelector('#ceiling') as HTMLSelectElement).value === 'yes';
 
-    let paintableArea = wallArea - doorArea - windowArea;
+    // Use advanced options if the panel is open, otherwise use defaults
+    const advOpen = ($('#advancedOptions') as HTMLDetailsElement).open;
+    let doorArea: number, windowArea: number, exclusionArea: number;
+    let coverageRate: number;
+    let addPrimer: boolean;
+
+    if (advOpen) {
+      doorArea = getDoorArea();
+      windowArea = getWindowArea();
+      exclusionArea = getExclusionArea();
+      coverageRate = parseInt((document.querySelector('#surfaceType') as HTMLSelectElement).value);
+      addPrimer = (document.querySelector('#primer') as HTMLSelectElement).value === 'yes';
+    } else {
+      // Default behavior: 2 doors × 21 + 2 windows × 15 (matching defaults in the rows)
+      doorArea = getDoorArea();
+      windowArea = getWindowArea();
+      exclusionArea = 0;
+      coverageRate = 350;
+      addPrimer = false;
+    }
+
+    let paintableArea = wallArea - doorArea - windowArea - exclusionArea;
     if (includeCeiling) paintableArea += l * w;
     if (paintableArea <= 0) return;
 
-    const gallons = Math.ceil((paintableArea * coats) / COVERAGE_PER_GALLON);
+    const gallons = Math.ceil((paintableArea * coats) / coverageRate);
 
     const areaLabel = unit === 'metric'
       ? `${(paintableArea * 0.092903).toFixed(0)} m²`
@@ -217,10 +429,21 @@ const description = 'Free paint calculator. Estimate gallons of paint needed for
 
     $('#resArea').textContent = areaLabel;
     $('#resGallons').textContent = `${gallons} gallon${gallons > 1 ? 's' : ''}`;
+    $('#resultNote').textContent = `Based on ${coverageRate} sq ft coverage per gallon.`;
+
+    if (addPrimer) {
+      const primerGallons = Math.ceil(paintableArea / 250);
+      $('#resPrimer').textContent = `${primerGallons} gallon${primerGallons > 1 ? 's' : ''}`;
+      $('#primerRow').style.display = '';
+    } else {
+      $('#primerRow').style.display = 'none';
+    }
 
     const cost = val('#costPerGallon');
     if (cost > 0) {
-      $('#resCost').textContent = `$${(gallons * cost).toFixed(2)}`;
+      let totalGallons = gallons;
+      if (addPrimer) totalGallons += Math.ceil(paintableArea / 250);
+      $('#resCost').textContent = `$${(totalGallons * cost).toFixed(2)}`;
       $('#costRow').style.display = '';
     } else {
       $('#costRow').style.display = 'none';

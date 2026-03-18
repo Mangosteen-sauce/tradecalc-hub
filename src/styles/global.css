@@ -496,9 +496,156 @@ select {
   color: var(--color-primary);
 }
 
+/* === Shape Buttons (promoted from concrete inline) === */
+.shape-btn {
+  padding: 0.4rem 0.9rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--color-text-light);
+  transition: all 0.15s;
+}
+
+.shape-btn.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.shape-selector {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+/* === Advanced Options (collapsible <details>) === */
+.advanced-options {
+  margin: 1rem 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+}
+
+.advanced-options summary {
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  color: var(--color-primary);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  user-select: none;
+}
+
+.advanced-options summary::-webkit-details-marker { display: none; }
+
+.advanced-options summary::before {
+  content: '▸';
+  display: inline-block;
+  transition: transform 0.15s;
+  font-size: 0.75rem;
+}
+
+.advanced-options[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.advanced-options .advanced-inner {
+  padding: 0 1rem 1rem;
+}
+
+.advanced-options .advanced-inner .form-group:first-child {
+  margin-top: 0.25rem;
+}
+
+/* === Dynamic Opening/Exclusion Rows === */
+.opening-rows {
+  margin-bottom: 0.75rem;
+}
+
+.opening-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  gap: 0.5rem;
+  align-items: end;
+  margin-bottom: 0.5rem;
+}
+
+.opening-row select,
+.opening-row input {
+  font-size: 0.85rem;
+  padding: 0.45rem 0.6rem;
+}
+
+.opening-row .custom-dims {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+}
+
+.opening-row .custom-dims input {
+  width: 100%;
+  min-width: 50px;
+}
+
+.opening-row .qty-input {
+  width: 55px;
+  text-align: center;
+}
+
+.btn-remove-row {
+  padding: 0.4rem 0.55rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-danger);
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+  transition: all 0.15s;
+}
+
+.btn-remove-row:hover {
+  border-color: var(--color-danger);
+  background: #fef2f2;
+}
+
+.btn-add-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.75rem;
+  border: 1.5px dashed var(--color-primary);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--color-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-add-row:hover {
+  background: var(--color-primary-light);
+}
+
+.advanced-section-label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-text);
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
 /* === Print === */
 @media print {
-  .site-header, .site-footer, .ad-slot, .btn-share, .btn-calculate, .unit-toggle { display: none; }
+  .site-header, .site-footer, .ad-slot, .btn-share, .btn-calculate, .unit-toggle, .advanced-options { display: none; }
   .results-panel { border: 2px solid #000; }
   .main-content { max-width: 100%; }
 }
@@ -512,4 +659,8 @@ select {
   .header-nav { gap: 1rem; }
   .header-nav a { font-size: 0.8rem; }
   .calc-grid { grid-template-columns: 1fr; }
+  .opening-row { grid-template-columns: 1fr; }
+  .opening-row .qty-input { width: 100%; }
+  .shape-selector { gap: 0.35rem; }
+  .shape-btn { padding: 0.35rem 0.65rem; font-size: 0.8rem; }
 }

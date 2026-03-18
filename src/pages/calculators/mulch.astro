@@ -25,15 +25,51 @@ const description = 'Free mulch calculator. Estimate cubic yards and bags of mul
       <button data-unit="metric">Metric (m)</button>
     </div>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label>Length <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="length" placeholder="20" min="0" step="any" />
+    <!-- Shape Selector -->
+    <div>
+      <label style="font-weight:600;font-size:0.875rem;margin-bottom:0.5rem;display:block;">Bed Shape</label>
+      <div class="shape-selector">
+        <button class="shape-btn active" data-shape="rectangle">Rectangle</button>
+        <button class="shape-btn" data-shape="circle">Circle</button>
+        <button class="shape-btn" data-shape="ring">Ring / Around Tree</button>
       </div>
-      <div class="form-group">
-        <label>Width <span class="hint unit-label">(feet)</span></label>
-        <input type="number" id="width" placeholder="10" min="0" step="any" />
+    </div>
+
+    <!-- Rectangle Inputs (default) -->
+    <div id="rectInputs">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Length <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="length" placeholder="20" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Width <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="width" placeholder="10" min="0" step="any" />
+        </div>
       </div>
+    </div>
+
+    <!-- Circle Inputs -->
+    <div id="circleInputs" style="display:none;">
+      <div class="form-group">
+        <label>Radius <span class="hint unit-label">(feet)</span></label>
+        <input type="number" id="circleRadius" placeholder="5" min="0" step="any" />
+      </div>
+    </div>
+
+    <!-- Ring Inputs -->
+    <div id="ringInputs" style="display:none;">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Outer Radius <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="outerRadius" placeholder="5" min="0" step="any" />
+        </div>
+        <div class="form-group">
+          <label>Inner Radius <span class="hint unit-label">(feet)</span></label>
+          <input type="number" id="innerRadius" placeholder="1" min="0" step="any" />
+        </div>
+      </div>
+      <p class="hint" style="font-size:0.8rem;color:var(--color-text-light);margin-top:-0.5rem;">Inner radius = distance from tree trunk to mulch inner edge.</p>
     </div>
 
     <div class="form-group">
@@ -63,6 +99,10 @@ const description = 'Free mulch calculator. Estimate cubic yards and bags of mul
     <div class="results-panel" id="results">
       <h2>Results</h2>
       <div class="result-row">
+        <span class="result-label">Area</span>
+        <span class="result-value" id="resAreaVal">—</span>
+      </div>
+      <div class="result-row">
         <span class="result-label">Volume</span>
         <span class="result-value" id="resVolume">—</span>
       </div>
@@ -91,7 +131,9 @@ const description = 'Free mulch calculator. Estimate cubic yards and bags of mul
 
     <h3>Mulch Formula</h3>
     <div class="formula-box">
-      Volume (cu yd) = (Length × Width × Depth) / 27<br>
+      Rectangle: Volume = Length × Width × Depth / 27<br>
+      Circle: Volume = π × r² × Depth / 27<br>
+      Ring: Volume = π × (outerR² - innerR²) × Depth / 27<br>
       Where length and width are in feet, depth in feet (divide inches by 12)
     </div>
 
@@ -100,7 +142,7 @@ const description = 'Free mulch calculator. Estimate cubic yards and bags of mul
       <li><strong>2 inches:</strong> Annual flower beds, thin topdressing over existing mulch</li>
       <li><strong>3 inches:</strong> Most garden beds and landscaping (standard recommendation)</li>
       <li><strong>4 inches:</strong> Weed suppression in new beds, around trees and shrubs</li>
-      <li><strong>6 inches:</strong> Playground areas (safety requirement for wood chips)</li>
+      <li><strong>6 inches:</strong> Playground areas and pathways only (safety requirement for wood chips). Do not use 6" depth around plants as it can suffocate roots</li>
     </ul>
     <p>Avoid piling mulch deeper than 4 inches around plants. It can suffocate roots and trap moisture against stems. Laying down <a href={affiliateLinks[0]?.url} target="_blank">{affiliateLinks[0]?.text}</a> before mulching helps prevent weeds and extends the life of your mulch bed.</p>
 
@@ -163,6 +205,7 @@ const description = 'Free mulch calculator. Estimate cubic yards and bags of mul
   const val = (s: string) => parseFloat(($(s) as HTMLInputElement).value) || 0;
 
   let unit: 'imperial' | 'metric' = 'imperial';
+  let shape = 'rectangle';
 
   $$('#unitToggle button').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -176,28 +219,57 @@ const description = 'Free mulch calculator. Estimate cubic yards and bags of mul
     });
   });
 
+  // Shape toggle
+  $$('.shape-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $$('.shape-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      shape = (btn as HTMLElement).dataset.shape!;
+      $('#rectInputs').style.display = shape === 'rectangle' ? '' : 'none';
+      $('#circleInputs').style.display = shape === 'circle' ? '' : 'none';
+      $('#ringInputs').style.display = shape === 'ring' ? '' : 'none';
+    });
+  });
+
   const depthSelect = $('#depth') as HTMLSelectElement;
   depthSelect.addEventListener('change', () => {
     $('#customDepthGroup').style.display = depthSelect.value === 'custom' ? '' : 'none';
   });
 
   $('#calcBtn').addEventListener('click', () => {
-    let l = val('#length'), w = val('#width');
-    let depth = depthSelect.value === 'custom' ? val('#customDepth') : parseFloat(depthSelect.value);
+    const m2ft = 3.28084;
+    let areaSqFt = 0;
 
-    if (unit === 'metric') {
-      l *= 3.28084;
-      w *= 3.28084;
-      depth *= 0.393701;
+    if (shape === 'rectangle') {
+      let l = val('#length'), w = val('#width');
+      if (unit === 'metric') { l *= m2ft; w *= m2ft; }
+      areaSqFt = l * w;
+    } else if (shape === 'circle') {
+      let r = val('#circleRadius');
+      if (unit === 'metric') r *= m2ft;
+      areaSqFt = Math.PI * r * r;
+    } else {
+      // Ring
+      let outerR = val('#outerRadius'), innerR = val('#innerRadius');
+      if (unit === 'metric') { outerR *= m2ft; innerR *= m2ft; }
+      areaSqFt = Math.PI * (outerR * outerR - innerR * innerR);
     }
 
+    let depth = depthSelect.value === 'custom' ? val('#customDepth') : parseFloat(depthSelect.value);
+    if (unit === 'metric') depth *= 0.393701;
+
     const depthFt = depth / 12;
-    const cubicFeet = l * w * depthFt;
+    const cubicFeet = areaSqFt * depthFt;
     if (cubicFeet <= 0) return;
 
     const cubicYards = cubicFeet / 27;
-    const bags2 = Math.ceil((cubicFeet) / 2);
-    const bags3 = Math.ceil((cubicFeet) / 3);
+    const bags2 = Math.ceil(cubicFeet / 2);
+    const bags3 = Math.ceil(cubicFeet / 3);
+
+    const areaLabel = unit === 'metric'
+      ? `${(areaSqFt * 0.092903).toFixed(1)} m²`
+      : `${areaSqFt.toFixed(1)} sq ft`;
+    $('#resAreaVal').textContent = areaLabel;
 
     const volLabel = unit === 'metric'
       ? `${(cubicYards * 0.764555).toFixed(2)} m³`
